@@ -1,0 +1,2 @@
+VERSION = "1.3"
+PACKAGE_NAME = f"vsoa_win64_v{VERSION}"

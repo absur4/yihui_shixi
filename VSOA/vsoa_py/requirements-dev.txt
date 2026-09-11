@@ -1,0 +1,2 @@
+-r requirements-build.txt
+playwright==1.62.0

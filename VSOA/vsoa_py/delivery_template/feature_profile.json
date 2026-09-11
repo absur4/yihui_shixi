@@ -1,0 +1,126 @@
+{
+  "schema_version": "1.0",
+  "module_name": "vsoa",
+  "module_version": "1.3",
+  "library_version": "1.0.4",
+  "features": [
+    {
+      "feature_name": "discovery_mechanism",
+      "category": "功能/特性",
+      "status": "supported",
+      "test_method": "VSOA Position 名称注册表查询并校验返回端点",
+      "configuration": {
+        "transport": "UDP",
+        "scope": "IPv4 loopback"
+      },
+      "evidence": "S10 cold/warm/multi-endpoint discovery runs",
+      "performance_impact": "单独输出 discovery_time_ms",
+      "limitations": [
+        "静态回调注册表；不代表组播自动发现"
+      ]
+    },
+    {
+      "feature_name": "communication_models",
+      "category": "功能/特性",
+      "status": "supported",
+      "test_method": "本机 API 探测及发布订阅流量",
+      "configuration": {
+        "benchmark_model": "publish/subscribe"
+      },
+      "evidence": "RPC, URL pub/sub, datagram and stream APIs",
+      "performance_impact": "S01-S12 使用发布订阅",
+      "limitations": []
+    },
+    {
+      "feature_name": "cross_platform_support",
+      "category": "功能/特性",
+      "status": "partial",
+      "test_method": "Windows x64 本地执行",
+      "configuration": {
+        "Windows_x64": "verified",
+        "Linux": "not_tested",
+        "macOS": "not_tested"
+      },
+      "evidence": "self-contained Windows executable",
+      "performance_impact": "无",
+      "limitations": [
+        "未验证跨操作系统互通"
+      ]
+    },
+    {
+      "feature_name": "qos_support",
+      "category": "功能/特性",
+      "status": "partial",
+      "test_method": "优先级 API 设置与读取",
+      "configuration": {
+        "qos_profile": "default",
+        "priority_levels": "0-7"
+      },
+      "evidence": "local API probe",
+      "performance_impact": "未验证拥塞调度差异",
+      "limitations": [
+        "不映射为 DDS QoS"
+      ]
+    },
+    {
+      "feature_name": "reliability",
+      "category": "功能/特性",
+      "status": "partial",
+      "test_method": "TCP/UDP、故障重启及应用对账",
+      "configuration": {
+        "tcp": "ordered",
+        "udp": "loss-permitted"
+      },
+      "evidence": "S09/S11/S12",
+      "performance_impact": "恢复时间和恢复前后丢包独立记录",
+      "limitations": [
+        "应用补发不是 VSOA 原生持久化"
+      ]
+    },
+    {
+      "feature_name": "realtime",
+      "category": "功能/特性",
+      "status": "partial",
+      "test_method": "单调时钟单向延迟和抖动测量",
+      "configuration": {
+        "clock": "perf_counter_ns"
+      },
+      "evidence": "S01/S04/S08",
+      "performance_impact": "输出 P95/P99/总体标准差",
+      "limitations": [
+        "Windows/Python 非硬实时"
+      ]
+    },
+    {
+      "feature_name": "supported_transports",
+      "category": "功能/特性",
+      "status": "partial",
+      "test_method": "实际 TCP 与 UDP quick datagram 流量",
+      "configuration": {
+        "TCP_IPv4": "verified",
+        "UDP_IPv4": "verified",
+        "TLS": "not_tested",
+        "IPv6": "not_tested"
+      },
+      "evidence": "S01-S12 and S09 proxy",
+      "performance_impact": "按 transport_mode 独立比较",
+      "limitations": []
+    },
+    {
+      "feature_name": "ecosystem_maturity",
+      "category": "功能/特性",
+      "status": "partial",
+      "test_method": "已安装包与项目元数据审计",
+      "configuration": {
+        "language": "Python",
+        "package": "vsoa==1.0.4",
+        "license": "Apache-2.0"
+      },
+      "evidence": "embedded package metadata",
+      "performance_impact": "不参与性能评分",
+      "limitations": [
+        "不合成主观成熟度分数"
+      ]
+    }
+  ]
+}

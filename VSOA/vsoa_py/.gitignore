@@ -1,0 +1,23 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+results/
+*.pyc
+*.pyo
+build/
+dist/
+release/
+*.spec
+delivery_template/outputs/
+delivery_template/logs/
+
+# 本目录中误复制出来的旧源码树；根目录才是当前主线。
+/vsoa_py/
+
+# 编辑器与系统临时文件
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

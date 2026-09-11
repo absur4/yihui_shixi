@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VSOA metric result v1",
+  "type": "object",
+  "required": ["schema_version", "middleware", "metric", "layer", "status", "timestamp_utc", "environment", "configuration", "topology", "measurements", "limitations", "error"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "middleware": {"const": "vsoa"},
+    "metric": {"enum": ["discovery", "communication_models", "cross_platform", "qos", "reliability", "realtime", "transports", "ecosystem", "latency", "throughput", "jitter", "cpu", "memory", "startup_discovery", "packet_loss_recovery"]},
+    "layer": {"enum": ["feature", "performance"]},
+    "status": {"enum": ["pass", "partial", "fail", "error", "skip"]},
+    "timestamp_utc": {"type": "string", "format": "date-time"},
+    "environment": {"type": "object", "required": ["os", "python", "vsoa", "psutil", "logical_cpus", "machine"]},
+    "configuration": {"type": "object"},
+    "topology": {"type": "string"},
+    "measurements": {"type": "object"},
+    "limitations": {"type": "array", "items": {"type": "string"}},
+    "error": {"type": ["object", "null"]}
+  },
+  "$defs": {
+    "measurement": {
+      "type": "object",
+      "required": ["value", "unit"],
+      "properties": {"value": {"type": ["number", "null"]}, "unit": {"type": "string"}},
+      "additionalProperties": false
+    },
+    "distribution": {
+      "type": "object",
+      "required": ["count", "unit", "min", "mean", "p50", "p95", "p99", "max", "stddev"],
+      "properties": {
+        "count": {"type": "integer", "minimum": 0},
+        "unit": {"type": "string"},
+        "min": {"type": ["number", "null"]},
+        "mean": {"type": ["number", "null"]},
+        "p50": {"type": ["number", "null"]},
+        "p95": {"type": ["number", "null"]},
+        "p99": {"type": ["number", "null"]},
+        "max": {"type": ["number", "null"]},
+        "stddev": {"type": ["number", "null"]}
+      },
+      "additionalProperties": false
+    }
+  }
+}

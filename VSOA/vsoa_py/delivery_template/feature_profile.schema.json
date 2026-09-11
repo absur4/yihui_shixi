@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Unified middleware feature profile 1.0",
+  "type": "object",
+  "required": ["schema_version", "module_name", "module_version", "features"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "module_name": {"type": "string"},
+    "module_version": {"type": "string"},
+    "features": {"type": "array", "minItems": 8, "items": {"type": "object", "required": ["feature_name", "category", "status", "test_method", "configuration", "evidence", "performance_impact", "limitations"], "properties": {"status": {"enum": ["supported", "partial", "unsupported", "not_tested"]}}}}
+  }
+}
