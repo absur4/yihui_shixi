@@ -1,0 +1,4240 @@
+{
+  "middleware": {
+    "cpu_percent": 10.311882318249138,
+    "memory_mb": 84.103168,
+    "cpu_time_seconds": 0.515625,
+    "observed_duration_seconds": 5.0002995,
+    "cpu_statistics": {
+      "count": 100,
+      "min": 0.0,
+      "max": 107.65690347740411,
+      "mean": 10.994666372439738,
+      "median": 0.0,
+      "variance": 321.6675216135597,
+      "std": 17.935091904240682,
+      "p95": 31.143365879978244,
+      "p99": 62.49498453395338
+    },
+    "memory_statistics": {
+      "count": 100,
+      "min": 83.849216,
+      "max": 84.103168,
+      "mean": 84.01522687999999,
+      "median": 84.013056,
+      "variance": 0.0025935747219456937,
+      "std": 0.05092715112732788,
+      "p95": 84.086784,
+      "p99": 84.09505792
+    },
+    "process_ids": {
+      "publisher-0": 20032,
+      "position": 32728,
+      "subscriber-0": 18016
+    }
+  },
+  "test_infrastructure": {
+    "cpu_percent": 11.249326165362696,
+    "memory_mb": 59.731968,
+    "cpu_time_seconds": 0.5625,
+    "observed_duration_seconds": 5.0002995,
+    "cpu_statistics": {
+      "count": 100,
+      "min": 0.0,
+      "max": 107.65690347740411,
+      "mean": 11.923298439148937,
+      "median": 0.0,
+      "variance": 405.7613790597693,
+      "std": 20.143519530106186,
+      "p95": 31.1438719038804,
+      "p99": 93.20766743103538
+    },
+    "memory_statistics": {
+      "count": 100,
+      "min": 59.338752,
+      "max": 59.731968,
+      "mean": 59.67601664,
+      "median": 59.731968,
+      "variance": 0.010096602408550506,
+      "std": 0.10048185114014622,
+      "p95": 59.731968,
+      "p99": 59.731968
+    },
+    "process_ids": {
+      "controller": 28728,
+      "udp-proxy": 28724
+    }
+  },
+  "total": {
+    "cpu_percent": 21.561208483611832,
+    "memory_mb": 143.835136,
+    "cpu_time_seconds": 1.078125,
+    "observed_duration_seconds": 5.0002995,
+    "cpu_statistics": {
+      "count": 100,
+      "min": 0.0,
+      "max": 215.31380695480823,
+      "mean": 22.91796481158867,
+      "median": 30.83974307447933,
+      "variance": 965.056014841162,
+      "std": 31.0653507117039,
+      "p95": 63.89664324092063,
+      "p99": 94.28423646580997
+    },
+    "memory_statistics": {
+      "count": 100,
+      "min": 143.187968,
+      "max": 143.835136,
+      "mean": 143.69124352,
+      "median": 143.745024,
+      "variance": 0.02089993329705,
+      "std": 0.14456809225084905,
+      "p95": 143.818752,
+      "p99": 143.82702592
+    },
+    "process_ids": {
+      "publisher-0": 20032,
+      "position": 32728,
+      "subscriber-0": 18016,
+      "controller": 28728,
+      "udp-proxy": 28724
+    }
+  },
+  "cpu_percent": 10.311882318249138,
+  "memory_mb": 84.103168,
+  "cpu_statistics": {
+    "count": 100,
+    "min": 0.0,
+    "max": 107.65690347740411,
+    "mean": 10.994666372439738,
+    "median": 0.0,
+    "variance": 321.6675216135597,
+    "std": 17.935091904240682,
+    "p95": 31.143365879978244,
+    "p99": 62.49498453395338
+  },
+  "memory_statistics": {
+    "count": 100,
+    "min": 83.849216,
+    "max": 84.103168,
+    "mean": 84.01522687999999,
+    "median": 84.013056,
+    "variance": 0.0025935747219456937,
+    "std": 0.05092715112732788,
+    "p95": 84.086784,
+    "p99": 84.09505792
+  },
+  "observed_duration_seconds": 5.0002995,
+  "samples": [
+    {
+      "timestamp_ns": 40533055213300,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.849216
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.338752
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.0625,
+            "rss_bytes": 28172288
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.640625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28086272
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.187968
+    },
+    {
+      "timestamp_ns": 40533105311200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.869696
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.367424
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.0625,
+            "rss_bytes": 28192768
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.640625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28114944
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.23712
+    },
+    {
+      "timestamp_ns": 40533155694300,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.012383120530494,
+          "memory_mb": 83.890176
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.387904
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.0625,
+            "rss_bytes": 28213248
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.640625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28135424
+          }
+        }
+      },
+      "cpu_percent": 31.012383120530494,
+      "memory_mb": 143.27808
+    },
+    {
+      "timestamp_ns": 40533205859500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.902464
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.404288
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.0625,
+            "rss_bytes": 28225536
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.640625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28151808
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.306752
+    },
+    {
+      "timestamp_ns": 40533256087900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.922944
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.420672
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.0625,
+            "rss_bytes": 28246016
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.640625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28168192
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.343616
+    },
+    {
+      "timestamp_ns": 40533306391800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.0612099658277,
+          "memory_mb": 83.939328
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.0612099658277,
+          "memory_mb": 59.43296
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.078125,
+            "rss_bytes": 28262400
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.640625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28180480
+          }
+        }
+      },
+      "cpu_percent": 62.1224199316554,
+      "memory_mb": 143.372288
+    },
+    {
+      "timestamp_ns": 40533356699200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.94752
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.445248
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.078125,
+            "rss_bytes": 28270592
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.640625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28192768
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.392768
+    },
+    {
+      "timestamp_ns": 40533406864900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.951616
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.449344
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.078125,
+            "rss_bytes": 28274688
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.640625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28196864
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.40096
+    },
+    {
+      "timestamp_ns": 40533457273700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.955712
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.996572027106378,
+          "memory_mb": 59.461632
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.078125,
+            "rss_bytes": 28278784
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.65625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28209152
+          }
+        }
+      },
+      "cpu_percent": 30.996572027106378,
+      "memory_mb": 143.417344
+    },
+    {
+      "timestamp_ns": 40533507786200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.932937391734715,
+          "memory_mb": 83.968
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.469824
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 28291072
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.65625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28217344
+          }
+        }
+      },
+      "cpu_percent": 30.932937391734715,
+      "memory_mb": 143.437824
+    },
+    {
+      "timestamp_ns": 40533558157900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 62.03880353452435,
+          "memory_mb": 83.968
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.019401767262174,
+          "memory_mb": 59.486208
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28291072
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28233728
+          }
+        }
+      },
+      "cpu_percent": 93.05820530178653,
+      "memory_mb": 143.454208
+    },
+    {
+      "timestamp_ns": 40533608418800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.972096
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.087783943383428,
+          "memory_mb": 59.53536
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28295168
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28282880
+          }
+        }
+      },
+      "cpu_percent": 31.087783943383428,
+      "memory_mb": 143.507456
+    },
+    {
+      "timestamp_ns": 40533658898500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.953036567174525,
+          "memory_mb": 83.972096
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.551744
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28295168
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28299264
+          }
+        }
+      },
+      "cpu_percent": 30.953036567174525,
+      "memory_mb": 143.52384
+    },
+    {
+      "timestamp_ns": 40533709294700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.972096
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.568128
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28295168
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28315648
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.540224
+    },
+    {
+      "timestamp_ns": 40533759574700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.972096
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.580416
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28295168
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28327936
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.55251199999998
+    },
+    {
+      "timestamp_ns": 40533810026200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.972096
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.588608
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28295168
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28336128
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.560704
+    },
+    {
+      "timestamp_ns": 40533860416300,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.972096
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.5968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28295168
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28344320
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.568896
+    },
+    {
+      "timestamp_ns": 40533910902600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.948990122072722,
+          "memory_mb": 83.972096
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.613184
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28295168
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28360704
+          }
+        }
+      },
+      "cpu_percent": 30.948990122072722,
+      "memory_mb": 143.58527999999998
+    },
+    {
+      "timestamp_ns": 40533961094500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.972096
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.621376
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28295168
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28368896
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.593472
+    },
+    {
+      "timestamp_ns": 40534011428700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.976192
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.625472
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 28299264
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28372992
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.601664
+    },
+    {
+      "timestamp_ns": 40534062152400,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.804140865118278,
+          "memory_mb": 83.976192
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.804140865118278,
+          "memory_mb": 59.633664
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28086272
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28299264
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28381184
+          }
+        }
+      },
+      "cpu_percent": 61.608281730236556,
+      "memory_mb": 143.609856
+    },
+    {
+      "timestamp_ns": 40534112667000,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.980288
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.931651443345093,
+          "memory_mb": 59.63776
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28299264
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28385280
+          }
+        }
+      },
+      "cpu_percent": 30.931651443345093,
+      "memory_mb": 143.618048
+    },
+    {
+      "timestamp_ns": 40534162913800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.096507638297368,
+          "memory_mb": 83.980288
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.63776
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28299264
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28385280
+          }
+        }
+      },
+      "cpu_percent": 31.096507638297368,
+      "memory_mb": 143.618048
+    },
+    {
+      "timestamp_ns": 40534213184000,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.980288
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.645952
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28299264
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28393472
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.62624
+    },
+    {
+      "timestamp_ns": 40534263318000,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.984384
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.65824
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28303360
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28405760
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.642624
+    },
+    {
+      "timestamp_ns": 40534313831200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.98848
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.674624
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28307456
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28422144
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.663104
+    },
+    {
+      "timestamp_ns": 40534364032600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.98848
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.67872
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28307456
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28426240
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.66719999999998
+    },
+    {
+      "timestamp_ns": 40534414129500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.18955464310167,
+          "memory_mb": 83.98848
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.686912
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28307456
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28434432
+          }
+        }
+      },
+      "cpu_percent": 31.18955464310167,
+      "memory_mb": 143.675392
+    },
+    {
+      "timestamp_ns": 40534464757400,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.98848
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.686912
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28307456
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28434432
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.675392
+    },
+    {
+      "timestamp_ns": 40534515087600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.98848
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.04497895895506,
+          "memory_mb": 59.686912
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.125,
+            "rss_bytes": 28307456
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28434432
+          }
+        }
+      },
+      "cpu_percent": 31.04497895895506,
+      "memory_mb": 143.675392
+    },
+    {
+      "timestamp_ns": 40534565487800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.00186110372578,
+          "memory_mb": 83.98848
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.686912
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28307456
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28434432
+          }
+        }
+      },
+      "cpu_percent": 31.00186110372578,
+      "memory_mb": 143.675392
+    },
+    {
+      "timestamp_ns": 40534615725600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.98848
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.686912
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28307456
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28434432
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.675392
+    },
+    {
+      "timestamp_ns": 40534666056300,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.04467054898899,
+          "memory_mb": 83.992576
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.686912
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28311552
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28434432
+          }
+        }
+      },
+      "cpu_percent": 31.04467054898899,
+      "memory_mb": 143.679488
+    },
+    {
+      "timestamp_ns": 40534716311800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.992576
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.686912
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28311552
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28434432
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.679488
+    },
+    {
+      "timestamp_ns": 40534767195800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.992576
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.703296
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28311552
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28450816
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.695872
+    },
+    {
+      "timestamp_ns": 40534817435700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.992576
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28311552
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.724544
+    },
+    {
+      "timestamp_ns": 40534867702700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 83.996672
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28315648
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.72864
+    },
+    {
+      "timestamp_ns": 40534918142400,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.977583133920305,
+          "memory_mb": 83.996672
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.265625,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28315648
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.977583133920305,
+      "memory_mb": 143.72864
+    },
+    {
+      "timestamp_ns": 40534968423500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.000768
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.265625,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.140625,
+            "rss_bytes": 28319744
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.671875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.25,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.732736
+    },
+    {
+      "timestamp_ns": 40535019033000,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.87365020401308,
+          "memory_mb": 84.000768
+        },
+        "test_infrastructure": {
+          "cpu_percent": 61.74730040802616,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.265625,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28319744
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.265625,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 92.62095061203925,
+      "memory_mb": 143.732736
+    },
+    {
+      "timestamp_ns": 40535069380700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.000768
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.265625,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28319744
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.265625,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.732736
+    },
+    {
+      "timestamp_ns": 40535119942700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.000768
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.265625,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28319744
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.265625,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.732736
+    },
+    {
+      "timestamp_ns": 40535170749700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.753636309957287,
+          "memory_mb": 84.000768
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.753636309957287,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.28125,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28319744
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.28125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 61.50727261991457,
+      "memory_mb": 143.732736
+    },
+    {
+      "timestamp_ns": 40535221116600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.000768
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.28125,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28319744
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.28125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.732736
+    },
+    {
+      "timestamp_ns": 40535271522600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.000768
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.998293853906283,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.28125,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28319744
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.998293853906283,
+      "memory_mb": 143.732736
+    },
+    {
+      "timestamp_ns": 40535322043400,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.004864
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.28125,
+            "rss_bytes": 28090368
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28323840
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.736832
+    },
+    {
+      "timestamp_ns": 40535372453400,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.00896
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.28125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28323840
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.740928
+    },
+    {
+      "timestamp_ns": 40535422988800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.918920202471927,
+          "memory_mb": 84.00896
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28323840
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.918920202471927,
+      "memory_mb": 143.740928
+    },
+    {
+      "timestamp_ns": 40535473246900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.00896
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.15625,
+            "rss_bytes": 28323840
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.740928
+    },
+    {
+      "timestamp_ns": 40535523786000,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.916656608447713,
+          "memory_mb": 84.013056
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28327936
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.916656608447713,
+      "memory_mb": 143.745024
+    },
+    {
+      "timestamp_ns": 40535574102800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.013056
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28327936
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.745024
+    },
+    {
+      "timestamp_ns": 40535624325500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.017152
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28332032
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.74912
+    },
+    {
+      "timestamp_ns": 40535674737200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.994788908130456,
+          "memory_mb": 84.017152
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28332032
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.994788908130456,
+      "memory_mb": 143.74912
+    },
+    {
+      "timestamp_ns": 40535724992900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.017152
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.171875,
+            "rss_bytes": 28332032
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.6875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.74912
+    },
+    {
+      "timestamp_ns": 40535775577600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.888786530314498,
+          "memory_mb": 84.017152
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.888786530314498,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28332032
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.703125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 61.777573060628995,
+      "memory_mb": 143.74912
+    },
+    {
+      "timestamp_ns": 40535826087600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.017152
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28332032
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.703125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.74912
+    },
+    {
+      "timestamp_ns": 40535876752400,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.839951998231513,
+          "memory_mb": 84.017152
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.839951998231513,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28332032
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.71875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 61.679903996463025,
+      "memory_mb": 143.74912
+    },
+    {
+      "timestamp_ns": 40535927012500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.021248
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28336128
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.71875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.753216
+    },
+    {
+      "timestamp_ns": 40535977271500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.025344
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.08895919138861,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28340224
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.734375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.296875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.08895919138861,
+      "memory_mb": 143.757312
+    },
+    {
+      "timestamp_ns": 40536027863200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.025344
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.88451267698061,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28340224
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.734375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.88451267698061,
+      "memory_mb": 143.757312
+    },
+    {
+      "timestamp_ns": 40536078049500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.025344
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.133994735615094,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28340224
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.75,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.133994735615094,
+      "memory_mb": 143.757312
+    },
+    {
+      "timestamp_ns": 40536128788300,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.794973471978054,
+          "memory_mb": 84.025344
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.34375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28340224
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.75,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.794973471978054,
+      "memory_mb": 143.757312
+    },
+    {
+      "timestamp_ns": 40536179031100,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.025344
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.098983336915936,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.34375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28340224
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.765625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.098983336915936,
+      "memory_mb": 143.757312
+    },
+    {
+      "timestamp_ns": 40536229439700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.025344
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.34375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28340224
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.765625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.757312
+    },
+    {
+      "timestamp_ns": 40536279748900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.02944
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.34375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28344320
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.765625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.3125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.761408
+    },
+    {
+      "timestamp_ns": 40536330220100,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.02944
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.95824945711614,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.34375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28344320
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.765625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.95824945711614,
+      "memory_mb": 143.761408
+    },
+    {
+      "timestamp_ns": 40536380357100,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.16460897141831,
+          "memory_mb": 84.02944
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.359375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28344320
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.765625,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.16460897141831,
+      "memory_mb": 143.761408
+    },
+    {
+      "timestamp_ns": 40536430754900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.033536
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.003337447269523,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.359375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28348416
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.78125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.003337447269523,
+      "memory_mb": 143.765504
+    },
+    {
+      "timestamp_ns": 40536480937900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.033536
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.359375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.1875,
+            "rss_bytes": 28348416
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.78125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.765504
+    },
+    {
+      "timestamp_ns": 40536531291200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.030736813674576,
+          "memory_mb": 84.033536
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.359375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28348416
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.78125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.030736813674576,
+      "memory_mb": 143.765504
+    },
+    {
+      "timestamp_ns": 40536581523000,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.045824
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.10579354114326,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.359375,
+            "rss_bytes": 28094464
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28360704
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.796875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.328125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.10579354114326,
+      "memory_mb": 143.777792
+    },
+    {
+      "timestamp_ns": 40536631984700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.964077706458564,
+          "memory_mb": 84.054016
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.964077706458564,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.09375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28364800
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.796875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.34375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 61.92815541291713,
+      "memory_mb": 143.785984
+    },
+    {
+      "timestamp_ns": 40536682157700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.14224782253403,
+          "memory_mb": 84.062208
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28372992
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.796875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.34375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.14224782253403,
+      "memory_mb": 143.794176
+    },
+    {
+      "timestamp_ns": 40536732410100,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.062208
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.09304232235674,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28372992
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.796875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.359375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.09304232235674,
+      "memory_mb": 143.794176
+    },
+    {
+      "timestamp_ns": 40536782678400,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.062208
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28372992
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.796875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.359375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.794176
+    },
+    {
+      "timestamp_ns": 40536832925500,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.066304
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28377088
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.796875,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.359375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.798272
+    },
+    {
+      "timestamp_ns": 40536883520200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 30.88268138757617,
+          "memory_mb": 84.066304
+        },
+        "test_infrastructure": {
+          "cpu_percent": 61.76536277515234,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.390625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28377088
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.8125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 92.64804416272851,
+      "memory_mb": 143.798272
+    },
+    {
+      "timestamp_ns": 40536933858600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.0704
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.390625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28381184
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.8125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.802368
+    },
+    {
+      "timestamp_ns": 40536984112900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.0704
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.091866765630005,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.390625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28381184
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.8125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.390625,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.091866765630005,
+      "memory_mb": 143.802368
+    },
+    {
+      "timestamp_ns": 40537034482700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.0704
+        },
+        "test_infrastructure": {
+          "cpu_percent": 93.06171555177905,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.390625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28381184
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.828125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.421875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 93.06171555177905,
+      "memory_mb": 143.802368
+    },
+    {
+      "timestamp_ns": 40537084657200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.0704
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.141316804352808,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.390625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28381184
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.828125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.141316804352808,
+      "memory_mb": 143.802368
+    },
+    {
+      "timestamp_ns": 40537134913700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.090505705729605,
+          "memory_mb": 84.0704
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.40625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28381184
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.828125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.090505705729605,
+      "memory_mb": 143.802368
+    },
+    {
+      "timestamp_ns": 40537185238300,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.0704
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.40625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28381184
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.828125,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.802368
+    },
+    {
+      "timestamp_ns": 40537235977700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.074496
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.794609317414086,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.40625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28385280
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.84375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.794609317414086,
+      "memory_mb": 143.806464
+    },
+    {
+      "timestamp_ns": 40537286200100,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.078592
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.40625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.203125,
+            "rss_bytes": 28389376
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.84375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.81056
+    },
+    {
+      "timestamp_ns": 40537336488800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.070598365040258,
+          "memory_mb": 84.078592
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.40625,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28389376
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.84375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.070598365040258,
+      "memory_mb": 143.81056
+    },
+    {
+      "timestamp_ns": 40537386803300,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.054666149917022,
+          "memory_mb": 84.078592
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.421875,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28389376
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.84375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.054666149917022,
+      "memory_mb": 143.81056
+    },
+    {
+      "timestamp_ns": 40537437296600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.078592
+        },
+        "test_infrastructure": {
+          "cpu_percent": 30.944699593807496,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.421875,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28389376
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.84375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.453125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 30.944699593807496,
+      "memory_mb": 143.81056
+    },
+    {
+      "timestamp_ns": 40537487728600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.078592
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.421875,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.21875,
+            "rss_bytes": 28389376
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.84375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.453125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.81056
+    },
+    {
+      "timestamp_ns": 40537537978100,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.09483676454492,
+          "memory_mb": 84.082688
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.421875,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28393472
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.84375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.453125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.09483676454492,
+      "memory_mb": 143.814656
+    },
+    {
+      "timestamp_ns": 40537588259100,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.082688
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.421875,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28393472
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.84375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.453125,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.814656
+    },
+    {
+      "timestamp_ns": 40537638351400,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.192418794904608,
+          "memory_mb": 84.082688
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.192418794904608,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28393472
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.84375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.46875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 62.384837589809216,
+      "memory_mb": 143.814656
+    },
+    {
+      "timestamp_ns": 40537688721600,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.086784
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.020325509924522,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28397568
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.859375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.46875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.020325509924522,
+      "memory_mb": 143.818752
+    },
+    {
+      "timestamp_ns": 40537738977800,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.086784
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28397568
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.859375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.46875,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.818752
+    },
+    {
+      "timestamp_ns": 40537789256700,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.086784
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.076654421636114,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28397568
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.859375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.484375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 31.076654421636114,
+      "memory_mb": 143.818752
+    },
+    {
+      "timestamp_ns": 40537839499300,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.086784
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.4375,
+            "rss_bytes": 28098560
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28397568
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.859375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.484375,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.818752
+    },
+    {
+      "timestamp_ns": 40537889773900,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 31.07931241621017,
+          "memory_mb": 84.094976
+        },
+        "test_infrastructure": {
+          "cpu_percent": 31.07931241621017,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.453125,
+            "rss_bytes": 28102656
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28401664
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.859375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.5,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 62.15862483242034,
+      "memory_mb": 143.826944
+    },
+    {
+      "timestamp_ns": 40537940194200,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.094976
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.453125,
+            "rss_bytes": 28102656
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28401664
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.859375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.5,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.826944
+    },
+    {
+      "timestamp_ns": 40537990724300,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 0.0,
+          "memory_mb": 84.094976
+        },
+        "test_infrastructure": {
+          "cpu_percent": 0.0,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.453125,
+            "rss_bytes": 28102656
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28401664
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.859375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.5,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 0.0,
+      "memory_mb": 143.826944
+    },
+    {
+      "timestamp_ns": 40538005238000,
+      "groups": {
+        "middleware": {
+          "cpu_percent": 107.65690347740411,
+          "memory_mb": 84.103168
+        },
+        "test_infrastructure": {
+          "cpu_percent": 107.65690347740411,
+          "memory_mb": 59.731968
+        }
+      },
+      "per_process": {
+        "middleware": {
+          "publisher-0": {
+            "cpu_seconds": 0.46875,
+            "rss_bytes": 28110848
+          },
+          "position": {
+            "cpu_seconds": 0.109375,
+            "rss_bytes": 27590656
+          },
+          "subscriber-0": {
+            "cpu_seconds": 0.234375,
+            "rss_bytes": 28401664
+          }
+        },
+        "test_infrastructure": {
+          "controller": {
+            "cpu_seconds": 1.859375,
+            "rss_bytes": 31252480
+          },
+          "udp-proxy": {
+            "cpu_seconds": 0.515625,
+            "rss_bytes": 28479488
+          }
+        }
+      },
+      "cpu_percent": 215.31380695480823,
+      "memory_mb": 143.835136
+    }
+  ],
+  "process_ids": {
+    "middleware": {
+      "publisher-0": 20032,
+      "position": 32728,
+      "subscriber-0": 18016
+    },
+    "test_infrastructure": {
+      "controller": 28728,
+      "udp-proxy": 28724
+    }
+  }
+}

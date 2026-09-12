@@ -1,0 +1,12 @@
+[09:59:37] SUITE 开始：1 个条件，共 5 轮
+[09:59:37] START S03_65536B_max_stable repeat=1/5
+[09:59:50] END S03_65536B_max_stable status=completed sent=999 received=999
+[09:59:50] START S03_65536B_max_stable repeat=2/5
+[10:00:02] END S03_65536B_max_stable status=completed sent=1000 received=1000
+[10:00:02] START S03_65536B_max_stable repeat=3/5
+[10:00:14] END S03_65536B_max_stable status=completed sent=1000 received=1000
+[10:00:14] START S03_65536B_max_stable repeat=4/5
+[10:00:27] END S03_65536B_max_stable status=completed sent=1000 received=1000
+[10:00:27] START S03_65536B_max_stable repeat=5/5
+[10:00:39] END S03_65536B_max_stable status=completed sent=1000 received=1000
+[10:00:39] RESULT D:\AI_project\yihui_shixi\songfei\results\vsoa\20260912T095937_b9cd93cb\output\result.json status=completed

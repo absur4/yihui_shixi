@@ -1,0 +1,12 @@
+[09:47:48] SUITE 开始：1 个条件，共 5 轮
+[09:47:48] START S10_cold_start repeat=1/5
+[09:47:51] END S10_cold_start status=completed sent=100 received=100
+[09:47:51] START S10_cold_start repeat=2/5
+[09:47:54] END S10_cold_start status=completed sent=100 received=100
+[09:47:54] START S10_cold_start repeat=3/5
+[09:47:57] END S10_cold_start status=completed sent=100 received=100
+[09:47:57] START S10_cold_start repeat=4/5
+[09:48:00] END S10_cold_start status=completed sent=100 received=100
+[09:48:00] START S10_cold_start repeat=5/5
+[09:48:03] END S10_cold_start status=completed sent=100 received=100
+[09:48:03] RESULT D:\AI_project\yihui_shixi\songfei\results\vsoa\20260912T094747_817c7b61\output\result.json status=completed

@@ -1,0 +1,480 @@
+{
+  "schema_version": "2.1",
+  "metric_definition_version": "1.0",
+  "statistical_level": "run_level",
+  "module_name": "vsoa",
+  "module_version": "1.3",
+  "run_id": "20260912T094931_d242be1a_S09_light_5",
+  "measurement_duration_seconds": 5.0,
+  "load_target_met": true,
+  "scenario_id": "S09",
+  "scenario_name": "S09_light",
+  "scenario_title": "Weak network profile light",
+  "repeat": 5,
+  "status": "completed",
+  "payload_size_bytes": 1024,
+  "actual_payload_size_bytes": 1024,
+  "wire_message_size_bytes": null,
+  "metadata_size_bytes": null,
+  "publish_rate_hz": 100.0,
+  "configured_publish_rate_hz": 100.0,
+  "publisher_count": 1,
+  "subscriber_count": 1,
+  "transport_mode": "udp",
+  "qos_profile": "default",
+  "network_profile": "light",
+  "test_start_time": "2026-09-12T01:50:01.850030Z",
+  "test_end_time": "2026-09-12T01:50:09.444913Z",
+  "configuration": {
+    "module_name": "vsoa",
+    "module_version": "1.3",
+    "scenario_name": "S09_light",
+    "duration_seconds": 5.0,
+    "message_count": 0,
+    "payload_size_bytes": 1024,
+    "message_size_bytes": 1024,
+    "publish_rate_hz": 100.0,
+    "publisher_count": 1,
+    "subscriber_count": 1,
+    "transport_mode": "udp",
+    "port": 30050,
+    "output_directory": "outputs",
+    "log_file": "vsoa.log",
+    "repeats": 5,
+    "qos_profile": "default",
+    "warmup_seconds": 1.0,
+    "drain_seconds": 0.5,
+    "timeout_seconds": 30,
+    "startup_timeout_seconds": 30.0,
+    "recovery_timeout_seconds": 10,
+    "network_loss_rate": 0.01,
+    "loss_rate": 0.01,
+    "network_delay_ms": 5.0,
+    "network_jitter_ms": 5.0,
+    "random_seed": 46,
+    "seed": 46,
+    "resource_sample_interval_seconds": 0.05,
+    "recovery_enabled": true,
+    "case_repeats": 5,
+    "test_kind": "traffic",
+    "force_proxy": true,
+    "network_profile": "light",
+    "scenario_id": "S09",
+    "scenario_title": "Weak network profile light",
+    "phase": "weak_network"
+  },
+  "comparison_fingerprint": "3f09a3b01e06ede16de573d4d24c457c840d33a211ec3787f26c07dbbb5ec304",
+  "latency_ms": 9.537948282828282,
+  "latency_p95_ms": 11.01771,
+  "latency_p99_ms": 11.420962,
+  "latency_std_ms": 2.1825659479714528,
+  "latency_variance_ms2": 4.763594117244526,
+  "throughput_mbps": 0.807878547038444,
+  "delivery_window_seconds": 5.0092282,
+  "send_window_seconds": 4.9899382,
+  "cpu_percent": 10.311882318249138,
+  "memory_mb": 84.103168,
+  "packet_loss": 0.01,
+  "startup_time_ms": 710.1975,
+  "discovery_time_ms": 0.16253,
+  "jitter_ms": 2.2079552147239263,
+  "messages_sent": 500,
+  "messages_received": 495,
+  "messages_planned": 500,
+  "messages_not_sent": 0,
+  "duplicate_count": 0,
+  "corrupted_count": 0,
+  "unparseable_count": 0,
+  "out_of_order_count": 0,
+  "expected_deliveries": 500,
+  "messages_received_in_send_window": 494,
+  "messages_received_after_recovery": 500,
+  "final_packet_loss": 0.0,
+  "application_recovered": 5,
+  "late_native_deliveries": 0,
+  "application_retry_requests": 5,
+  "recovery_time_ms": 5.8351,
+  "achieved_publish_rate_hz_per_publisher": 100.0,
+  "offered_throughput_mbps": 0.8208518494277144,
+  "offered_source_payload_mbps": 0.8208518494277144,
+  "discovery_supported": true,
+  "discovery_condition_evidence": null,
+  "measurement_window": {
+    "warmup_start": 40532004884500,
+    "measurement_start": 40533004884500,
+    "send_end": 40538004884500,
+    "drain_end": 40538504884500
+  },
+  "statistics": {
+    "latency_ms": {
+      "count": 495,
+      "min": 1.5599,
+      "max": 19.29,
+      "mean": 9.537948282828282,
+      "median": 10.5808,
+      "variance": 4.763594117244526,
+      "std": 2.1825659479714528,
+      "p95": 11.01771,
+      "p99": 11.420962
+    },
+    "jitter_ms": {
+      "count": 489,
+      "min": 0.0003,
+      "max": 9.573,
+      "mean": 2.2079552147239263,
+      "median": 1.1691,
+      "variance": 5.567042826399187,
+      "std": 2.3594581637314924,
+      "p95": 7.195759999999998,
+      "p99": 8.525056
+    },
+    "cpu_percent": {
+      "count": 100,
+      "min": 0.0,
+      "max": 107.65690347740411,
+      "mean": 10.994666372439738,
+      "median": 0.0,
+      "variance": 321.6675216135597,
+      "std": 17.935091904240682,
+      "p95": 31.143365879978244,
+      "p99": 62.49498453395338
+    },
+    "memory_mb": {
+      "count": 100,
+      "min": 83.849216,
+      "max": 84.103168,
+      "mean": 84.01522687999999,
+      "median": 84.013056,
+      "variance": 0.0025935747219456937,
+      "std": 0.05092715112732788,
+      "p95": 84.086784,
+      "p99": 84.09505792
+    },
+    "discovery_time_ms": {
+      "count": 10,
+      "min": 0.1339,
+      "max": 0.2448,
+      "mean": 0.16253,
+      "median": 0.13855,
+      "variance": 0.0015740281,
+      "std": 0.03967402298734021,
+      "p95": 0.23611499999999996,
+      "p99": 0.243063
+    }
+  },
+  "publisher_reports": [
+    {
+      "publisher": 0,
+      "messages_sent": 500,
+      "publish_calls_accepted": 500,
+      "publish_calls_failed": 0,
+      "planned_releases": 500,
+      "unissued_releases": 0,
+      "scheduler_skipped_releases": 0,
+      "fragments_per_message": 1,
+      "fragment_size_bytes": 1024,
+      "fragments_sent": 500,
+      "offered_payload_mbps": 0.8192,
+      "first_successful_send_ns": 40533004955100,
+      "last_successful_send_ns": 40537994893300,
+      "finished_ns": 40537995231700,
+      "start_ns": 40533004884500,
+      "end_ns": 40538004884500
+    }
+  ],
+  "publisher_metrics": [
+    {
+      "publisher": 0,
+      "messages_sent": 500,
+      "publish_calls_accepted": 500,
+      "publish_calls_failed": 0,
+      "planned_releases": 500,
+      "unissued_releases": 0,
+      "scheduler_skipped_releases": 0,
+      "fragments_per_message": 1,
+      "fragment_size_bytes": 1024,
+      "fragments_sent": 500,
+      "offered_payload_mbps": 0.8192,
+      "first_successful_send_ns": 40533004955100,
+      "last_successful_send_ns": 40537994893300,
+      "finished_ns": 40537995231700,
+      "start_ns": 40533004884500,
+      "end_ns": 40538004884500
+    }
+  ],
+  "subscriber_metrics": [
+    {
+      "subscriber": 0,
+      "messages_sent": 500,
+      "messages_received": 495,
+      "messages_received_after_recovery": 500,
+      "throughput_mbps": 0.8093696,
+      "packet_loss": 0.01,
+      "final_packet_loss": 0.0,
+      "out_of_order_count": 0,
+      "latency_ms": {
+        "count": 495,
+        "min": 1.5599,
+        "max": 19.29,
+        "mean": 9.537948282828282,
+        "median": 10.5808,
+        "variance": 4.763594117244526,
+        "std": 2.1825659479714528,
+        "p95": 11.01771,
+        "p99": 11.420962
+      },
+      "jitter_ms": {
+        "count": 489,
+        "min": 0.0003,
+        "max": 9.573,
+        "mean": 2.2079552147239263,
+        "median": 1.1691,
+        "variance": 5.567042826399187,
+        "std": 2.3594581637314924,
+        "p95": 7.195759999999998,
+        "p99": 8.525056
+      }
+    }
+  ],
+  "link_metrics": [
+    {
+      "publisher": 0,
+      "subscriber": 0,
+      "messages_sent": 500,
+      "messages_received": 495,
+      "messages_received_after_recovery": 500,
+      "throughput_mbps": 0.811008,
+      "packet_loss": 0.01,
+      "final_packet_loss": 0.0,
+      "latency_ms": {
+        "count": 495,
+        "min": 1.5599,
+        "max": 19.29,
+        "mean": 9.537948282828282,
+        "median": 10.5808,
+        "variance": 4.763594117244526,
+        "std": 2.1825659479714528,
+        "p95": 11.01771,
+        "p99": 11.420962
+      },
+      "jitter_ms": {
+        "count": 489,
+        "min": 0.0003,
+        "max": 9.573,
+        "mean": 2.2079552147239263,
+        "median": 1.1691,
+        "variance": 5.567042826399187,
+        "std": 2.3594581637314924,
+        "p95": 7.195759999999998,
+        "p99": 8.525056
+      }
+    }
+  ],
+  "subscriber_reports": [
+    {
+      "subscriber": 0,
+      "expected_deliveries": 500,
+      "initial_received": 495,
+      "final_received": 500,
+      "invalid_messages": 0,
+      "duplicate_messages": 0,
+      "corrupted_count": 0,
+      "unparseable_count": 0,
+      "out_of_range_messages": 0,
+      "out_of_order_count": 0,
+      "incomplete_logical_messages": 0,
+      "links": [
+        {
+          "publisher": 0,
+          "subscriber": 0,
+          "messages_sent": 500,
+          "messages_received": 495,
+          "messages_received_after_recovery": 500,
+          "throughput_mbps": 0.811008,
+          "packet_loss": 0.01,
+          "final_packet_loss": 0.0,
+          "latency_ms": {
+            "count": 495,
+            "min": 1.5599,
+            "max": 19.29,
+            "mean": 9.537948282828282,
+            "median": 10.5808,
+            "variance": 4.763594117244526,
+            "std": 2.1825659479714528,
+            "p95": 11.01771,
+            "p99": 11.420962
+          },
+          "jitter_ms": {
+            "count": 489,
+            "min": 0.0003,
+            "max": 9.573,
+            "mean": 2.2079552147239263,
+            "median": 1.1691,
+            "variance": 5.567042826399187,
+            "std": 2.3594581637314924,
+            "p95": 7.195759999999998,
+            "p99": 8.525056
+          }
+        }
+      ],
+      "measurement_window_received": 494,
+      "late_native_deliveries": 0,
+      "application_recovered": 5,
+      "application_retry_requests": 5,
+      "recovery_errors": [],
+      "recovery_time_ms": 5.8351,
+      "first_counted_receive_ns": 40533016029800,
+      "last_counted_receive_ns": 40538014183300,
+      "initial_cutoff_ns": 40538504884500
+    }
+  ],
+  "network_impairment": {
+    "injected_count": 500,
+    "forwarded_count": 495,
+    "dropped_count": 5,
+    "blackout_dropped_count": 0,
+    "recovery_time_ms": 5.8351
+  },
+  "middleware_resources": {
+    "cpu_percent": 10.311882318249138,
+    "memory_mb": 84.103168,
+    "cpu_time_seconds": 0.515625,
+    "observed_duration_seconds": 5.0002995,
+    "cpu_statistics": {
+      "count": 100,
+      "min": 0.0,
+      "max": 107.65690347740411,
+      "mean": 10.994666372439738,
+      "median": 0.0,
+      "variance": 321.6675216135597,
+      "std": 17.935091904240682,
+      "p95": 31.143365879978244,
+      "p99": 62.49498453395338
+    },
+    "memory_statistics": {
+      "count": 100,
+      "min": 83.849216,
+      "max": 84.103168,
+      "mean": 84.01522687999999,
+      "median": 84.013056,
+      "variance": 0.0025935747219456937,
+      "std": 0.05092715112732788,
+      "p95": 84.086784,
+      "p99": 84.09505792
+    },
+    "process_ids": {
+      "publisher-0": 20032,
+      "position": 32728,
+      "subscriber-0": 18016
+    }
+  },
+  "test_infrastructure_resources": {
+    "cpu_percent": 11.249326165362696,
+    "memory_mb": 59.731968,
+    "cpu_time_seconds": 0.5625,
+    "observed_duration_seconds": 5.0002995,
+    "cpu_statistics": {
+      "count": 100,
+      "min": 0.0,
+      "max": 107.65690347740411,
+      "mean": 11.923298439148937,
+      "median": 0.0,
+      "variance": 405.7613790597693,
+      "std": 20.143519530106186,
+      "p95": 31.1438719038804,
+      "p99": 93.20766743103538
+    },
+    "memory_statistics": {
+      "count": 100,
+      "min": 59.338752,
+      "max": 59.731968,
+      "mean": 59.67601664,
+      "median": 59.731968,
+      "variance": 0.010096602408550506,
+      "std": 0.10048185114014622,
+      "p95": 59.731968,
+      "p99": 59.731968
+    },
+    "process_ids": {
+      "controller": 28728,
+      "udp-proxy": 28724
+    }
+  },
+  "total_process_resources": {
+    "cpu_percent": 21.561208483611832,
+    "memory_mb": 143.835136,
+    "cpu_time_seconds": 1.078125,
+    "observed_duration_seconds": 5.0002995,
+    "cpu_statistics": {
+      "count": 100,
+      "min": 0.0,
+      "max": 215.31380695480823,
+      "mean": 22.91796481158867,
+      "median": 30.83974307447933,
+      "variance": 965.056014841162,
+      "std": 31.0653507117039,
+      "p95": 63.89664324092063,
+      "p99": 94.28423646580997
+    },
+    "memory_statistics": {
+      "count": 100,
+      "min": 143.187968,
+      "max": 143.835136,
+      "mean": 143.69124352,
+      "median": 143.745024,
+      "variance": 0.02089993329705,
+      "std": 0.14456809225084905,
+      "p95": 143.818752,
+      "p99": 143.82702592
+    },
+    "process_ids": {
+      "publisher-0": 20032,
+      "position": 32728,
+      "subscriber-0": 18016,
+      "controller": 28728,
+      "udp-proxy": 28724
+    }
+  },
+  "proxy_report": {
+    "relays": [
+      {
+        "port": 30052,
+        "seen": 500,
+        "dropped": 5,
+        "blackout_dropped": 0,
+        "forwarded": 495,
+        "delayed_pending": 0,
+        "errors": []
+      }
+    ]
+  },
+  "position_startup_transient_errors": [
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+    "[WinError 10054] 远程主机强迫关闭了一个现有的连接。"
+  ],
+  "resource_process_ids": {
+    "middleware": {
+      "publisher-0": 20032,
+      "position": 32728,
+      "subscriber-0": 18016
+    },
+    "test_infrastructure": {
+      "controller": 28728,
+      "udp-proxy": 28724
+    }
+  },
+  "errors": [],
+  "artifacts_directory": "artifacts/20260912T094931_d242be1a_S09_light_5"
+}

@@ -1,0 +1,13 @@
+{
+  "relays": [
+    {
+      "port": 30052,
+      "seen": 500,
+      "dropped": 7,
+      "blackout_dropped": 0,
+      "forwarded": 493,
+      "delayed_pending": 0,
+      "errors": []
+    }
+  ]
+}

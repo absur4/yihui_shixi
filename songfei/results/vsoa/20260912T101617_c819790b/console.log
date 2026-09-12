@@ -1,0 +1,4 @@
+[10:16:17] SUITE 开始：1 个条件，共 1 轮
+[10:16:17] START S10_cold_start repeat=1/5
+[10:16:20] END S10_cold_start status=completed sent=100 received=100
+[10:16:21] RESULT D:\AI_project\yihui_shixi\songfei\results\vsoa\20260912T101617_c819790b\output\result.json status=completed

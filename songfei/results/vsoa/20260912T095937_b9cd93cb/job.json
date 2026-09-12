@@ -1,0 +1,30 @@
+{
+  "id": "20260912T095937_b9cd93cb",
+  "middleware_id": "vsoa",
+  "status": "completed",
+  "started": 1789178377.4232242,
+  "ended": 1789178439.6205595,
+  "total": 5,
+  "matrix": false,
+  "scenario": "S03",
+  "case": "S03_65536B_max_stable",
+  "template_index": 10,
+  "configuration": {
+    "payload_size_bytes": 65536,
+    "publish_rate_hz": 100,
+    "publisher_count": 1,
+    "subscriber_count": 1,
+    "message_count": 0,
+    "duration_seconds": 10,
+    "repeats": 5,
+    "random_seed": 42,
+    "warmup_seconds": 1,
+    "drain_seconds": 0.3,
+    "timeout_seconds": 30,
+    "network_delay_ms": 0,
+    "network_jitter_ms": 0,
+    "qos_profile": "default",
+    "transport_mode": "tcp",
+    "network_loss_rate": 0
+  }
+}
