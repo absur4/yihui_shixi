@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+build/
+dist/
+*.egg-info/
+results/
+agent-results/
+.zenoh-adapter-artifacts/
+examples/*/job.json
+examples/*/console.log
+examples/*/output/

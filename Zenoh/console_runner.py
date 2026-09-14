@@ -18,7 +18,7 @@ if str(_ROOT) not in sys.path:
 try:
     from .adapter import Adapter, _flat_configuration, _single_result  # type: ignore
 except ImportError:
-    from adapter import Adapter, _flat_configuration, _single_result  # noqa: E402
+    from Zenoh.adapter import Adapter, _flat_configuration, _single_result  # type: ignore
 
 
 def _utc_now() -> str:

@@ -1,0 +1,8 @@
+include README.md
+include requirements.txt
+include *.json
+recursive-include zenoh_bench *.py
+include zenoh_bench/static/index.html
+prune outputs
+prune results
+global-exclude __pycache__ *.py[cod]

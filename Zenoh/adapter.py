@@ -17,9 +17,9 @@ _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
-from zenoh_bench.config import BenchConfig, PAYLOAD_SIZES  # noqa: E402
-from zenoh_bench.runner import METRICS_VERSION, ZenohBench  # noqa: E402
-from zenoh_bench.scenarios import SCENARIOS  # noqa: E402
+from .zenoh_bench.config import BenchConfig, PAYLOAD_SIZES
+from .zenoh_bench.runner import METRICS_VERSION, ZenohBench
+from .zenoh_bench.scenarios import SCENARIOS
 
 try:
     from interfaces import MiddlewareAdapter, ScenarioResult, ScenarioSpec  # type: ignore
