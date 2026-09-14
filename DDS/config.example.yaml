@@ -1,0 +1,56 @@
+schema_version: "1.0"
+metrics_definition_version: "1.0"
+
+suite:
+  module_name: fastdds
+  module_version: "3.6.2"
+  fastdds_python_version: "2.6.1"
+  domain_id_base: 80
+  same_host: true
+  rate_scope: aggregate
+  message_count_scope: aggregate
+  startup_timeout_seconds: 30
+  discovery_timeout_seconds: 30
+  barrier_delay_ms: 250
+  resource_sample_interval_ms: 50
+  spin_threshold_us: 100
+  warmup_unlimited_rate_hz: 1000
+  default_run_timeout_seconds: 180
+
+qos_profiles:
+  reliable:
+    reliability: reliable
+    durability: volatile
+    history_kind: keep_last
+    history_depth: 1024
+    publish_mode: synchronous
+    max_blocking_time_ms: 1000
+    disable_data_sharing: true
+    wait_for_acknowledgments: true
+
+network_profiles:
+  normal:
+    latency_ms: 0
+    jitter_ms: 0
+    packet_loss_percent: 0
+    bandwidth_mbps: 0
+    impairment_required: false
+    external_impairment_confirmed: true
+
+conditions:
+  - condition_id: EXAMPLE_S01_1k_100
+    scenario_id: S01
+    scenario_name: point_to_point_low_latency
+    payload_size_bytes: 1024
+    message_count: 200
+    publish_rate_hz: 100
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: UDPv4
+    qos_profile: reliable
+    warmup_seconds: 1
+    drain_seconds: 1
+    duration_seconds: 2
+    repeats: 1
+    network_profile: normal
+    random_seed: 7401

@@ -1,0 +1,318 @@
+schema_version: "1.0"
+metrics_definition_version: "1.0"
+
+suite:
+  module_name: fastdds
+  module_version: "3.6.2"
+  fastdds_python_version: "2.6.1"
+  domain_id_base: 80
+  same_host: true
+  rate_scope: aggregate
+  message_count_scope: aggregate
+  startup_timeout_seconds: 30
+  discovery_timeout_seconds: 30
+  barrier_delay_ms: 250
+  resource_sample_interval_ms: 50
+  spin_threshold_us: 100
+  warmup_unlimited_rate_hz: 1000
+  default_run_timeout_seconds: 180
+
+qos_profiles:
+  reliable:
+    reliability: reliable
+    durability: volatile
+    history_kind: keep_last
+    history_depth: 1024
+    publish_mode: synchronous
+    max_blocking_time_ms: 1000
+    disable_data_sharing: true
+    wait_for_acknowledgments: true
+  best_effort:
+    reliability: best_effort
+    durability: volatile
+    history_kind: keep_last
+    history_depth: 1024
+    publish_mode: synchronous
+    max_blocking_time_ms: 100
+    disable_data_sharing: true
+    wait_for_acknowledgments: false
+
+network_profiles:
+  normal:
+    latency_ms: 0
+    jitter_ms: 0
+    packet_loss_percent: 0
+    bandwidth_mbps: 0
+    impairment_required: false
+    external_impairment_confirmed: true
+  loss_1pct:
+    latency_ms: 0
+    jitter_ms: 0
+    packet_loss_percent: 1
+    bandwidth_mbps: 0
+    impairment_required: true
+    external_impairment_confirmed: false
+  loss_5pct:
+    latency_ms: 0
+    jitter_ms: 0
+    packet_loss_percent: 5
+    bandwidth_mbps: 0
+    impairment_required: true
+    external_impairment_confirmed: false
+  loss_10pct:
+    latency_ms: 0
+    jitter_ms: 0
+    packet_loss_percent: 10
+    bandwidth_mbps: 0
+    impairment_required: true
+    external_impairment_confirmed: false
+
+# This is the 30-condition / 5-repeat matrix (150 runs). S09 and S11 are
+# deliberately disabled until the common external impairment/fault orchestrator
+# is connected. Enabling them without real injection would produce false data.
+conditions:
+  # S01: point-to-point low latency. The 100 Hz case sends 10,000 messages.
+  - condition_id: S01_1k_100
+    scenario_id: S01
+    scenario_name: point_to_point_low_latency
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 100
+    duration_seconds: 100
+
+  - condition_id: S01_1k_1000
+    scenario_id: S01
+    scenario_name: point_to_point_low_latency
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 1000
+    duration_seconds: 10
+
+  # S02: fixed 100 Hz, reliable UDPv4, all required payload sizes.
+  - condition_id: S02_1k
+    scenario_id: S02
+    scenario_name: message_size_scan
+    payload_size_bytes: 1024
+    message_count: 1000
+    publish_rate_hz: 100
+    duration_seconds: 10
+  - condition_id: S02_4k
+    scenario_id: S02
+    scenario_name: message_size_scan
+    payload_size_bytes: 4096
+    message_count: 1000
+    publish_rate_hz: 100
+    duration_seconds: 10
+  - condition_id: S02_16k
+    scenario_id: S02
+    scenario_name: message_size_scan
+    payload_size_bytes: 16384
+    message_count: 1000
+    publish_rate_hz: 100
+    duration_seconds: 10
+  - condition_id: S02_32k
+    scenario_id: S02
+    scenario_name: message_size_scan
+    payload_size_bytes: 32768
+    message_count: 1000
+    publish_rate_hz: 100
+    duration_seconds: 10
+  - condition_id: S02_48k
+    scenario_id: S02
+    scenario_name: message_size_scan
+    payload_size_bytes: 49152
+    message_count: 1000
+    publish_rate_hz: 100
+    duration_seconds: 10
+  - condition_id: S02_64k
+    scenario_id: S02
+    scenario_name: message_size_scan
+    payload_size_bytes: 65536
+    message_count: 1000
+    publish_rate_hz: 100
+    duration_seconds: 10
+  - condition_id: S02_256k
+    scenario_id: S02
+    scenario_name: message_size_scan
+    payload_size_bytes: 262144
+    message_count: 1000
+    publish_rate_hz: 100
+    duration_seconds: 10
+  - condition_id: S02_1m
+    scenario_id: S02
+    scenario_name: message_size_scan
+    payload_size_bytes: 1048576
+    message_count: 1000
+    publish_rate_hz: 100
+    duration_seconds: 10
+
+  # S03: max-rate large messages; publish_rate_hz=0 means unpaced.
+  - condition_id: S03_64k_max
+    scenario_id: S03
+    scenario_name: large_message_throughput
+    payload_size_bytes: 65536
+    message_count: 2000
+    publish_rate_hz: 0
+  - condition_id: S03_256k_max
+    scenario_id: S03
+    scenario_name: large_message_throughput
+    payload_size_bytes: 262144
+    message_count: 1000
+    publish_rate_hz: 0
+  - condition_id: S03_1m_max
+    scenario_id: S03
+    scenario_name: large_message_throughput
+    payload_size_bytes: 1048576
+    message_count: 500
+    publish_rate_hz: 0
+
+  # S04: send-rate scan.
+  - condition_id: S04_100
+    scenario_id: S04
+    scenario_name: publish_rate_scan
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 100
+    duration_seconds: 100
+  - condition_id: S04_1000
+    scenario_id: S04
+    scenario_name: publish_rate_scan
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 1000
+    duration_seconds: 10
+  - condition_id: S04_5000
+    scenario_id: S04
+    scenario_name: publish_rate_scan
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 5000
+    duration_seconds: 2
+  - condition_id: S04_max
+    scenario_id: S04
+    scenario_name: publish_rate_scan
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 0
+
+  # S05-S07: topology matrix. Rates and counts are aggregate, not per publisher.
+  - condition_id: S05_1p4s_100
+    scenario_id: S05
+    scenario_name: one_to_many_broadcast
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 100
+    subscriber_count: 4
+    duration_seconds: 100
+  - condition_id: S05_1p4s_1000
+    scenario_id: S05
+    scenario_name: one_to_many_broadcast
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 1000
+    subscriber_count: 4
+    duration_seconds: 10
+
+  - condition_id: S06_4p1s_100
+    scenario_id: S06
+    scenario_name: many_to_one_aggregation
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 100
+    publisher_count: 4
+    duration_seconds: 100
+  - condition_id: S06_4p1s_1000
+    scenario_id: S06
+    scenario_name: many_to_one_aggregation
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 1000
+    publisher_count: 4
+    duration_seconds: 10
+
+  - condition_id: S07_4p4s_100
+    scenario_id: S07
+    scenario_name: many_to_many_concurrency
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 100
+    publisher_count: 4
+    subscriber_count: 4
+    duration_seconds: 100
+  - condition_id: S07_4p4s_1000
+    scenario_id: S07
+    scenario_name: many_to_many_concurrency
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 1000
+    publisher_count: 4
+    subscriber_count: 4
+    duration_seconds: 10
+
+  - condition_id: S08_5min
+    scenario_id: S08
+    scenario_name: long_running_stability
+    payload_size_bytes: 1024
+    message_count: 0
+    publish_rate_hz: 1000
+    duration_seconds: 300
+
+  # S09 requires a real packet interception/network emulator. Disabled safely.
+  - condition_id: S09_loss_1pct
+    enabled: false
+    scenario_id: S09
+    scenario_name: weak_network_and_recovery
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 1000
+    duration_seconds: 10
+    network_profile: loss_1pct
+  - condition_id: S09_loss_5pct
+    enabled: false
+    scenario_id: S09
+    scenario_name: weak_network_and_recovery
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 1000
+    duration_seconds: 10
+    network_profile: loss_5pct
+  - condition_id: S09_loss_10pct
+    enabled: false
+    scenario_id: S09
+    scenario_name: weak_network_and_recovery
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 1000
+    duration_seconds: 10
+    network_profile: loss_10pct
+
+  - condition_id: S10_cold_start
+    scenario_id: S10
+    scenario_name: startup_and_discovery
+    payload_size_bytes: 1024
+    message_count: 100
+    publish_rate_hz: 100
+    warmup_seconds: 0
+    duration_seconds: 1
+
+  # S11 is reserved for the same external fault orchestrator used by all modules.
+  - condition_id: S11_restart_subscriber
+    enabled: false
+    scenario_id: S11
+    scenario_name: reconnect_and_fault_recovery
+    payload_size_bytes: 1024
+    message_count: 20000
+    publish_rate_hz: 1000
+    duration_seconds: 20
+    fault_plan:
+      kind: restart_subscriber
+      at_seconds: 5
+      downtime_seconds: 2
+
+  - condition_id: S12_integrity
+    scenario_id: S12
+    scenario_name: data_correctness
+    payload_size_bytes: 16384
+    message_count: 10000
+    publish_rate_hz: 1000
+    duration_seconds: 10

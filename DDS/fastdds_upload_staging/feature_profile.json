@@ -1,0 +1,64 @@
+{
+  "schema_version": "1.0",
+  "module_name": "fastdds",
+  "module_version": "3.6.2",
+  "adapter_version": "1.0.0",
+  "implementation_language": "Python",
+  "python_binding": "eProsima Fast-DDS-python 2.6.1",
+  "communication_model": "DDS DCPS publish-subscribe",
+  "supported_transports": {
+    "UDPv4": true,
+    "SHM": true,
+    "DEFAULT": true,
+    "TCPv4": false,
+    "QUIC": false
+  },
+  "supported_topologies": {
+    "one_to_one": true,
+    "one_to_many": true,
+    "many_to_one": true,
+    "many_to_many": true
+  },
+  "supported_qos": {
+    "best_effort": true,
+    "reliable": true,
+    "volatile": true,
+    "transient_local": true,
+    "keep_last": true,
+    "keep_all": true,
+    "synchronous_publish": true,
+    "asynchronous_publish": true
+  },
+  "measurements": {
+    "latency": true,
+    "latency_p95": true,
+    "latency_p99": true,
+    "latency_population_std": true,
+    "jitter_adjacent_latency_difference": true,
+    "payload_throughput": true,
+    "offered_payload_throughput": true,
+    "process_cpu": true,
+    "aggregate_peak_rss": true,
+    "loss_before_and_after_drain": true,
+    "duplicates": true,
+    "out_of_order": true,
+    "corruption": true,
+    "startup": true,
+    "discovery": true,
+    "latency_drift": true,
+    "memory_growth": true
+  },
+  "scenario_automation": {
+    "S01_to_S08": "built_in",
+    "S09": "measurement built in; real network impairment must be external and shared by all middleware",
+    "S10": "built_in",
+    "S11": "result fields reserved; shared external fault orchestrator required",
+    "S12": "built_in for every received formal message"
+  },
+  "measurement_constraints": [
+    "One-way latency is valid only for processes on the same host because perf_counter_ns is used.",
+    "UDPv4 mode explicitly disables built-in transports and Data Sharing to prevent SHM bypass.",
+    "Application code is Python; Fast DDS and the generated DDS type support remain native libraries.",
+    "Recovery/drain arrivals are excluded from latency and throughput, but retained for final loss and recovery metrics."
+  ]
+}
