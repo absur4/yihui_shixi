@@ -34,6 +34,13 @@ FOLDER = Path(__file__).resolve().parent
 if str(FOLDER) not in sys.path:
     sys.path.insert(0, str(FOLDER))
 
+from fastdds_bench.runtime import configure_runtime  # noqa: E402  (stdlib-only)
+
+# 与 launch.py / endpoint_entry.py 一致：把 runtime/Lib/site-packages 与 runtime/bin
+# 注入 sys.path 和 DLL 搜索路径。引擎的 probe_fastdds_runtime() 是真实 import，
+# 少了这一步会在 import BenchmarkMessage 时失败。
+configure_runtime()
+
 from fastdds_bench.results import (  # noqa: E402  (stdlib-only module)
     map_engine_run,
     not_tested_run,
