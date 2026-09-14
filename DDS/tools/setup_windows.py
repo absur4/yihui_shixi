@@ -215,6 +215,11 @@ def cmake_configure_and_install(
             f"-DPython3_EXECUTABLE={sys.executable}",
             f"-DPython3_ROOT_DIR={Path(sys.executable).parent}",
             f"-DSWIG_EXECUTABLE={swig}",
+            # Fast DDS 的 Windows 安装包同时提供静态库与导入库，find_package 默认会选静态。
+            # 静态链接会让 fastdds_python 与 BenchmarkMessage 各持一份 Fast DDS 全局单例
+            # （DomainParticipantFactory、TypeObject 注册表等），运行期混用会 0xC0000005 崩溃。
+            # 统一走共享库，全进程只加载一份 fastdds-3.6.dll / fastcdr-2.3.dll。
+            "-DBUILD_SHARED_LIBS=ON",
             "-DBUILD_TESTING=OFF",
         ],
         env=environment,

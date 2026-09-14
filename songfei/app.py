@@ -42,6 +42,7 @@ from interfaces.scenarios import SCENARIOS  # noqa: E402
 
 SCENARIO_TITLES = {scenario.scenario_id: scenario.title for scenario in SCENARIOS}
 MIDDLEWARE_ORDER = ("vsoa", "dds", "mqtt", "zenoh")
+PRETTY_LABELS = {"vsoa": "VSOA", "dds": "DDS", "mqtt": "MQTT", "zenoh": "Zenoh"}
 ACTIVE_STATES = {"starting", "running", "stopping"}
 LOG_LIMIT = 400
 SAMPLE_LIMIT = 4000
@@ -97,7 +98,11 @@ def _import_adapter(name, folder):
 
 
 def load_backends():
-    """扫描各中间件目录并注册适配器。"""
+    """扫描各中间件目录并注册适配器。
+
+    条件目录与可用性无关：环境未就绪时也要能列出 S01–S12（执行时由执行器降级为 not_tested），
+    这样"冒烟跑通"在缺少依赖/绑定/注入器时同样可验证，且不伪造任何数据。
+    """
     registry: dict[str, dict] = {}
     for name in MIDDLEWARE_ORDER:
         folder = _find_adapter_folder(name)
@@ -107,16 +112,19 @@ def load_backends():
         try:
             module = _import_adapter(name, folder)
             meta = module.metadata() if hasattr(module, "metadata") else module.create_adapter().metadata()
-            if meta.get("available"):
+        except Exception as error:
+            print(f"警告：{name} 适配器加载失败：{type(error).__name__}: {error}", flush=True)
+            module, meta = None, None
+        if module is not None:
+            try:
                 templates = list(module.catalog())
                 if hasattr(module, "base_config"):
                     config = module.base_config()
-        except Exception as error:
-            print(f"警告：{name} 适配器加载失败：{type(error).__name__}: {error}", flush=True)
-            module = None
-            meta = None
+            except Exception as error:
+                print(f"警告：{name} 条件目录读取失败：{type(error).__name__}: {error}", flush=True)
         if meta is None:
-            meta = {"id": name, "name": name, "label": name.upper(), "available": False, "version": None,
+            meta = {"id": name, "name": name, "label": PRETTY_LABELS.get(name, name.upper()),
+                    "available": False, "version": None,
                     "transport_options": [], "qos_options": [],
                     "notes": [f"{name}/adapter.py 加载失败，请查看控制台启动日志。"]}
         middleware_id = meta.get("id") or getattr(module, "MIDDLEWARE_ID", None) or name
@@ -222,8 +230,11 @@ class JobManager:
         if entry is None:
             raise ValueError(f"未知中间件：{middleware_id}（已接入：{', '.join(self.backends) or '无'}）")
         label = entry["meta"].get("label") or middleware_id
-        if entry["module"] is None or not entry["meta"].get("available") or not entry["templates"]:
-            raise ValueError(f"{label} 适配器不可用，无法启动测试")
+        if entry["module"] is None:
+            raise ValueError(f"{label} 适配器加载失败，无法启动测试（详见控制台启动日志）")
+        if not entry["templates"]:
+            raise ValueError(f"{label} 没有可用条件，无法启动测试")
+        # available=False 仍允许启动：执行器会按契约返回 not_tested 并写明原因（用于冒烟验证，不伪造数据）
         cases = list(entry["module"].build_cases(template_index, configuration, matrix))  # ValueError → 400
         if not cases:
             raise ValueError("没有可执行的条件")
@@ -259,9 +270,10 @@ class JobManager:
             self.job = job
             self.process = process
             self.stopping = False
+            degraded = "" if entry["meta"].get("available") else "｜环境未就绪，预期结果为 not_tested（不伪造数据）"
             self.logs = [{"time": datetime.now().strftime("%H:%M:%S"),
                           "text": f"控制台已启动 {label} 引擎：{template.get('case', '')}"
-                                  + ("（完整矩阵）" if matrix else "（当前条件）")}]
+                                  + ("（完整矩阵）" if matrix else "（当前条件）") + degraded}]
         threading.Thread(target=self._follow, args=(process, job, job_dir), daemon=True).start()
         return job
 
@@ -342,6 +354,18 @@ class JobManager:
                 if index >= SAMPLE_LIMIT:
                     break
                 samples.append({"sequence": index, "latency": round(float(value), 4)})
+        if not samples:
+            # 兼容未写 artifacts 样本文件的适配器：直接使用单轮结果里的 samples 字段
+            for item in run.get("samples") or []:
+                if len(samples) >= SAMPLE_LIMIT:
+                    break
+                if not isinstance(item, dict):
+                    continue
+                latency = item.get("latency", item.get("latency_ms"))
+                if latency is None:
+                    continue
+                samples.append({"sequence": item.get("sequence", len(samples)),
+                                "latency": round(float(latency), 4)})
         link = None
         for item in run.get("link_metrics") or []:
             publisher = item.get("publisher", item.get("publisher_id"))
@@ -354,28 +378,56 @@ class JobManager:
             link = {"latency_p95_ms": run.get("latency_p95_ms")}
         return samples, link
 
+    def _run_documents(self, job_dir, result):
+        """逐轮结果列表：先取套件结果的 runs，再补上 output/runs/ 里已落盘但还没进套件结果的轮次。
+
+        部分引擎（如 Zenoh）只在全部轮次跑完后才写 output/result.json，只读它会导致
+        控制台直到实验结束才有数据。逐轮文件是根 README §8 的契约产物，这里统一按轮读取，
+        每轮结束即可显示该轮结果与曲线，不依赖各引擎的写入时机。
+        """
+        documents, seen = [], set()
+        for run in (result or {}).get("runs") or []:
+            key = run.get("run_id") or run.get("condition_id_repeat_key")
+            if key is not None:
+                if key in seen:
+                    continue
+                seen.add(key)
+            documents.append(run)
+        extra = []
+        for path in (job_dir / "output" / "runs").glob("*.json"):
+            run = read_json_safe(path)
+            if not isinstance(run, dict):
+                continue
+            key = run.get("run_id") or path.stem
+            if key in seen:
+                continue
+            seen.add(key)
+            extra.append((path.stat().st_mtime, run))
+        extra.sort(key=lambda item: item[0])
+        documents.extend(run for _, run in extra)
+        return documents
+
     def results(self, middleware_id, job_id, run_id=None):
         job_dir = self.job_dir(middleware_id, job_id)
         if not (job_dir / "job.json").exists():
             raise ValueError("找不到该实验记录")
         result = read_json_safe(job_dir / "output" / "result.json")
+        engine_runs = self._run_documents(job_dir, result)
         runs, mapped, samples, link = [], None, [], None
-        if result:
-            engine_runs = result.get("runs") or []
-            for run in engine_runs:
-                runs.append({"run_id": run.get("run_id"), "scenario_name": run.get("scenario_name"),
-                             "repeat": run.get("repeat"), "payload_size_bytes": run.get("payload_size_bytes"),
-                             "status": run.get("status")})
-            selected = None
-            if run_id:
-                selected = next((run for run in engine_runs if run.get("run_id") == run_id), None)
-                if selected is None:
-                    raise ValueError("找不到该轮次结果")
-            elif engine_runs:
-                selected = engine_runs[-1]
-            if selected:
-                mapped = map_run(selected)
-                samples, link = self._samples(job_dir, selected)
+        for run in engine_runs:
+            runs.append({"run_id": run.get("run_id"), "scenario_name": run.get("scenario_name"),
+                         "repeat": run.get("repeat"), "payload_size_bytes": run.get("payload_size_bytes"),
+                         "status": run.get("status")})
+        selected = None
+        if run_id:
+            selected = next((run for run in engine_runs if run.get("run_id") == run_id), None)
+            if selected is None:
+                raise ValueError("找不到该轮次结果")
+        elif engine_runs:
+            selected = engine_runs[-1]
+        if selected:
+            mapped = map_run(selected)
+            samples, link = self._samples(job_dir, selected)
         with self.lock:
             if self.job and self.job["id"] == job_id:
                 logs = list(self.logs[-LOG_LIMIT:])

@@ -13,13 +13,20 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
-_ROOT = Path(__file__).resolve().parent.parent
-if str(_ROOT) not in sys.path:
-    sys.path.insert(0, str(_ROOT))
+_HERE = Path(__file__).resolve().parent
+_ROOT = _HERE.parent
+for _path in (str(_HERE), str(_ROOT)):
+    if _path not in sys.path:
+        sys.path.insert(0, _path)
 
-from .zenoh_bench.config import BenchConfig, PAYLOAD_SIZES
-from .zenoh_bench.runner import METRICS_VERSION, ZenohBench
-from .zenoh_bench.scenarios import SCENARIOS
+try:                                    # 作为包导入（import Zenoh.adapter）时用相对导入
+    from .zenoh_bench.config import BenchConfig, PAYLOAD_SIZES
+    from .zenoh_bench.runner import METRICS_VERSION, ZenohBench
+    from .zenoh_bench.scenarios import SCENARIOS
+except ImportError:                     # 控制台按文件路径加载适配器时用绝对导入
+    from zenoh_bench.config import BenchConfig, PAYLOAD_SIZES
+    from zenoh_bench.runner import METRICS_VERSION, ZenohBench
+    from zenoh_bench.scenarios import SCENARIOS
 
 try:
     from interfaces import MiddlewareAdapter, ScenarioResult, ScenarioSpec  # type: ignore
@@ -381,4 +388,54 @@ def create_adapter() -> Adapter:
     return Adapter()
 
 
-__all__ = ["Adapter", "ScenarioSpec", "ScenarioResult", "create_adapter"]
+# --------------------------------------------------------------------------- 控制台模块级钩子
+
+MIDDLEWARE_ID = "zenoh"
+
+
+def metadata() -> dict[str, Any]:
+    """控制台 /api/init 读取的中间件元数据（含真实可用性）。"""
+    return Adapter().metadata()
+
+
+def catalog() -> list[dict[str, Any]]:
+    """S01–S12 全部标准条件（UI 输入字段）。"""
+    return _catalog()
+
+
+def build_cases(template_index, configuration, matrix) -> list[dict[str, Any]]:
+    """把"当前表单参数"或"完整矩阵"展开成引擎可执行条件列表。
+
+    matrix=True 忽略 configuration，返回该场景全部标准条件；
+    matrix=False 用 configuration 覆盖所选条件，返回 1 个条件。
+    """
+    rows = _catalog()
+    try:
+        index = int(template_index)
+    except (TypeError, ValueError):
+        raise ValueError("无效的测试条件") from None
+    if not 0 <= index < len(rows):
+        raise ValueError("无效的测试条件")
+    selected = rows[index]
+    if matrix:
+        return [dict(row) for row in rows if row["scenario_name"] == selected["scenario_name"]]
+    merged = _flat_configuration(selected, dict(configuration or {}))
+    repeats = int(merged.get("repeats") or 1)
+    merged["repeats"] = max(1, repeats)
+    merged["case_repeats"] = merged["repeats"]
+    return [merged]
+
+
+def base_config() -> dict[str, Any]:
+    """写入 spec.json 的 config（引擎全局配置，控制台不解读）。"""
+    return {"module_name": "zenoh", "middleware_id": MIDDLEWARE_ID}
+
+
+def runner_command() -> list[str]:
+    """启动执行器的命令行（控制台会追加 spec.json 路径）。"""
+    return [sys.executable, str(_HERE / "console_runner.py")]
+
+
+__all__ = ["Adapter", "ScenarioSpec", "ScenarioResult", "MIDDLEWARE_ID",
+           "metadata", "catalog", "build_cases", "base_config", "runner_command",
+           "create_adapter"]
