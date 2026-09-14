@@ -1,0 +1,8 @@
+[10:40:03] Zenoh adapter started; cases=1
+[10:40:03] case 1/1 S01 S01-smoke-256B; repeats=5
+[10:40:06] completed outputs-S01-smoke-256B-r01: status=completed received=20
+[10:40:09] completed outputs-S01-smoke-256B-r02: status=completed received=20
+[10:40:12] completed outputs-S01-smoke-256B-r03: status=completed received=20
+[10:40:15] completed outputs-S01-smoke-256B-r04: status=completed received=20
+[10:40:18] completed outputs-S01-smoke-256B-r05: status=completed received=20
+[10:40:18] RESULT D:\2026-9实习项目\Zenoh\outputs\result.json status=completed

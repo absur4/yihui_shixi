@@ -1,0 +1,1493 @@
+{
+  "schema_version": "1.0",
+  "metrics_definition_version": "unified-middleware-1.0",
+  "middleware_id": "zenoh",
+  "middleware_version": "1.10.1",
+  "status": "completed",
+  "started_at": "2026-09-14T02:40:18.844Z",
+  "finished_at": "2026-09-14T02:40:18.844Z",
+  "runs": [
+    {
+      "schema_version": "1.0",
+      "metric_definition_version": "unified-middleware-1.0",
+      "metrics_definition_version": "unified-middleware-1.0",
+      "module_name": "Zenoh",
+      "run_id": "outputs-S01-smoke-256B-r01",
+      "middleware_id": "zenoh",
+      "middleware_version": "1.10.1",
+      "scenario_name": "S01",
+      "scenario_title": "点对点低延迟",
+      "repeat": 1,
+      "status": "completed",
+      "payload_size_bytes": 256,
+      "publish_rate_hz": 1000,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "messages_sent": 20,
+      "messages_received": 20,
+      "unique_deliveries": 20,
+      "expected_deliveries": 20,
+      "messages_planned": 20,
+      "messages_not_sent": 0,
+      "achieved_publish_rate_hz": 999.955078125,
+      "latency_ms": 0.085975,
+      "latency_p95_ms": 0.18658,
+      "latency_p99_ms": 0.278996,
+      "latency_std_ms": 0.061506,
+      "throughput_mbps": 2.182706,
+      "offered_throughput_mbps": 2.047908,
+      "jitter_ms": 0.047447,
+      "packet_loss": 0.0,
+      "final_packet_loss": 0.0,
+      "duplicate_count": 0,
+      "out_of_order_count": 0,
+      "corrupted_count": 0,
+      "startup_time_ms": 504.4721,
+      "discovery_time_ms": 640.2517,
+      "recovery_time_ms": null,
+      "application_recovered": 0,
+      "late_native_deliveries": null,
+      "injected_network_loss_rate": 0,
+      "cpu_percent": 0.0,
+      "memory_mb": 73.732096,
+      "latency_sample_count": 20,
+      "transport_mode": "tcp",
+      "qos_profile": "reliable-block",
+      "network_profile": "baseline",
+      "configuration": {
+        "scenario_name": "S01",
+        "case": "smoke",
+        "condition_id": "S01-smoke-256B",
+        "title": "点对点低延迟",
+        "payload_size_bytes": 256,
+        "publish_rate_hz": 1000,
+        "publisher_count": 1,
+        "subscriber_count": 1,
+        "message_count": 20,
+        "duration_seconds": 2.02,
+        "repeats": 5,
+        "random_seed": 7,
+        "warmup_seconds": 0.1,
+        "drain_seconds": 0.1,
+        "timeout_seconds": 10,
+        "network_delay_ms": 0,
+        "network_jitter_ms": 0,
+        "network_loss_rate": 0,
+        "network_profile": "baseline",
+        "transport_mode": "tcp",
+        "qos_profile": "reliable-block"
+      },
+      "statistics": {
+        "counts": {
+          "sent": 20,
+          "emitted": 20,
+          "received": 20,
+          "expected": 20,
+          "missing": 0,
+          "valid_samples": 20,
+          "duplicates": 0,
+          "out_of_order": 0,
+          "corrupt": 0,
+          "size_mismatch": 0,
+          "recovered": 0,
+          "publish_errors": 0,
+          "injected_loss": 0,
+          "injected_delay_ms": 0.0
+        },
+        "metrics": {
+          "latency_ms": 0.085975,
+          "latency_p95_ms": 0.18658,
+          "latency_p99_ms": 0.278996,
+          "latency_std_ms": 0.061506,
+          "jitter_ms": 0.047447,
+          "throughput_mbps": 2.182706,
+          "offered_throughput_mbps": 2.047908,
+          "cpu_percent": 0.0,
+          "memory_mb": 73.732096,
+          "packet_loss": 0.0,
+          "final_packet_loss": 0.0,
+          "startup_time_ms": 504.4721,
+          "discovery_time_ms": 640.2517,
+          "harness_elapsed_ms": 3154.5768
+        },
+        "measurement_level": "sample_level",
+        "actual_payload_size_bytes": 256,
+        "wire_message_size_bytes": 288,
+        "offered_throughput_mbps": 2.047908,
+        "network_injected": {
+          "name": "baseline",
+          "delay_ms": 0,
+          "jitter_ms": 0,
+          "loss_rate": 0
+        }
+      },
+      "actual_payload_size_bytes": 256,
+      "wire_message_size_bytes": 288,
+      "metadata_size_bytes": 32,
+      "link_metrics": [
+        {
+          "publisher_id": 0,
+          "subscriber_id": 0,
+          "sent": 20,
+          "received": 20
+        }
+      ],
+      "environment": {
+        "controller_host": "加百列之叶",
+        "platform": "Windows-10-10.0.22631-SP0",
+        "python": "3.11.5",
+        "resource_scope": "Zenoh publisher/subscriber processes; controller excluded",
+        "host": "加百列之叶",
+        "discovery_ready_condition": "first valid sample received for the subscribed Key Expression"
+      },
+      "limitations": [],
+      "discovery_supported": true,
+      "samples": [
+        {
+          "sequence": 0,
+          "latency": 0.3021,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 1,
+          "latency": 0.0551,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 2,
+          "latency": 0.0526,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 3,
+          "latency": 0.1805,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 4,
+          "latency": 0.0755,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 5,
+          "latency": 0.0588,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 6,
+          "latency": 0.0514,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 7,
+          "latency": 0.0545,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 8,
+          "latency": 0.0697,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 9,
+          "latency": 0.1637,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 10,
+          "latency": 0.0784,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 11,
+          "latency": 0.0584,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 12,
+          "latency": 0.0508,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 13,
+          "latency": 0.0487,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 14,
+          "latency": 0.0422,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 15,
+          "latency": 0.1155,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 16,
+          "latency": 0.0833,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 17,
+          "latency": 0.0568,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 18,
+          "latency": 0.0497,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 19,
+          "latency": 0.0718,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        }
+      ],
+      "measurement_window": {
+        "warmup_start": "2026-09-14T02:40:03.184Z",
+        "measurement_start": null,
+        "send_end": null,
+        "drain_end": "2026-09-14T02:40:06.336Z",
+        "scope": "test harness window; engine does not expose per-phase UTC timestamps"
+      },
+      "errors": [],
+      "test_start_time": "2026-09-14T02:40:03.184Z",
+      "test_end_time": "2026-09-14T02:40:06.336Z"
+    },
+    {
+      "schema_version": "1.0",
+      "metric_definition_version": "unified-middleware-1.0",
+      "metrics_definition_version": "unified-middleware-1.0",
+      "module_name": "Zenoh",
+      "run_id": "outputs-S01-smoke-256B-r02",
+      "middleware_id": "zenoh",
+      "middleware_version": "1.10.1",
+      "scenario_name": "S01",
+      "scenario_title": "点对点低延迟",
+      "repeat": 2,
+      "status": "completed",
+      "payload_size_bytes": 256,
+      "publish_rate_hz": 1000,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "messages_sent": 20,
+      "messages_received": 20,
+      "unique_deliveries": 20,
+      "expected_deliveries": 20,
+      "messages_planned": 20,
+      "messages_not_sent": 0,
+      "achieved_publish_rate_hz": 999.9599609375001,
+      "latency_ms": 0.08301,
+      "latency_p95_ms": 0.142815,
+      "latency_p99_ms": 0.255523,
+      "latency_std_ms": 0.054307,
+      "throughput_mbps": 2.184056,
+      "offered_throughput_mbps": 2.047918,
+      "jitter_ms": 0.035779,
+      "packet_loss": 0.0,
+      "final_packet_loss": 0.0,
+      "duplicate_count": 0,
+      "out_of_order_count": 0,
+      "corrupted_count": 0,
+      "startup_time_ms": 509.3928,
+      "discovery_time_ms": 644.4795,
+      "recovery_time_ms": null,
+      "application_recovered": 0,
+      "late_native_deliveries": null,
+      "injected_network_loss_rate": 0,
+      "cpu_percent": 12.84375,
+      "memory_mb": 73.949184,
+      "latency_sample_count": 20,
+      "transport_mode": "tcp",
+      "qos_profile": "reliable-block",
+      "network_profile": "baseline",
+      "configuration": {
+        "scenario_name": "S01",
+        "case": "smoke",
+        "condition_id": "S01-smoke-256B",
+        "title": "点对点低延迟",
+        "payload_size_bytes": 256,
+        "publish_rate_hz": 1000,
+        "publisher_count": 1,
+        "subscriber_count": 1,
+        "message_count": 20,
+        "duration_seconds": 2.02,
+        "repeats": 5,
+        "random_seed": 7,
+        "warmup_seconds": 0.1,
+        "drain_seconds": 0.1,
+        "timeout_seconds": 10,
+        "network_delay_ms": 0,
+        "network_jitter_ms": 0,
+        "network_loss_rate": 0,
+        "network_profile": "baseline",
+        "transport_mode": "tcp",
+        "qos_profile": "reliable-block"
+      },
+      "statistics": {
+        "counts": {
+          "sent": 20,
+          "emitted": 20,
+          "received": 20,
+          "expected": 20,
+          "missing": 0,
+          "valid_samples": 20,
+          "duplicates": 0,
+          "out_of_order": 0,
+          "corrupt": 0,
+          "size_mismatch": 0,
+          "recovered": 0,
+          "publish_errors": 0,
+          "injected_loss": 0,
+          "injected_delay_ms": 0.0
+        },
+        "metrics": {
+          "latency_ms": 0.08301,
+          "latency_p95_ms": 0.142815,
+          "latency_p99_ms": 0.255523,
+          "latency_std_ms": 0.054307,
+          "jitter_ms": 0.035779,
+          "throughput_mbps": 2.184056,
+          "offered_throughput_mbps": 2.047918,
+          "cpu_percent": 12.84375,
+          "memory_mb": 73.949184,
+          "packet_loss": 0.0,
+          "final_packet_loss": 0.0,
+          "startup_time_ms": 509.3928,
+          "discovery_time_ms": 644.4795,
+          "harness_elapsed_ms": 3114.6146
+        },
+        "measurement_level": "sample_level",
+        "actual_payload_size_bytes": 256,
+        "wire_message_size_bytes": 288,
+        "offered_throughput_mbps": 2.047918,
+        "network_injected": {
+          "name": "baseline",
+          "delay_ms": 0,
+          "jitter_ms": 0,
+          "loss_rate": 0
+        }
+      },
+      "actual_payload_size_bytes": 256,
+      "wire_message_size_bytes": 288,
+      "metadata_size_bytes": 32,
+      "link_metrics": [
+        {
+          "publisher_id": 0,
+          "subscriber_id": 0,
+          "sent": 20,
+          "received": 20
+        }
+      ],
+      "environment": {
+        "controller_host": "加百列之叶",
+        "platform": "Windows-10-10.0.22631-SP0",
+        "python": "3.11.5",
+        "resource_scope": "Zenoh publisher/subscriber processes; controller excluded",
+        "host": "加百列之叶",
+        "discovery_ready_condition": "first valid sample received for the subscribed Key Expression"
+      },
+      "limitations": [],
+      "discovery_supported": true,
+      "samples": [
+        {
+          "sequence": 0,
+          "latency": 0.2837,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 1,
+          "latency": 0.075,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 2,
+          "latency": 0.0481,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 3,
+          "latency": 0.1181,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 4,
+          "latency": 0.1354,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 5,
+          "latency": 0.0747,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 6,
+          "latency": 0.0538,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 7,
+          "latency": 0.0474,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 8,
+          "latency": 0.0457,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 9,
+          "latency": 0.1224,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 10,
+          "latency": 0.1017,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 11,
+          "latency": 0.064,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 12,
+          "latency": 0.0551,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 13,
+          "latency": 0.0434,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 14,
+          "latency": 0.0414,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 15,
+          "latency": 0.0967,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 16,
+          "latency": 0.0918,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 17,
+          "latency": 0.0759,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 18,
+          "latency": 0.0434,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 19,
+          "latency": 0.0425,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        }
+      ],
+      "measurement_window": {
+        "warmup_start": "2026-09-14T02:40:06.343Z",
+        "measurement_start": null,
+        "send_end": null,
+        "drain_end": "2026-09-14T02:40:09.458Z",
+        "scope": "test harness window; engine does not expose per-phase UTC timestamps"
+      },
+      "errors": [],
+      "test_start_time": "2026-09-14T02:40:06.343Z",
+      "test_end_time": "2026-09-14T02:40:09.458Z"
+    },
+    {
+      "schema_version": "1.0",
+      "metric_definition_version": "unified-middleware-1.0",
+      "metrics_definition_version": "unified-middleware-1.0",
+      "module_name": "Zenoh",
+      "run_id": "outputs-S01-smoke-256B-r03",
+      "middleware_id": "zenoh",
+      "middleware_version": "1.10.1",
+      "scenario_name": "S01",
+      "scenario_title": "点对点低延迟",
+      "repeat": 3,
+      "status": "completed",
+      "payload_size_bytes": 256,
+      "publish_rate_hz": 1000,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "messages_sent": 20,
+      "messages_received": 20,
+      "unique_deliveries": 20,
+      "expected_deliveries": 20,
+      "messages_planned": 20,
+      "messages_not_sent": 0,
+      "achieved_publish_rate_hz": 999.93017578125,
+      "latency_ms": 0.09764,
+      "latency_p95_ms": 0.16121,
+      "latency_p99_ms": 0.286002,
+      "latency_std_ms": 0.057934,
+      "throughput_mbps": 2.186854,
+      "offered_throughput_mbps": 2.047857,
+      "jitter_ms": 0.037389,
+      "packet_loss": 0.0,
+      "final_packet_loss": 0.0,
+      "duplicate_count": 0,
+      "out_of_order_count": 0,
+      "corrupted_count": 0,
+      "startup_time_ms": 518.4078,
+      "discovery_time_ms": 659.2187,
+      "recovery_time_ms": null,
+      "application_recovered": 0,
+      "late_native_deliveries": null,
+      "injected_network_loss_rate": 0,
+      "cpu_percent": 0.0,
+      "memory_mb": 73.969664,
+      "latency_sample_count": 20,
+      "transport_mode": "tcp",
+      "qos_profile": "reliable-block",
+      "network_profile": "baseline",
+      "configuration": {
+        "scenario_name": "S01",
+        "case": "smoke",
+        "condition_id": "S01-smoke-256B",
+        "title": "点对点低延迟",
+        "payload_size_bytes": 256,
+        "publish_rate_hz": 1000,
+        "publisher_count": 1,
+        "subscriber_count": 1,
+        "message_count": 20,
+        "duration_seconds": 2.02,
+        "repeats": 5,
+        "random_seed": 7,
+        "warmup_seconds": 0.1,
+        "drain_seconds": 0.1,
+        "timeout_seconds": 10,
+        "network_delay_ms": 0,
+        "network_jitter_ms": 0,
+        "network_loss_rate": 0,
+        "network_profile": "baseline",
+        "transport_mode": "tcp",
+        "qos_profile": "reliable-block"
+      },
+      "statistics": {
+        "counts": {
+          "sent": 20,
+          "emitted": 20,
+          "received": 20,
+          "expected": 20,
+          "missing": 0,
+          "valid_samples": 20,
+          "duplicates": 0,
+          "out_of_order": 0,
+          "corrupt": 0,
+          "size_mismatch": 0,
+          "recovered": 0,
+          "publish_errors": 0,
+          "injected_loss": 0,
+          "injected_delay_ms": 0.0
+        },
+        "metrics": {
+          "latency_ms": 0.09764,
+          "latency_p95_ms": 0.16121,
+          "latency_p99_ms": 0.286002,
+          "latency_std_ms": 0.057934,
+          "jitter_ms": 0.037389,
+          "throughput_mbps": 2.186854,
+          "offered_throughput_mbps": 2.047857,
+          "cpu_percent": 0.0,
+          "memory_mb": 73.969664,
+          "packet_loss": 0.0,
+          "final_packet_loss": 0.0,
+          "startup_time_ms": 518.4078,
+          "discovery_time_ms": 659.2187,
+          "harness_elapsed_ms": 3132.3278
+        },
+        "measurement_level": "sample_level",
+        "actual_payload_size_bytes": 256,
+        "wire_message_size_bytes": 288,
+        "offered_throughput_mbps": 2.047857,
+        "network_injected": {
+          "name": "baseline",
+          "delay_ms": 0,
+          "jitter_ms": 0,
+          "loss_rate": 0
+        }
+      },
+      "actual_payload_size_bytes": 256,
+      "wire_message_size_bytes": 288,
+      "metadata_size_bytes": 32,
+      "link_metrics": [
+        {
+          "publisher_id": 0,
+          "subscriber_id": 0,
+          "sent": 20,
+          "received": 20
+        }
+      ],
+      "environment": {
+        "controller_host": "加百列之叶",
+        "platform": "Windows-10-10.0.22631-SP0",
+        "python": "3.11.5",
+        "resource_scope": "Zenoh publisher/subscriber processes; controller excluded",
+        "host": "加百列之叶",
+        "discovery_ready_condition": "first valid sample received for the subscribed Key Expression"
+      },
+      "limitations": [],
+      "discovery_supported": true,
+      "samples": [
+        {
+          "sequence": 0,
+          "latency": 0.3172,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 1,
+          "latency": 0.0883,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 2,
+          "latency": 0.153,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 3,
+          "latency": 0.1431,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 4,
+          "latency": 0.0919,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 5,
+          "latency": 0.0748,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 6,
+          "latency": 0.0791,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 7,
+          "latency": 0.0815,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 8,
+          "latency": 0.1094,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 9,
+          "latency": 0.0972,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 10,
+          "latency": 0.0525,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 11,
+          "latency": 0.0819,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 12,
+          "latency": 0.0577,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 13,
+          "latency": 0.0514,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 14,
+          "latency": 0.1088,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 15,
+          "latency": 0.1159,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 16,
+          "latency": 0.0611,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 17,
+          "latency": 0.0874,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 18,
+          "latency": 0.0488,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 19,
+          "latency": 0.0518,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        }
+      ],
+      "measurement_window": {
+        "warmup_start": "2026-09-14T02:40:09.462Z",
+        "measurement_start": null,
+        "send_end": null,
+        "drain_end": "2026-09-14T02:40:12.595Z",
+        "scope": "test harness window; engine does not expose per-phase UTC timestamps"
+      },
+      "errors": [],
+      "test_start_time": "2026-09-14T02:40:09.462Z",
+      "test_end_time": "2026-09-14T02:40:12.595Z"
+    },
+    {
+      "schema_version": "1.0",
+      "metric_definition_version": "unified-middleware-1.0",
+      "metrics_definition_version": "unified-middleware-1.0",
+      "module_name": "Zenoh",
+      "run_id": "outputs-S01-smoke-256B-r04",
+      "middleware_id": "zenoh",
+      "middleware_version": "1.10.1",
+      "scenario_name": "S01",
+      "scenario_title": "点对点低延迟",
+      "repeat": 4,
+      "status": "completed",
+      "payload_size_bytes": 256,
+      "publish_rate_hz": 1000,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "messages_sent": 20,
+      "messages_received": 20,
+      "unique_deliveries": 20,
+      "expected_deliveries": 20,
+      "messages_planned": 20,
+      "messages_not_sent": 0,
+      "achieved_publish_rate_hz": 999.9399414062501,
+      "latency_ms": 0.0845,
+      "latency_p95_ms": 0.12993,
+      "latency_p99_ms": 0.279346,
+      "latency_std_ms": 0.058011,
+      "throughput_mbps": 2.187754,
+      "offered_throughput_mbps": 2.047877,
+      "jitter_ms": 0.028432,
+      "packet_loss": 0.0,
+      "final_packet_loss": 0.0,
+      "duplicate_count": 0,
+      "out_of_order_count": 0,
+      "corrupted_count": 0,
+      "startup_time_ms": 505.2439,
+      "discovery_time_ms": 643.3881,
+      "recovery_time_ms": null,
+      "application_recovered": 0,
+      "late_native_deliveries": null,
+      "injected_network_loss_rate": 0,
+      "cpu_percent": 0.0,
+      "memory_mb": 73.76896,
+      "latency_sample_count": 20,
+      "transport_mode": "tcp",
+      "qos_profile": "reliable-block",
+      "network_profile": "baseline",
+      "configuration": {
+        "scenario_name": "S01",
+        "case": "smoke",
+        "condition_id": "S01-smoke-256B",
+        "title": "点对点低延迟",
+        "payload_size_bytes": 256,
+        "publish_rate_hz": 1000,
+        "publisher_count": 1,
+        "subscriber_count": 1,
+        "message_count": 20,
+        "duration_seconds": 2.02,
+        "repeats": 5,
+        "random_seed": 7,
+        "warmup_seconds": 0.1,
+        "drain_seconds": 0.1,
+        "timeout_seconds": 10,
+        "network_delay_ms": 0,
+        "network_jitter_ms": 0,
+        "network_loss_rate": 0,
+        "network_profile": "baseline",
+        "transport_mode": "tcp",
+        "qos_profile": "reliable-block"
+      },
+      "statistics": {
+        "counts": {
+          "sent": 20,
+          "emitted": 20,
+          "received": 20,
+          "expected": 20,
+          "missing": 0,
+          "valid_samples": 20,
+          "duplicates": 0,
+          "out_of_order": 0,
+          "corrupt": 0,
+          "size_mismatch": 0,
+          "recovered": 0,
+          "publish_errors": 0,
+          "injected_loss": 0,
+          "injected_delay_ms": 0.0
+        },
+        "metrics": {
+          "latency_ms": 0.0845,
+          "latency_p95_ms": 0.12993,
+          "latency_p99_ms": 0.279346,
+          "latency_std_ms": 0.058011,
+          "jitter_ms": 0.028432,
+          "throughput_mbps": 2.187754,
+          "offered_throughput_mbps": 2.047877,
+          "cpu_percent": 0.0,
+          "memory_mb": 73.76896,
+          "packet_loss": 0.0,
+          "final_packet_loss": 0.0,
+          "startup_time_ms": 505.2439,
+          "discovery_time_ms": 643.3881,
+          "harness_elapsed_ms": 3115.7067
+        },
+        "measurement_level": "sample_level",
+        "actual_payload_size_bytes": 256,
+        "wire_message_size_bytes": 288,
+        "offered_throughput_mbps": 2.047877,
+        "network_injected": {
+          "name": "baseline",
+          "delay_ms": 0,
+          "jitter_ms": 0,
+          "loss_rate": 0
+        }
+      },
+      "actual_payload_size_bytes": 256,
+      "wire_message_size_bytes": 288,
+      "metadata_size_bytes": 32,
+      "link_metrics": [
+        {
+          "publisher_id": 0,
+          "subscriber_id": 0,
+          "sent": 20,
+          "received": 20
+        }
+      ],
+      "environment": {
+        "controller_host": "加百列之叶",
+        "platform": "Windows-10-10.0.22631-SP0",
+        "python": "3.11.5",
+        "resource_scope": "Zenoh publisher/subscriber processes; controller excluded",
+        "host": "加百列之叶",
+        "discovery_ready_condition": "first valid sample received for the subscribed Key Expression"
+      },
+      "limitations": [],
+      "discovery_supported": true,
+      "samples": [
+        {
+          "sequence": 0,
+          "latency": 0.3167,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 1,
+          "latency": 0.0957,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 2,
+          "latency": 0.1201,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 3,
+          "latency": 0.0904,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 4,
+          "latency": 0.066,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 5,
+          "latency": 0.0641,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 6,
+          "latency": 0.0491,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 7,
+          "latency": 0.0915,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 8,
+          "latency": 0.1026,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 9,
+          "latency": 0.0909,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 10,
+          "latency": 0.0486,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 11,
+          "latency": 0.0502,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 12,
+          "latency": 0.0427,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 13,
+          "latency": 0.0606,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 14,
+          "latency": 0.0933,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 15,
+          "latency": 0.0962,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 16,
+          "latency": 0.0724,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 17,
+          "latency": 0.0473,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 18,
+          "latency": 0.0479,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 19,
+          "latency": 0.0437,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        }
+      ],
+      "measurement_window": {
+        "warmup_start": "2026-09-14T02:40:12.599Z",
+        "measurement_start": null,
+        "send_end": null,
+        "drain_end": "2026-09-14T02:40:15.715Z",
+        "scope": "test harness window; engine does not expose per-phase UTC timestamps"
+      },
+      "errors": [],
+      "test_start_time": "2026-09-14T02:40:12.599Z",
+      "test_end_time": "2026-09-14T02:40:15.715Z"
+    },
+    {
+      "schema_version": "1.0",
+      "metric_definition_version": "unified-middleware-1.0",
+      "metrics_definition_version": "unified-middleware-1.0",
+      "module_name": "Zenoh",
+      "run_id": "outputs-S01-smoke-256B-r05",
+      "middleware_id": "zenoh",
+      "middleware_version": "1.10.1",
+      "scenario_name": "S01",
+      "scenario_title": "点对点低延迟",
+      "repeat": 5,
+      "status": "completed",
+      "payload_size_bytes": 256,
+      "publish_rate_hz": 1000,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "messages_sent": 20,
+      "messages_received": 20,
+      "unique_deliveries": 20,
+      "expected_deliveries": 20,
+      "messages_planned": 20,
+      "messages_not_sent": 0,
+      "achieved_publish_rate_hz": 999.9648437500001,
+      "latency_ms": 0.088595,
+      "latency_p95_ms": 0.161275,
+      "latency_p99_ms": 0.302255,
+      "latency_std_ms": 0.06487,
+      "throughput_mbps": 2.184708,
+      "offered_throughput_mbps": 2.047928,
+      "jitter_ms": 0.038711,
+      "packet_loss": 0.0,
+      "final_packet_loss": 0.0,
+      "duplicate_count": 0,
+      "out_of_order_count": 0,
+      "corrupted_count": 0,
+      "startup_time_ms": 504.0354,
+      "discovery_time_ms": 642.7754,
+      "recovery_time_ms": null,
+      "application_recovered": 0,
+      "late_native_deliveries": null,
+      "injected_network_loss_rate": 0,
+      "cpu_percent": 0.0,
+      "memory_mb": 73.875456,
+      "latency_sample_count": 20,
+      "transport_mode": "tcp",
+      "qos_profile": "reliable-block",
+      "network_profile": "baseline",
+      "configuration": {
+        "scenario_name": "S01",
+        "case": "smoke",
+        "condition_id": "S01-smoke-256B",
+        "title": "点对点低延迟",
+        "payload_size_bytes": 256,
+        "publish_rate_hz": 1000,
+        "publisher_count": 1,
+        "subscriber_count": 1,
+        "message_count": 20,
+        "duration_seconds": 2.02,
+        "repeats": 5,
+        "random_seed": 7,
+        "warmup_seconds": 0.1,
+        "drain_seconds": 0.1,
+        "timeout_seconds": 10,
+        "network_delay_ms": 0,
+        "network_jitter_ms": 0,
+        "network_loss_rate": 0,
+        "network_profile": "baseline",
+        "transport_mode": "tcp",
+        "qos_profile": "reliable-block"
+      },
+      "statistics": {
+        "counts": {
+          "sent": 20,
+          "emitted": 20,
+          "received": 20,
+          "expected": 20,
+          "missing": 0,
+          "valid_samples": 20,
+          "duplicates": 0,
+          "out_of_order": 0,
+          "corrupt": 0,
+          "size_mismatch": 0,
+          "recovered": 0,
+          "publish_errors": 0,
+          "injected_loss": 0,
+          "injected_delay_ms": 0.0
+        },
+        "metrics": {
+          "latency_ms": 0.088595,
+          "latency_p95_ms": 0.161275,
+          "latency_p99_ms": 0.302255,
+          "latency_std_ms": 0.06487,
+          "jitter_ms": 0.038711,
+          "throughput_mbps": 2.184708,
+          "offered_throughput_mbps": 2.047928,
+          "cpu_percent": 0.0,
+          "memory_mb": 73.875456,
+          "packet_loss": 0.0,
+          "final_packet_loss": 0.0,
+          "startup_time_ms": 504.0354,
+          "discovery_time_ms": 642.7754,
+          "harness_elapsed_ms": 3115.0167
+        },
+        "measurement_level": "sample_level",
+        "actual_payload_size_bytes": 256,
+        "wire_message_size_bytes": 288,
+        "offered_throughput_mbps": 2.047928,
+        "network_injected": {
+          "name": "baseline",
+          "delay_ms": 0,
+          "jitter_ms": 0,
+          "loss_rate": 0
+        }
+      },
+      "actual_payload_size_bytes": 256,
+      "wire_message_size_bytes": 288,
+      "metadata_size_bytes": 32,
+      "link_metrics": [
+        {
+          "publisher_id": 0,
+          "subscriber_id": 0,
+          "sent": 20,
+          "received": 20
+        }
+      ],
+      "environment": {
+        "controller_host": "加百列之叶",
+        "platform": "Windows-10-10.0.22631-SP0",
+        "python": "3.11.5",
+        "resource_scope": "Zenoh publisher/subscriber processes; controller excluded",
+        "host": "加百列之叶",
+        "discovery_ready_condition": "first valid sample received for the subscribed Key Expression"
+      },
+      "limitations": [],
+      "discovery_supported": true,
+      "samples": [
+        {
+          "sequence": 0,
+          "latency": 0.3375,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 1,
+          "latency": 0.1306,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 2,
+          "latency": 0.0975,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 3,
+          "latency": 0.091,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 4,
+          "latency": 0.058,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 5,
+          "latency": 0.0525,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 6,
+          "latency": 0.0781,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 7,
+          "latency": 0.152,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 8,
+          "latency": 0.0787,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 9,
+          "latency": 0.0927,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 10,
+          "latency": 0.0461,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 11,
+          "latency": 0.0498,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 12,
+          "latency": 0.0422,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 13,
+          "latency": 0.119,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 14,
+          "latency": 0.0615,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 15,
+          "latency": 0.063,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 16,
+          "latency": 0.0461,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 17,
+          "latency": 0.0426,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 18,
+          "latency": 0.042,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        },
+        {
+          "sequence": 19,
+          "latency": 0.091,
+          "publisher_id": 0,
+          "subscriber_id": 0
+        }
+      ],
+      "measurement_window": {
+        "warmup_start": "2026-09-14T02:40:15.719Z",
+        "measurement_start": null,
+        "send_end": null,
+        "drain_end": "2026-09-14T02:40:18.834Z",
+        "scope": "test harness window; engine does not expose per-phase UTC timestamps"
+      },
+      "errors": [],
+      "test_start_time": "2026-09-14T02:40:15.719Z",
+      "test_end_time": "2026-09-14T02:40:18.834Z"
+    }
+  ],
+  "summary": {
+    "measurement_level": "run_level",
+    "run_count": 5,
+    "valid_run_count": 5,
+    "status_counts": {
+      "completed": 5
+    },
+    "metrics": {
+      "latency_ms": {
+        "count": 5,
+        "mean": 0.087944,
+        "median": 0.085975,
+        "variance": 2.690373400000001e-05,
+        "std": 0.005186880951014782,
+        "min": 0.08301,
+        "max": 0.09764,
+        "p95": 0.095831,
+        "p99": 0.09727820000000001
+      },
+      "latency_p95_ms": {
+        "count": 5,
+        "mean": 0.156362,
+        "median": 0.16121,
+        "variance": 0.0003685880060000001,
+        "std": 0.01919864594183663,
+        "min": 0.12993,
+        "max": 0.18658,
+        "p95": 0.18151899999999999,
+        "p99": 0.1855678
+      },
+      "latency_p99_ms": {
+        "count": 5,
+        "mean": 0.2804244,
+        "median": 0.279346,
+        "variance": 0.00022619354263999993,
+        "std": 0.015039732133252904,
+        "min": 0.255523,
+        "max": 0.302255,
+        "p95": 0.2990044,
+        "p99": 0.30160488
+      },
+      "latency_std_ms": {
+        "count": 5,
+        "mean": 0.0593256,
+        "median": 0.058011,
+        "variance": 1.2869117039999989e-05,
+        "std": 0.0035873551594454637,
+        "min": 0.054307,
+        "max": 0.06487,
+        "p95": 0.0641972,
+        "p99": 0.06473543999999999
+      },
+      "throughput_mbps": {
+        "count": 5,
+        "mean": 2.1852156,
+        "median": 2.184708,
+        "variance": 3.405650239999827e-06,
+        "std": 0.0018454403918847736,
+        "min": 2.182706,
+        "max": 2.187754,
+        "p95": 2.187574,
+        "p99": 2.187718
+      },
+      "jitter_ms": {
+        "count": 5,
+        "mean": 0.0375516,
+        "median": 0.037389,
+        "variance": 3.711976064000002e-05,
+        "std": 0.006092598841217106,
+        "min": 0.028432,
+        "max": 0.047447,
+        "p95": 0.0456998,
+        "p99": 0.047097560000000004
+      },
+      "packet_loss": {
+        "count": 5,
+        "mean": 0.0,
+        "median": 0.0,
+        "variance": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "final_packet_loss": {
+        "count": 5,
+        "mean": 0.0,
+        "median": 0.0,
+        "variance": 0.0,
+        "std": 0.0,
+        "min": 0.0,
+        "max": 0.0,
+        "p95": 0.0,
+        "p99": 0.0
+      },
+      "startup_time_ms": {
+        "count": 5,
+        "mean": 508.3104,
+        "median": 505.2439,
+        "variance": 29.108134131999837,
+        "std": 5.395195467450631,
+        "min": 504.0354,
+        "max": 518.4078,
+        "p95": 516.6048,
+        "p99": 518.0472
+      },
+      "discovery_time_ms": {
+        "count": 5,
+        "mean": 646.02268,
+        "median": 643.3881,
+        "variance": 45.46127953759999,
+        "std": 6.742498019102415,
+        "min": 640.2517,
+        "max": 659.2187,
+        "p95": 656.27086,
+        "p99": 658.629132
+      },
+      "cpu_percent": {
+        "count": 5,
+        "mean": 2.56875,
+        "median": 0.0,
+        "variance": 26.39390625,
+        "std": 5.1375,
+        "min": 0.0,
+        "max": 12.84375,
+        "p95": 10.274999999999999,
+        "p99": 12.33
+      },
+      "memory_mb": {
+        "count": 5,
+        "mean": 73.859072,
+        "median": 73.875456,
+        "variance": 0.00897245511679967,
+        "std": 0.09472304427540149,
+        "min": 73.732096,
+        "max": 73.969664,
+        "p95": 73.96556799999999,
+        "p99": 73.9688448
+      }
+    }
+  }
+}

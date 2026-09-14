@@ -1,0 +1,201 @@
+{
+  "role": "subscriber",
+  "subscriber_id": 0,
+  "host": "加百列之叶",
+  "pid": 9064,
+  "received_count": 20,
+  "valid_unique_count": 20,
+  "duplicate_count": 0,
+  "out_of_order_count": 0,
+  "corrupt_count": 0,
+  "size_mismatch_count": 0,
+  "receive_window_seconds": 0.0187485,
+  "startup_time_ms": 504.03539999933855,
+  "discovery_time_ms": 642.7754,
+  "resources": {
+    "cpu_percent": 0.0,
+    "memory_mb": 37.183488
+  },
+  "samples": [
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 0,
+      "latency_ms": 0.3375,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 1,
+      "latency_ms": 0.1306,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 2,
+      "latency_ms": 0.0975,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 3,
+      "latency_ms": 0.091,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 4,
+      "latency_ms": 0.058,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 5,
+      "latency_ms": 0.0525,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 6,
+      "latency_ms": 0.0781,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 7,
+      "latency_ms": 0.152,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 8,
+      "latency_ms": 0.0787,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 9,
+      "latency_ms": 0.0927,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 10,
+      "latency_ms": 0.0461,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 11,
+      "latency_ms": 0.0498,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 12,
+      "latency_ms": 0.0422,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 13,
+      "latency_ms": 0.119,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 14,
+      "latency_ms": 0.0615,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 15,
+      "latency_ms": 0.063,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 16,
+      "latency_ms": 0.0461,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 17,
+      "latency_ms": 0.0426,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 18,
+      "latency_ms": 0.042,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 19,
+      "latency_ms": 0.091,
+      "valid": true
+    }
+  ],
+  "actual_payload_size_bytes": 256,
+  "wire_message_size_bytes": 288,
+  "shutdown_errors": [],
+  "config": {
+    "module_name": "Zenoh",
+    "module_version": "auto",
+    "scenario_name": "S01",
+    "payload_size_bytes": 256,
+    "message_count": 20,
+    "publish_rate_hz": 1000.0,
+    "publisher_count": 1,
+    "subscriber_count": 1,
+    "transport_mode": "TCP",
+    "qos_profile": "reliable-block",
+    "warmup_seconds": 0.1,
+    "drain_seconds": 0.1,
+    "duration_seconds": 2.02,
+    "repeats": 5,
+    "network_profile": {
+      "name": "baseline",
+      "delay_ms": 0.0,
+      "jitter_ms": 0.0,
+      "loss_percent": 0.0,
+      "bandwidth_mbps": null
+    },
+    "random_seed": 7,
+    "run_id": "outputs-S01-smoke-256B-r05",
+    "key_prefix": "bench/zenoh",
+    "mode": "peer",
+    "connect": [],
+    "listen": [
+      "tcp/127.0.0.1:11350"
+    ],
+    "expected_publishers": null,
+    "expected_subscribers": null,
+    "discovery_timeout_seconds": 10.0,
+    "recovery_timeout_seconds": 30.0,
+    "clock_offset_ns": 0,
+    "scheduled_start_epoch_ns": null
+  }
+}

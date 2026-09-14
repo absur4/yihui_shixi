@@ -1,0 +1,29 @@
+{
+  "config": {"repeats": 5},
+  "cases": [
+    {
+      "scenario_name": "S01",
+      "case": "smoke",
+      "condition_id": "S01-smoke-256B",
+      "payload_size_bytes": 256,
+      "publish_rate_hz": 1000,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "message_count": 20,
+      "duration_seconds": 1,
+      "repeats": 5,
+      "random_seed": 7,
+      "warmup_seconds": 0.1,
+      "drain_seconds": 0.1,
+      "timeout_seconds": 10,
+      "network_delay_ms": 0,
+      "network_jitter_ms": 0,
+      "network_loss_rate": 0,
+      "network_profile": "baseline",
+      "transport_mode": "tcp",
+      "qos_profile": "reliable-block"
+    }
+  ],
+  "output": ".",
+  "logs": "."
+}

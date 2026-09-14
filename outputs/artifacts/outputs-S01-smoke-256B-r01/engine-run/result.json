@@ -1,0 +1,380 @@
+{
+  "schema_version": "1.0",
+  "metrics_definition_version": "unified-middleware-1.0",
+  "module_name": "Zenoh",
+  "module_version": "1.10.1",
+  "scenario_name": "S01",
+  "config": {
+    "module_name": "Zenoh",
+    "module_version": "auto",
+    "scenario_name": "S01",
+    "payload_size_bytes": 256,
+    "message_count": 20,
+    "publish_rate_hz": 1000.0,
+    "publisher_count": 1,
+    "subscriber_count": 1,
+    "transport_mode": "TCP",
+    "qos_profile": "reliable-block",
+    "warmup_seconds": 0.1,
+    "drain_seconds": 0.1,
+    "duration_seconds": 2.02,
+    "repeats": 5,
+    "network_profile": {
+      "name": "baseline",
+      "delay_ms": 0.0,
+      "jitter_ms": 0.0,
+      "loss_percent": 0.0,
+      "bandwidth_mbps": null
+    },
+    "random_seed": 7,
+    "run_id": "outputs-S01-smoke-256B-r01",
+    "key_prefix": "bench/zenoh",
+    "mode": "peer",
+    "connect": [],
+    "listen": [],
+    "expected_publishers": null,
+    "expected_subscribers": null,
+    "discovery_timeout_seconds": 10.0,
+    "recovery_timeout_seconds": 30.0,
+    "clock_offset_ns": 0,
+    "scheduled_start_epoch_ns": null
+  },
+  "comparison_key": {
+    "payload_size_bytes": 256,
+    "publish_rate_hz": 1000.0,
+    "publisher_count": 1,
+    "subscriber_count": 1,
+    "transport_mode": "TCP",
+    "qos_profile": "reliable-block",
+    "network_profile": {
+      "name": "baseline",
+      "delay_ms": 0.0,
+      "jitter_ms": 0.0,
+      "loss_percent": 0.0,
+      "bandwidth_mbps": null
+    }
+  },
+  "environment": {
+    "controller_host": "加百列之叶",
+    "platform": "Windows-10-10.0.22631-SP0",
+    "python": "3.11.5",
+    "resource_scope": "publisher/subscriber processes"
+  },
+  "counts": {
+    "sent": 20,
+    "emitted": 20,
+    "received": 20,
+    "expected": 20,
+    "missing": 0,
+    "valid_samples": 20,
+    "duplicates": 0,
+    "out_of_order": 0,
+    "corrupt": 0,
+    "size_mismatch": 0,
+    "recovered": 0,
+    "publish_errors": 0,
+    "injected_loss": 0,
+    "injected_delay_ms": 0.0
+  },
+  "metrics": {
+    "latency_ms": 0.085975,
+    "latency_p95_ms": 0.18658,
+    "latency_p99_ms": 0.278996,
+    "latency_std_ms": 0.061506,
+    "jitter_ms": 0.047447,
+    "throughput_mbps": 2.182706,
+    "offered_throughput_mbps": 2.047908,
+    "cpu_percent": 0.0,
+    "memory_mb": 73.732096,
+    "packet_loss": 0.0,
+    "final_packet_loss": 0.0,
+    "startup_time_ms": 504.4721,
+    "discovery_time_ms": 640.2517,
+    "harness_elapsed_ms": 3154.5768
+  },
+  "discovery_supported": true,
+  "test_start_time": "2026-09-14T02:40:03.184Z",
+  "test_end_time": "2026-09-14T02:40:06.336Z",
+  "network_injected": {
+    "name": "baseline",
+    "delay_ms": 0.0,
+    "jitter_ms": 0.0,
+    "loss_percent": 0.0,
+    "bandwidth_mbps": null
+  },
+  "actual_payload_size_bytes": 256,
+  "wire_message_size_bytes": 288,
+  "delivery_matrix": [
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sent": 20,
+      "received": 20
+    }
+  ],
+  "errors": [],
+  "nodes": [
+    {
+      "role": "subscriber",
+      "subscriber_id": 0,
+      "host": "加百列之叶",
+      "pid": 3680,
+      "received_count": 20,
+      "valid_unique_count": 20,
+      "duplicate_count": 0,
+      "out_of_order_count": 0,
+      "corrupt_count": 0,
+      "size_mismatch_count": 0,
+      "receive_window_seconds": 0.018766,
+      "startup_time_ms": 504.4721,
+      "discovery_time_ms": 640.2517,
+      "resources": {
+        "cpu_percent": 0.0,
+        "memory_mb": 37.04832
+      },
+      "actual_payload_size_bytes": 256,
+      "wire_message_size_bytes": 288,
+      "shutdown_errors": [],
+      "config": {
+        "module_name": "Zenoh",
+        "module_version": "auto",
+        "scenario_name": "S01",
+        "payload_size_bytes": 256,
+        "message_count": 20,
+        "publish_rate_hz": 1000.0,
+        "publisher_count": 1,
+        "subscriber_count": 1,
+        "transport_mode": "TCP",
+        "qos_profile": "reliable-block",
+        "warmup_seconds": 0.1,
+        "drain_seconds": 0.1,
+        "duration_seconds": 2.02,
+        "repeats": 5,
+        "network_profile": {
+          "name": "baseline",
+          "delay_ms": 0.0,
+          "jitter_ms": 0.0,
+          "loss_percent": 0.0,
+          "bandwidth_mbps": null
+        },
+        "random_seed": 7,
+        "run_id": "outputs-S01-smoke-256B-r01",
+        "key_prefix": "bench/zenoh",
+        "mode": "peer",
+        "connect": [],
+        "listen": [
+          "tcp/127.0.0.1:11330"
+        ],
+        "expected_publishers": null,
+        "expected_subscribers": null,
+        "discovery_timeout_seconds": 10.0,
+        "recovery_timeout_seconds": 30.0,
+        "clock_offset_ns": 0,
+        "scheduled_start_epoch_ns": null
+      }
+    },
+    {
+      "role": "publisher",
+      "publisher_id": 0,
+      "host": "加百列之叶",
+      "pid": 30000,
+      "platform": "Windows-10-10.0.22631-SP0",
+      "sent_count": 20,
+      "emitted_count": 20,
+      "error_count": 0,
+      "injected_loss_count": 0,
+      "injected_delay_ms": 0.0,
+      "send_window_seconds": 0.020001,
+      "offered_throughput_mbps": 2.047908,
+      "emitted_throughput_mbps": 2.047908,
+      "startup_time_ms": 35.7443,
+      "test_start_epoch_ns": 1789353604107813800,
+      "resources": {
+        "cpu_percent": 0.0,
+        "memory_mb": 36.683776
+      },
+      "actual_payload_size_bytes": 256,
+      "wire_message_size_bytes": 288,
+      "shutdown_errors": [],
+      "config": {
+        "module_name": "Zenoh",
+        "module_version": "auto",
+        "scenario_name": "S01",
+        "payload_size_bytes": 256,
+        "message_count": 20,
+        "publish_rate_hz": 1000.0,
+        "publisher_count": 1,
+        "subscriber_count": 1,
+        "transport_mode": "TCP",
+        "qos_profile": "reliable-block",
+        "warmup_seconds": 0.1,
+        "drain_seconds": 0.1,
+        "duration_seconds": 2.02,
+        "repeats": 5,
+        "network_profile": {
+          "name": "baseline",
+          "delay_ms": 0.0,
+          "jitter_ms": 0.0,
+          "loss_percent": 0.0,
+          "bandwidth_mbps": null
+        },
+        "random_seed": 7,
+        "run_id": "outputs-S01-smoke-256B-r01",
+        "key_prefix": "bench/zenoh",
+        "mode": "peer",
+        "connect": [
+          "tcp/127.0.0.1:11330"
+        ],
+        "listen": [],
+        "expected_publishers": null,
+        "expected_subscribers": null,
+        "discovery_timeout_seconds": 10.0,
+        "recovery_timeout_seconds": 30.0,
+        "clock_offset_ns": 0,
+        "scheduled_start_epoch_ns": null
+      }
+    }
+  ],
+  "samples": [
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 0,
+      "latency_ms": 0.3021,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 1,
+      "latency_ms": 0.0551,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 2,
+      "latency_ms": 0.0526,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 3,
+      "latency_ms": 0.1805,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 4,
+      "latency_ms": 0.0755,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 5,
+      "latency_ms": 0.0588,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 6,
+      "latency_ms": 0.0514,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 7,
+      "latency_ms": 0.0545,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 8,
+      "latency_ms": 0.0697,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 9,
+      "latency_ms": 0.1637,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 10,
+      "latency_ms": 0.0784,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 11,
+      "latency_ms": 0.0584,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 12,
+      "latency_ms": 0.0508,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 13,
+      "latency_ms": 0.0487,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 14,
+      "latency_ms": 0.0422,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 15,
+      "latency_ms": 0.1155,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 16,
+      "latency_ms": 0.0833,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 17,
+      "latency_ms": 0.0568,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 18,
+      "latency_ms": 0.0497,
+      "valid": true
+    },
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sequence": 19,
+      "latency_ms": 0.0718,
+      "valid": true
+    }
+  ]
+}

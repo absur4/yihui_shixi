@@ -1,0 +1,61 @@
+{
+  "role": "publisher",
+  "publisher_id": 0,
+  "host": "加百列之叶",
+  "pid": 24248,
+  "platform": "Windows-10-10.0.22631-SP0",
+  "sent_count": 20,
+  "emitted_count": 20,
+  "error_count": 0,
+  "injected_loss_count": 0,
+  "injected_delay_ms": 0.0,
+  "send_window_seconds": 0.0200012,
+  "offered_throughput_mbps": 2.0478771273723577,
+  "emitted_throughput_mbps": 2.0478771273723577,
+  "startup_time_ms": 35.70709999985411,
+  "test_start_epoch_ns": 1789353613520500100,
+  "resources": {
+    "cpu_percent": 0.0,
+    "memory_mb": 36.610048
+  },
+  "actual_payload_size_bytes": 256,
+  "wire_message_size_bytes": 288,
+  "shutdown_errors": [],
+  "config": {
+    "module_name": "Zenoh",
+    "module_version": "auto",
+    "scenario_name": "S01",
+    "payload_size_bytes": 256,
+    "message_count": 20,
+    "publish_rate_hz": 1000.0,
+    "publisher_count": 1,
+    "subscriber_count": 1,
+    "transport_mode": "TCP",
+    "qos_profile": "reliable-block",
+    "warmup_seconds": 0.1,
+    "drain_seconds": 0.1,
+    "duration_seconds": 2.02,
+    "repeats": 5,
+    "network_profile": {
+      "name": "baseline",
+      "delay_ms": 0.0,
+      "jitter_ms": 0.0,
+      "loss_percent": 0.0,
+      "bandwidth_mbps": null
+    },
+    "random_seed": 7,
+    "run_id": "outputs-S01-smoke-256B-r04",
+    "key_prefix": "bench/zenoh",
+    "mode": "peer",
+    "connect": [
+      "tcp/127.0.0.1:11347"
+    ],
+    "listen": [],
+    "expected_publishers": null,
+    "expected_subscribers": null,
+    "discovery_timeout_seconds": 10.0,
+    "recovery_timeout_seconds": 30.0,
+    "clock_offset_ns": 0,
+    "scheduled_start_epoch_ns": null
+  }
+}

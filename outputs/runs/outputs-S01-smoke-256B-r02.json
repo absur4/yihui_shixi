@@ -1,0 +1,268 @@
+{
+  "schema_version": "1.0",
+  "metric_definition_version": "unified-middleware-1.0",
+  "metrics_definition_version": "unified-middleware-1.0",
+  "module_name": "Zenoh",
+  "run_id": "outputs-S01-smoke-256B-r02",
+  "middleware_id": "zenoh",
+  "middleware_version": "1.10.1",
+  "scenario_name": "S01",
+  "scenario_title": "点对点低延迟",
+  "repeat": 2,
+  "status": "completed",
+  "payload_size_bytes": 256,
+  "publish_rate_hz": 1000,
+  "publisher_count": 1,
+  "subscriber_count": 1,
+  "messages_sent": 20,
+  "messages_received": 20,
+  "unique_deliveries": 20,
+  "expected_deliveries": 20,
+  "messages_planned": 20,
+  "messages_not_sent": 0,
+  "achieved_publish_rate_hz": 999.9599609375001,
+  "latency_ms": 0.08301,
+  "latency_p95_ms": 0.142815,
+  "latency_p99_ms": 0.255523,
+  "latency_std_ms": 0.054307,
+  "throughput_mbps": 2.184056,
+  "offered_throughput_mbps": 2.047918,
+  "jitter_ms": 0.035779,
+  "packet_loss": 0.0,
+  "final_packet_loss": 0.0,
+  "duplicate_count": 0,
+  "out_of_order_count": 0,
+  "corrupted_count": 0,
+  "startup_time_ms": 509.3928,
+  "discovery_time_ms": 644.4795,
+  "recovery_time_ms": null,
+  "application_recovered": 0,
+  "late_native_deliveries": null,
+  "injected_network_loss_rate": 0,
+  "cpu_percent": 12.84375,
+  "memory_mb": 73.949184,
+  "latency_sample_count": 20,
+  "transport_mode": "tcp",
+  "qos_profile": "reliable-block",
+  "network_profile": "baseline",
+  "configuration": {
+    "scenario_name": "S01",
+    "case": "smoke",
+    "condition_id": "S01-smoke-256B",
+    "title": "点对点低延迟",
+    "payload_size_bytes": 256,
+    "publish_rate_hz": 1000,
+    "publisher_count": 1,
+    "subscriber_count": 1,
+    "message_count": 20,
+    "duration_seconds": 2.02,
+    "repeats": 5,
+    "random_seed": 7,
+    "warmup_seconds": 0.1,
+    "drain_seconds": 0.1,
+    "timeout_seconds": 10,
+    "network_delay_ms": 0,
+    "network_jitter_ms": 0,
+    "network_loss_rate": 0,
+    "network_profile": "baseline",
+    "transport_mode": "tcp",
+    "qos_profile": "reliable-block"
+  },
+  "statistics": {
+    "counts": {
+      "sent": 20,
+      "emitted": 20,
+      "received": 20,
+      "expected": 20,
+      "missing": 0,
+      "valid_samples": 20,
+      "duplicates": 0,
+      "out_of_order": 0,
+      "corrupt": 0,
+      "size_mismatch": 0,
+      "recovered": 0,
+      "publish_errors": 0,
+      "injected_loss": 0,
+      "injected_delay_ms": 0.0
+    },
+    "metrics": {
+      "latency_ms": 0.08301,
+      "latency_p95_ms": 0.142815,
+      "latency_p99_ms": 0.255523,
+      "latency_std_ms": 0.054307,
+      "jitter_ms": 0.035779,
+      "throughput_mbps": 2.184056,
+      "offered_throughput_mbps": 2.047918,
+      "cpu_percent": 12.84375,
+      "memory_mb": 73.949184,
+      "packet_loss": 0.0,
+      "final_packet_loss": 0.0,
+      "startup_time_ms": 509.3928,
+      "discovery_time_ms": 644.4795,
+      "harness_elapsed_ms": 3114.6146
+    },
+    "measurement_level": "sample_level",
+    "actual_payload_size_bytes": 256,
+    "wire_message_size_bytes": 288,
+    "offered_throughput_mbps": 2.047918,
+    "network_injected": {
+      "name": "baseline",
+      "delay_ms": 0,
+      "jitter_ms": 0,
+      "loss_rate": 0
+    }
+  },
+  "actual_payload_size_bytes": 256,
+  "wire_message_size_bytes": 288,
+  "metadata_size_bytes": 32,
+  "link_metrics": [
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sent": 20,
+      "received": 20
+    }
+  ],
+  "environment": {
+    "controller_host": "加百列之叶",
+    "platform": "Windows-10-10.0.22631-SP0",
+    "python": "3.11.5",
+    "resource_scope": "Zenoh publisher/subscriber processes; controller excluded",
+    "host": "加百列之叶",
+    "discovery_ready_condition": "first valid sample received for the subscribed Key Expression"
+  },
+  "limitations": [],
+  "discovery_supported": true,
+  "samples": [
+    {
+      "sequence": 0,
+      "latency": 0.2837,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 1,
+      "latency": 0.075,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 2,
+      "latency": 0.0481,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 3,
+      "latency": 0.1181,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 4,
+      "latency": 0.1354,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 5,
+      "latency": 0.0747,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 6,
+      "latency": 0.0538,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 7,
+      "latency": 0.0474,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 8,
+      "latency": 0.0457,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 9,
+      "latency": 0.1224,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 10,
+      "latency": 0.1017,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 11,
+      "latency": 0.064,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 12,
+      "latency": 0.0551,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 13,
+      "latency": 0.0434,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 14,
+      "latency": 0.0414,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 15,
+      "latency": 0.0967,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 16,
+      "latency": 0.0918,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 17,
+      "latency": 0.0759,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 18,
+      "latency": 0.0434,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 19,
+      "latency": 0.0425,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    }
+  ],
+  "measurement_window": {
+    "warmup_start": "2026-09-14T02:40:06.343Z",
+    "measurement_start": null,
+    "send_end": null,
+    "drain_end": "2026-09-14T02:40:09.458Z",
+    "scope": "test harness window; engine does not expose per-phase UTC timestamps"
+  },
+  "errors": [],
+  "test_start_time": "2026-09-14T02:40:06.343Z",
+  "test_end_time": "2026-09-14T02:40:09.458Z"
+}
