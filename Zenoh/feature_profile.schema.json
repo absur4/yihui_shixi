@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/zenoh/feature_profile.schema.json",
+  "title": "Zenoh feature profile",
+  "type": "object",
+  "required": ["module_name", "module_version", "generated_at", "features"],
+  "properties": {
+    "module_name": {"const": "Zenoh"},
+    "module_version": {"type": "string"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["feature_name", "category", "status", "test_method", "configuration", "evidence", "limitations"],
+        "properties": {
+          "feature_name": {"type": "string"},
+          "category": {"type": "string"},
+          "status": {"enum": ["supported", "partial", "unsupported", "not_tested"]},
+          "test_method": {"type": "string"},
+          "configuration": {"type": "object"},
+          "evidence": {"type": "string"},
+          "performance_impact": {},
+          "limitations": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    }
+  }
+}
