@@ -1,0 +1,11 @@
+struct BenchmarkMessage
+{
+    unsigned long publisher_id;
+    unsigned long long sequence_number;
+    unsigned long long send_timestamp_ns;
+    unsigned long payload_length;
+    unsigned long checksum;
+    octet phase;
+    string<1048576> payload;
+};
+

@@ -1,0 +1,5 @@
+PyYAML>=6.0,<7
+psutil>=6,<8
+jsonschema>=4.23,<5
+pywin32>=308; platform_system == "Windows"
+
