@@ -27,6 +27,10 @@ def publisher(spec):
     send_times = []
     sent_count = 0
     recovery_deliveries = 0
+    clock_offset_ns = int(spec.get("clock_offset_ns", 0))
+
+    def common_now_ns():
+        return time.perf_counter_ns() + clock_offset_ns
 
     @server.command("/replay")
     def replay(client, request, request_payload):
@@ -77,8 +81,8 @@ def publisher(spec):
                     break
                 if sent_count >= target_messages:
                     break
-                wait_until_ns(target)
-                now = time.perf_counter_ns()
+                wait_until_ns(target - clock_offset_ns)
+                now = common_now_ns()
                 if now >= end_ns:
                     break
                 actual_slot = int((now - start_ns) / period_ns)
@@ -86,7 +90,7 @@ def publisher(spec):
                     missed_releases += actual_slot - slot
                     slot = actual_slot
                 sequence = sent_count
-                sent_ns = time.perf_counter_ns()
+                sent_ns = common_now_ns()
                 if config["recovery_enabled"]:
                     send_times.append(sent_ns)
                 sent_count += 1
@@ -113,14 +117,14 @@ def publisher(spec):
                 "fragments_sent": sent_count * len(fragments),
                 "offered_payload_mbps": sent_count * len(payload) * 8 / config["duration_seconds"] / 1e6,
                 "first_successful_send_ns": first_successful_send_ns, "last_successful_send_ns": last_successful_send_ns,
-                "finished_ns": time.perf_counter_ns(), "start_ns": start_ns, "end_ns": end_ns})
+                "finished_ns": common_now_ns(), "start_ns": start_ns, "end_ns": end_ns})
             wait_file(folder / "finish.json", config["recovery_timeout_seconds"] + config["drain_seconds"] + 30)
             write_json(folder / f"publisher-{identifier}.final.json", {"recovery_deliveries_sent": recovery_deliveries})
         except Exception as error:
             write_json(folder / f"publisher-{identifier}.error.json", {"error": str(error), "traceback": traceback.format_exc()})
 
     threading.Thread(target=publish_loop, daemon=True).start()
-    server.run("127.0.0.1", spec["port"])
+    server.run(spec.get("bind_host", "127.0.0.1"), spec["port"])
 
 
 def subscriber(spec):
@@ -141,10 +145,15 @@ def subscriber(spec):
     unparseable = 0
     highest_sequence = {}
     expected_transport = config["transport_mode"] == "udp"
+    clock_offset_ns = int(spec.get("clock_offset_ns", 0))
+    clock_uncertainty_ns = int(spec.get("clock_uncertainty_ns", 0))
+
+    def common_now_ns():
+        return time.perf_counter_ns() + clock_offset_ns
 
     def receive(client, url, payload, quick):
         nonlocal invalid, duplicates, out_of_order, corrupted, unparseable
-        arrival_ns = time.perf_counter_ns()
+        arrival_ns = common_now_ns()
         try:
             params = payload.param
             publisher_id, sequence, sent_ns = params["publisher"], params["sequence"], params["send_ns"]
@@ -161,7 +170,7 @@ def subscriber(spec):
                      and isinstance(fragment_index, int) and isinstance(fragment_count, int)
                      and 0 <= fragment_index < fragment_count and logical_size == config["message_size_bytes"]
                      and declared_size == config["message_size_bytes"] and checksum == expected_checksum
-                     and fragment == expected_fragment and arrival_ns >= sent_ns
+                     and fragment == expected_fragment and arrival_ns + clock_uncertainty_ns >= sent_ns
                      and quick == (False if recovery else expected_transport))
         except (KeyError, TypeError, ValueError):
             valid = False
@@ -193,11 +202,13 @@ def subscriber(spec):
 
     try:
         for endpoint in spec["endpoints"]:
+            host, port = ((endpoint.get("host"), endpoint.get("port"))
+                          if isinstance(endpoint, dict) else ("127.0.0.1", endpoint))
             client = vsoa.Client()
             clients.append(client)
             client.onmessage = receive
             client.ondata = receive
-            result = client.connect(f"vsoa://127.0.0.1:{endpoint}", timeout=config["startup_timeout_seconds"])
+            result = client.connect(f"vsoa://{host}:{port}", timeout=config["startup_timeout_seconds"])
             if result != vsoa.Client.CONNECT_OK:
                 raise ConnectionError(f"Subscriber {identifier} connect returned {result}")
             thread = threading.Thread(target=client.run, daemon=True)
@@ -215,7 +226,7 @@ def subscriber(spec):
         write_json(folder / f"subscriber-{identifier}.ready.json", {"pid": os.getpid()})
         control = wait_file(folder / "start.json", config["startup_timeout_seconds"] + 10)
         cutoff_ns = control["end_ns"] + int(config["drain_seconds"] * 1e9)
-        wait_until_ns(cutoff_ns)
+        wait_until_ns(cutoff_ns - clock_offset_ns)
         counts = wait_file(folder / "counts.json", 10)["publishers"]
         with lock:
             initial = {key: value for key, value in received.items() if value[1] <= cutoff_ns and not value[2]}
@@ -228,8 +239,8 @@ def subscriber(spec):
             ordered = sorted((sequence, value) for (source, sequence), value in initial.items() if source == publisher_id)
             for previous, current in zip(ordered, ordered[1:]):
                 if current[0] == previous[0] + 1:
-                    first_delay = previous[1][1] - previous[1][0]
-                    second_delay = current[1][1] - current[1][0]
+                    first_delay = max(0, previous[1][1] - previous[1][0])
+                    second_delay = max(0, current[1][1] - current[1][0])
                     initial_differences.append(abs(second_delay - first_delay) / 1e6)
         recovery_started = time.perf_counter_ns()
         retry_requests = 0
@@ -265,7 +276,7 @@ def subscriber(spec):
         for publisher_id, count in enumerate(counts):
             link_initial = {key: value for key, value in initial.items() if key[0] == publisher_id}
             link_final = {key: value for key, value in valid_final.items() if key[0] == publisher_id}
-            link_latencies = [(value[1] - value[0]) / 1e6 for value in link_initial.values()]
+            link_latencies = [max(0, value[1] - value[0]) / 1e6 for value in link_initial.values()]
             ordered_link = sorted(link_initial.items())
             link_jitter = [abs((current[1][1] - current[1][0]) - (previous[1][1] - previous[1][0])) / 1e6
                            for previous, current in zip(ordered_link, ordered_link[1:])
@@ -282,7 +293,7 @@ def subscriber(spec):
             "corrupted_count": corrupted, "unparseable_count": unparseable,
             "out_of_range_messages": len(final) - len(valid_final), "out_of_order_count": out_of_order,
             "incomplete_logical_messages": len(assemblies), "links": links,
-            "latencies_ms": [(value[1] - value[0]) / 1e6 for value in initial.values()],
+            "latencies_ms": [max(0, value[1] - value[0]) / 1e6 for value in initial.values()],
             "jitter_samples_ms": initial_differences,
             "measurement_window_received": sum(value[1] <= control["end_ns"] for value in initial.values()),
             "late_native_deliveries": late, "application_recovered": recovered,
@@ -304,10 +315,13 @@ def position(spec):
     entries = spec["entries"]
 
     def onquery(query, reply):
-        port = entries.get(query["name"])
-        reply({"addr": "127.0.0.1", "port": port, "domain": socket.AF_INET} if port else None)
+        endpoint = entries.get(query["name"])
+        if isinstance(endpoint, dict):
+            reply({"addr": endpoint["host"], "port": endpoint["port"], "domain": socket.AF_INET})
+        else:
+            reply({"addr": "127.0.0.1", "port": endpoint, "domain": socket.AF_INET} if endpoint else None)
 
-    vsoa.Position(onquery).run("127.0.0.1", spec["port"])
+    vsoa.Position(onquery).run(spec.get("bind_host", "127.0.0.1"), spec["port"])
 
 
 def run_worker(spec_path):

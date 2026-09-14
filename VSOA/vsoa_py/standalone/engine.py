@@ -272,12 +272,17 @@ def run_suite(config, cases, output, logs, log, selected="all", case_plan=None, 
                   "test_end_time": utc_now() if status != "running" else None, **overall,
                   "summary_scope": "arithmetic means of completed run metrics; mixed scenarios are NOT a comparable score",
                   "environment": {"os": platform.platform(), "architecture": platform.machine(),
-                                  "python_embedded": platform.python_version(), "vsoa": vsoa.__version__,
-                                  "logical_cpus": psutil.cpu_count(), "topology": "IPv4 loopback, complete publisher-subscriber mesh",
-                                  "machine_name": platform.node()},
+                                   "python_embedded": platform.python_version(), "vsoa": vsoa.__version__,
+                                   "logical_cpus": psutil.cpu_count(),
+                                   "topology": ("multi-machine IPv4, complete publisher-subscriber mesh"
+                                                if config.get("execution_mode") == "multi_machine"
+                                                else "IPv4 loopback, complete publisher-subscriber mesh"),
+                                   "machine_name": platform.node()},
                   "units": UNITS, "configuration": config, "scenario_summaries": summaries, "runs": runs,
                   "limitations": ["Only VSOA is implemented; other middleware packages are not included",
-                                  "Latency is same-host one-way publish-call to subscriber callback; not RTT/2",
+                                   ("Cross-host one-way latency uses calibrated monotonic clock offsets; inspect clock_synchronization uncertainty"
+                                    if config.get("execution_mode") == "multi_machine"
+                                    else "Latency is same-host one-way publish-call to subscriber callback; not RTT/2"),
                                   "Throughput counts validated subscriber payload arriving inside the scheduled send window",
                                   "Broadcast throughput includes all subscriber deliveries; keep subscriber count identical across modules",
                                   "cpu_percent/memory_mb use middleware resources (publisher, subscriber and Position); test infrastructure is reported separately",
@@ -285,7 +290,7 @@ def run_suite(config, cases, output, logs, log, selected="all", case_plan=None, 
                                   "packet_loss is initial missing deliveries after drain; final_packet_loss follows explicit TCP application replay",
                                   "Replay, deduplication and proxy handshake translation are harness logic, not native VSOA recovery",
                                   "Scheduling overload skips releases, recorded separately from network delivery loss",
-                                  "No hard real-time, TLS, IPv6, cross-host or TCP kernel-loss claims"]}
+                                   "No hard real-time, TLS, IPv6 or TCP kernel-loss claims"]}
         write_json(result_path, result)
         write_json(output / "history" / f"{suite_id}.json", result)
         return result
@@ -303,7 +308,11 @@ def run_suite(config, cases, output, logs, log, selected="all", case_plan=None, 
                 log(f"START {case['scenario_name']} repeat={repeat}/{config['repeats']}")
                 try:
                     from standalone.faults import measure_fault
-                    measure = measure_fault if effective.get("test_kind") == "fault_recovery" else measure_run
+                    if effective.get("_distributed"):
+                        from standalone.distributed import measure_distributed
+                        measure = measure_distributed
+                    else:
+                        measure = measure_fault if effective.get("test_kind") == "fault_recovery" else measure_run
                     report = measure(effective, folder, logs / suite_id / f"{case['scenario_name']}_{repeat}", run_id, repeat)
                 except Exception as error:
                     log(f"ERROR {type(error).__name__}: {error}")
