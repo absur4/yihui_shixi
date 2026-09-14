@@ -1,0 +1,14 @@
+{
+  "module_name": "Zenoh",
+  "module_version": "1.10.1",
+  "generated_at": "2026-09-14T00:00:00Z",
+  "features": [
+    {"feature_name": "Peer session", "category": "communication model", "status": "supported", "test_method": "S01/S05/S06/S07 loopback and multi-host publisher/subscriber workers", "configuration": {"mode": "peer"}, "evidence": "zenoh_bench worker session.open and delivery_matrix", "performance_impact": null, "limitations": []},
+    {"feature_name": "Router session", "category": "communication model", "status": "partial", "test_method": "Provide connect endpoint in the normalized configuration and run multi-host workers", "configuration": {"mode": "router", "connect": "explicit Zenoh endpoint"}, "evidence": "zenoh_bench distributed assignments", "performance_impact": null, "limitations": ["Router lifecycle is not controlled by this adapter."]},
+    {"feature_name": "Key expression discovery", "category": "discovery", "status": "supported", "test_method": "Measure from subscriber startup to first valid sample on the wildcard Key Expression", "configuration": {"key_expression": "bench/zenoh/<run>/data/*"}, "evidence": "discovery_time_ms in each run", "performance_impact": null, "limitations": []},
+    {"feature_name": "Query / Queryable", "category": "native capability", "status": "not_tested", "test_method": "Reserved for a separate native capability case", "configuration": {}, "evidence": "No generated run evidence", "performance_impact": null, "limitations": ["The unified S01-S12 throughput adapter is pub/sub focused."]},
+    {"feature_name": "Reliable and best-effort QoS", "category": "QoS", "status": "supported", "test_method": "Map qos_profile to Zenoh Reliability and CongestionControl", "configuration": {"qos_profile": "reliable-block | reliable-drop | best-effort-drop"}, "evidence": "adapter configuration and worker declaration", "performance_impact": null, "limitations": []},
+    {"feature_name": "Real weak-network injection", "category": "network", "status": "unsupported", "test_method": "Requires an external Windows-capable network injector", "configuration": {}, "evidence": "S09 is emitted as unsupported", "performance_impact": null, "limitations": ["Application-level delay/drop is not accepted as a substitute for real network injection."]},
+    {"feature_name": "Fault recovery", "category": "reliability", "status": "not_tested", "test_method": "Requires controlled peer/router/process stop and restart", "configuration": {}, "evidence": "S11 is emitted as unsupported", "performance_impact": null, "limitations": ["No automated fault controller is included."]}
+  ]
+}
