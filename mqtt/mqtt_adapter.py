@@ -15,34 +15,13 @@ import time
 import uuid
 from pathlib import Path
 
-import psutil
-import yaml
 
 from mqtt_metrics import describe, resource_window_metrics
 from mqtt_results import METRICS, analyze, group_results
-from mqtt_worker import endpoint
 from mqtt_signals import Signal
 
-VERSION = '2.0.0'
-ROOT = Path(sys.executable if getattr(sys, 'frozen', False) else __file__).resolve().parent
-DEFAULTS = dict(module_name='mqtt', module_version=VERSION, scenario_name='S01',
-    duration_seconds=10, message_count=0, payload_size_bytes=1024, publish_rate_hz=1000,
-    publisher_count=1, subscriber_count=1, transport_mode='tcp', qos_profile='qos1',
-    warmup_seconds=1, drain_seconds=.5, repeats=5, timeout_seconds=60,
-    network_delay_ms=0, network_jitter_ms=0, network_loss_rate=0, random_seed=20260910,
-    host='127.0.0.1', port=0, network_profile='baseline', connect_timeout_seconds=10,
-    publish_timeout_seconds=5, max_inflight=20, metric_window_seconds=10,
-    broker_executable='broker/mosquitto.exe', recovery_probe_count=100,
-    fault_duration_seconds=1, recovery_timeout_seconds=12, benchmark_profile='acceptance',
-    suite_kind='public_comparable', case='standard', startup_mode='cold',
-    saturation_loss_threshold=.001, saturation_latency_p99_ms=100,
-    saturation_cpu_percent=800, saturation_memory_mb=2048,
-    stable_rate_min_fraction=.90, stable_rate_candidates=[100, 1000, 5000, 10000, 20000],
-    require_stable_rate=False, rate_search=False, output_dir='outputs',
-    sample_level='sample_level')
-ALIASES = dict(test_duration_sec='duration_seconds', message_size_bytes='payload_size_bytes',
-               send_frequency_hz='publish_rate_hz', test_timeout_sec='timeout_seconds')
-
+from mqtt_config import VERSION, DEFAULTS, ALIASES, normalize, expand
+ROOT = Path(__file__).resolve().parent
 
 def utc():
     return dt.datetime.now(dt.timezone.utc).isoformat(timespec='milliseconds').replace('+00:00', 'Z')
@@ -55,42 +34,6 @@ def write_json(path, data):
     temp.write_text(json.dumps(data, ensure_ascii=False, indent=2, allow_nan=False), encoding='utf-8')
     temp.replace(path)
 
-
-def normalize(config):
-    data = dict(config)
-    for old, new in ALIASES.items():
-        if old in data:
-            if new in data and data[new] != data[old]:
-                raise ValueError(f'Conflicting fields: {old} / {new}')
-            data[new] = data.pop(old)
-    c = dict(DEFAULTS, **data)
-    if str(c['module_name']).lower() != 'mqtt':
-        raise ValueError('This adapter only implements MQTT')
-    c['module_name'], c['module_version'] = 'mqtt', VERSION
-    if c['scenario_name'] not in [f'S{i:02}' for i in range(1, 13)]:
-        raise ValueError('scenario_name must be S01..S12')
-    for key in ['message_count', 'payload_size_bytes', 'publisher_count', 'subscriber_count', 'repeats', 'random_seed', 'max_inflight']:
-        if isinstance(c[key], bool) or not isinstance(c[key], int) or c[key] < 0:
-            raise ValueError(f'{key} must be a nonnegative integer')
-    if min(c['publisher_count'], c['subscriber_count'], c['repeats'], c['max_inflight']) < 1:
-        raise ValueError('counts, repeats and max_inflight must be positive')
-    for key in ['duration_seconds', 'publish_rate_hz', 'warmup_seconds', 'drain_seconds',
-                'network_delay_ms', 'network_jitter_ms', 'network_loss_rate', 'timeout_seconds',
-                'connect_timeout_seconds', 'publish_timeout_seconds', 'metric_window_seconds']:
-        if not isinstance(c[key], (int, float)) or isinstance(c[key], bool) or not 0 <= c[key] < float('inf'):
-            raise ValueError(f'{key} must be a finite nonnegative number')
-    if c['network_loss_rate'] > 1 or c['metric_window_seconds'] == 0 or c['timeout_seconds'] == 0:
-        raise ValueError('Invalid loss rate/window/timeout')
-    if not c['message_count'] and not c['duration_seconds']:
-        raise ValueError('Set a positive duration_seconds or message_count')
-    qos = {'qos0': 0, 'best_effort': 0, 'qos1': 1, 'reliable': 1, 'qos2': 2}
-    if c['qos_profile'] not in qos:
-        raise ValueError('qos_profile must be qos0/qos1/qos2/best_effort/reliable')
-    c['qos'] = qos[c['qos_profile']]
-    c['qos_semantics'] = ['at_most_once', 'at_least_once', 'exactly_once'][c['qos']]
-    c['stop_rule'] = 'message_count_per_publisher' if c['message_count'] else 'duration_seconds'
-    c['rate_scope'] = 'per_publisher'
-    return c
 
 
 def environment(broker_version):
@@ -112,6 +55,8 @@ class Broker:
         exe = Path(cfg['broker_executable'])
         self.exe = exe if exe.is_absolute() else ROOT / exe
         self.folder = Path(folder)
+        self.log_folder = Path(cfg.get('logs_dir', self.folder)) / self.folder.name
+        self.log_folder.mkdir(parents=True, exist_ok=True)
         self.process = None
         self.log = None
         self.port = cfg['port']
@@ -127,7 +72,7 @@ class Broker:
         self.restarts = 0
 
     def start(self, timeout=10):
-        self.log = open(self.folder / 'broker.log', 'ab')
+        self.log = open(self.log_folder / 'broker.log', 'ab')
         self.process = subprocess.Popen([str(self.exe), '-c', str(self.conf)], stdout=self.log,
                                         stderr=subprocess.STDOUT, creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
         deadline = time.perf_counter()+timeout
@@ -235,15 +180,69 @@ def base_result(cfg, run_id, repeat, env):
     return r
 
 
-def execute(cfg, output, repeat=1, purpose='measurement'):
+def calibrate(cfg, output, cache=None):
+    """Highest passing candidate before first failure; never claim a global maximum."""
+    cache = cache if cache is not None else {}
+    key = json.dumps({k: v for k, v in cfg.items() if k not in ('repeat', 'output_dir', 'logs_dir')}, sort_keys=True)
+    if key in cache:
+        return copy.deepcopy(cache[key])
+    selected, trials = None, []
+    for rate in cfg['stable_rate_candidates']:
+        trial = dict(cfg, duration_seconds=2, message_count=0, publish_rate_hz=rate,
+                     rate_search=False, repeats=1, require_stable_rate=False, warmup_seconds=.2)
+        r = execute(trial, Path(output)/'calibration', purpose='rate_calibration')
+        trials.append(dict(run_id=r['run_id'], rate=rate, status=r['status'],
+                           saturation=r.get('saturation'), achieved=r.get('achieved_publish_rate_hz')))
+        if r['status'] == 'cancelled':
+            raise KeyboardInterrupt
+        if r['status'] != 'completed' or r.get('saturation', {}).get('detected', True):
+            break
+        selected = rate
+    cache[key] = (selected, trials)
+    return selected, trials
+
+
+def execute(cfg, output, repeat=1, purpose='measurement', cache=None):
+    cfg = normalize(cfg)
+    from mqtt_evidence import unavailable_result
+    from adapter import _probe
+    problems = _probe(cfg)
+    if problems:
+        from adapter import _map_result
+        result = _map_result(unavailable_result(cfg, output, repeat, problems), cfg)
+        write_json(Path(output)/'runs'/f"{result['run_id']}.json", result)
+        return result
+    calibration = None
+    if purpose == 'measurement' and cfg.get('rate_search'):
+        selected, trials = calibrate(cfg, output, cache)
+        cfg = dict(cfg, publish_rate_hz=selected or cfg['stable_rate_candidates'][0],
+                   require_stable_rate=True, rate_search=False)
+        calibration = dict(method='highest passing candidate before first failing candidate',
+                           trials=trials, selected_rate_hz=selected, exact_global_maximum_claimed=False)
+    result = _execute(cfg, output, repeat, purpose)
+    if calibration is not None:
+        result['rate_calibration'] = calibration
+        if calibration['selected_rate_hz'] is None and result['status'] == 'completed':
+            result['status'] = 'error'
+            result['errors'].append('没有通过校准的稳定速率，不能报告最大稳定速率')
+    from adapter import _map_result
+    result = _map_result(result, cfg)
+    write_json(Path(output)/'runs'/f"{result['run_id']}.json", result)
+    return result
+
+
+def _execute(cfg, output, repeat=1, purpose='measurement'):
+    global psutil
+    import psutil
+    from mqtt_worker import endpoint
     cfg = copy.deepcopy(cfg)
     run_id = str(uuid.uuid4())
-    folder = Path(output)/'runs'/run_id
+    folder = Path(output)/'artifacts'/run_id
     folder.mkdir(parents=True)
     env = environment(None)
     result = base_result(cfg, run_id, repeat, env)
     result['purpose'] = purpose
-    result['raw_files'] = dict(directory=f'runs/{run_id}',
+    result['raw_files'] = dict(directory=f'artifacts/{run_id}',
         sent='publisher-N.csv: sequence_id,send_ns,ack_ns,phase,success,mqtt_rc',
         received='subscriber-N.csv: publisher_id,sequence_id,send_ns,receive_ns,phase,validation,wire_bytes,recovery_stage',
         phases={'0': 'warmup', '1': 'original', '2': 'independent_recovery_probe'})
@@ -451,6 +450,9 @@ def execute(cfg, output, repeat=1, purpose='measurement'):
             if p.is_alive():
                 p.terminate()
                 p.join(3)
+                if p.is_alive():
+                    p.kill()
+                    p.join(3)
                 result['errors'].append(f'Endpoint {p.name} did not stop gracefully')
                 if result['status'] == 'completed':
                     result['status'] = 'error'
@@ -546,19 +548,19 @@ def execute(cfg, output, repeat=1, purpose='measurement'):
         ]
         result['configuration'] = cfg
         result['test_end_time'] = utc()
+        from mqtt_evidence import finalize
+        from adapter import _map_result
+        finalize(result, cfg, Path(output), folder)
+        result.update(_map_result(result, cfg))
         schema_file = ROOT/'result.schema.json'
         if schema_file.exists():
             import jsonschema
             jsonschema.Draft202012Validator(json.loads(schema_file.read_text(encoding='utf-8')),
                 format_checker=jsonschema.FormatChecker()).validate(result)
-        write_json(folder/'result.json', result)
+        write_json(Path(output)/'runs'/f'{run_id}.json', result)
         ready.close()
     return result
 
-
-def expand(config):
-    common = {k: v for k, v in config.items() if k not in ('scenarios', 'description')}
-    return [normalize(dict(common, **scenario)) for scenario in config.get('scenarios', [{}])]
 
 
 def save_suite(output, runs, start, kind='measurement'):
@@ -573,6 +575,8 @@ def save_suite(output, runs, start, kind='measurement'):
 
 
 def main():
+    from mqtt_processes import contain_children
+    contain_children()
     parser = argparse.ArgumentParser(description='MQTT unified benchmark S01-S12')
     parser.add_argument('--config', default=str(ROOT/'config.yaml'))
     parser.add_argument('--output')
@@ -591,6 +595,7 @@ def main():
         run_features(Path(args.output or ROOT/'outputs'/'features'))
         return
     config_path = Path(args.config).resolve()
+    import yaml
     config = yaml.safe_load(config_path.read_text(encoding='utf-8'))
     scenarios = expand(config)
     if args.scenarios:
@@ -612,44 +617,15 @@ def main():
         existing = [r for r in runs if r.get('condition_id') == condition_id]
         if all(any(r['repeat'] == repeat for r in existing) for repeat in range(1, cfg['repeats']+1)):
             continue
-        calibration = []
-        if cfg['rate_search']:
-            cache_key = (cfg['payload_size_bytes'], cfg['publisher_count'], cfg['subscriber_count'], cfg['qos'])
-            previous_calibration = next((r['rate_calibration'] for r in existing if 'rate_calibration' in r), None)
-            if previous_calibration:
-                stable_cache[cache_key] = (previous_calibration['selected_rate_hz'], previous_calibration['trials'])
-            if cache_key not in stable_cache:
-                selected = None
-                for rate in cfg['stable_rate_candidates']:
-                    trial = dict(cfg, duration_seconds=2, message_count=0, publish_rate_hz=rate,
-                                 rate_search=False, repeats=1, require_stable_rate=False, warmup_seconds=.2)
-                    print(f'CALIBRATION {cfg["scenario_name"]} payload={cfg["payload_size_bytes"]} rate={rate}', flush=True)
-                    r = execute(trial, output/'calibration', purpose='rate_calibration')
-                    calibration.append(dict(run_id=r['run_id'], rate=rate, status=r['status'],
-                                            saturation=r.get('saturation'), achieved=r.get('achieved_publish_rate_hz')))
-                    if r['status'] != 'completed' or r.get('saturation', {}).get('detected', True):
-                        break
-                    selected = rate
-                stable_cache[cache_key] = (selected, calibration)
-            selected, calibration = stable_cache[cache_key]
-            if selected is None:
-                # Preserve an explicit failed condition rather than invent a stable maximum.
-                cfg = dict(cfg, publish_rate_hz=cfg['stable_rate_candidates'][0], require_stable_rate=True)
-            else:
-                cfg = dict(cfg, publish_rate_hz=selected, require_stable_rate=True)
         for repeat in range(1, cfg['repeats']+1):
             if any(r.get('condition_id') == condition_id and r['repeat'] == repeat for r in runs):
                 continue
             print(f'RUN {index+1}/{len(scenarios)} {cfg["scenario_name"]}/{cfg["case"]} '
                   f'{cfg["payload_size_bytes"]}B {cfg["publish_rate_hz"]}Hz '
                   f'{cfg["publisher_count"]}P/{cfg["subscriber_count"]}S {repeat}/{cfg["repeats"]}', flush=True)
-            r = execute(cfg, output, repeat)
+            r = execute(cfg, output, repeat, cache=stable_cache)
             r['condition_id'] = condition_id
-            if calibration:
-                r['rate_calibration'] = dict(method='highest passing candidate before first failing candidate',
-                                            trials=calibration, selected_rate_hz=cfg['publish_rate_hz'],
-                                            exact_global_maximum_claimed=False)
-            write_json(output/'runs'/r['run_id']/'result.json', r)
+            write_json(output/'runs'/f"{r['run_id']}.json", r)
             runs.append(r)
             save_suite(output, runs, suite_start)
             print(f'  {r["status"]}: sent={r["messages_sent"]} loss={r["packet_loss"]} errors={r["errors"]}', flush=True)

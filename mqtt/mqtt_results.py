@@ -120,7 +120,7 @@ def analyze(folder, cfg, formal_ns, drain_ns):
             window = (link['last'] - pfirst) / 1e9 if pfirst is not None and link['last'] else None
             matrix.append(dict(publisher_id=pub, subscriber_id=sub, messages_sent=n_sent,
                                unique_deliveries=n_orig, final_unique_deliveries=n_final,
-                               missing_count=n_sent-n_orig, duplicate_count=link['duplicate'],
+                               missing_count=n_sent-n_orig, final_missing_count=n_sent-n_final, latency_distribution=describe([lat for _, lat in link['lat']]), duplicate_count=link['duplicate'],
                                out_of_order_count=link['out_of_order'], late_native_deliveries=link['late'],
                                packet_loss=loss(n_sent, n_orig), final_packet_loss=loss(n_sent, n_final),
                                throughput_mbps=throughput(n_orig, cfg['payload_size_bytes'], window),
@@ -159,6 +159,8 @@ def analyze(folder, cfg, formal_ns, drain_ns):
                   first_successful_send_ns=first, last_successful_send_ns=last,
                   last_counted_receive_ns=last_receive, delivery_matrix=matrix,
                   complete_delivery=expected > 0 and count_original == expected and corrupted == 0)
+    result['statistics'] = dict(latency_ms=describe([lat for link in links for _, lat in link]),
+        jitter_ms=describe([abs(b[1]-a[1]) for link in links for a,b in zip(sorted(link), sorted(link)[1:])]))
     result['per_publisher'] = []
     for pub in range(cfg['publisher_count']):
         rows = [r for r in matrix if r['publisher_id'] == pub]

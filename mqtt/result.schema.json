@@ -57,7 +57,15 @@
     "configuration",
     "measurement_window",
     "limitations",
-    "errors"
+    "errors",
+    "middleware_id",
+    "middleware_version",
+    "scenario_title",
+    "unique_deliveries",
+    "statistics",
+    "link_metrics",
+    "rate_scope",
+    "samples_path"
   ],
   "properties": {
     "schema_version": {
@@ -419,6 +427,56 @@
       "type": "array",
       "items": {
         "type": "string"
+      }
+    },
+    "middleware_id": {
+      "const": "mqtt"
+    },
+    "middleware_version": {
+      "type": "string"
+    },
+    "scenario_title": {
+      "type": "string"
+    },
+    "unique_deliveries": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "rate_scope": {
+      "const": "per_publisher"
+    },
+    "samples_path": {
+      "type": "string"
+    },
+    "statistics": {
+      "type": "object",
+      "required": [
+        "latency_ms",
+        "jitter_ms",
+        "cpu_percent",
+        "memory_mb",
+        "discovery_time_ms"
+      ]
+    },
+    "link_metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "publisher",
+          "subscriber",
+          "messages_sent",
+          "messages_received",
+          "messages_received_after_recovery",
+          "duplicate_count",
+          "out_of_order_count",
+          "packet_loss",
+          "final_packet_loss",
+          "latency_ms"
+        ]
       }
     }
   },

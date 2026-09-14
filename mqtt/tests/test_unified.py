@@ -8,7 +8,7 @@ import uuid
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from mqtt_adapter import normalize
+from mqtt_config import normalize
 from mqtt_metrics import describe, latency_metrics, percentile, throughput, resource_window_metrics
 from mqtt_results import analyze
 from mqtt_wire import HEADER, pack, unpack
