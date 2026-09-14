@@ -13,6 +13,8 @@ python songfei/run.py
 
 浏览器打开 `http://127.0.0.1:8787/`：
 
+多机部署、Agent 启动、端口配置和故障排查见 [`MULTI_MACHINE.md`](MULTI_MACHINE.md)。
+
 - 左侧按 `example.html` 的参数体系配置：payload、速率、发布者/订阅者数量、消息数/时长、
   传输模式（TCP/UDP）、QoS、重复轮次、随机种子、网络条件（延迟/抖动/丢包，经真实 UDP 代理注入）、
   预热/排空/超时。

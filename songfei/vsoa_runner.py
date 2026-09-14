@@ -5,6 +5,7 @@
 """
 
 import json
+import os
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -31,7 +32,18 @@ def main():
     output, logs = Path(spec["output"]), Path(spec["logs"])
     total = sum(case["case_repeats"] for case in spec["cases"])
     log(f"SUITE 开始：{len(spec['cases'])} 个条件，共 {total} 轮")
-    report = run_suite(spec["config"], spec["cases"], output, logs, log, "all", spec.get("plan") or [], False)
+    config = dict(spec["config"])
+    cases = [dict(case) for case in spec["cases"]]
+    distributed = spec.get("distributed")
+    if distributed:
+        token = os.environ.get("VSOA_AGENT_TOKEN")
+        if not token:
+            raise ValueError("VSOA_AGENT_TOKEN is required for multi-machine mode")
+        distributed = {**distributed, "token": token}
+        config["execution_mode"] = "multi_machine"
+        for case in cases:
+            case["_distributed"] = distributed
+    report = run_suite(config, cases, output, logs, log, "all", spec.get("plan") or [], False)
     log(f"RESULT {output / 'result.json'} status={report['status']}")
     return 0 if report["status"] == "completed" else 130 if report["status"] == "cancelled" else 1
 

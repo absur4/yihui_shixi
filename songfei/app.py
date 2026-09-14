@@ -19,10 +19,12 @@ import sys
 import threading
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
+from urllib.request import Request, urlopen
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -72,6 +74,61 @@ def parse_log_line(text):
     if match:
         return {"time": match.group(1), "text": match.group(2)}
     return {"time": datetime.now().strftime("%H:%M:%S"), "text": text}
+
+
+def parse_distributed(distributed, require_two=True):
+    """Normalize browser multi-machine input without retaining its token."""
+    distributed = distributed or {}
+    raw_agents = distributed.get("agents") or []
+    if isinstance(raw_agents, str):
+        raw_agents = [item.strip() for item in re.split(r"[,\r\n]+", raw_agents) if item.strip()]
+    agents = []
+    for value in raw_agents:
+        parsed = urlparse(str(value))
+        if (parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.path.rstrip("/")
+                or parsed.query or parsed.fragment or parsed.username or parsed.password):
+            raise ValueError(f"无效的 Agent 地址：{value}")
+        normalized = str(value).rstrip("/")
+        if normalized not in agents:
+            agents.append(normalized)
+    if require_two and len(agents) < 2:
+        raise ValueError("多机协同至少需要两个不同的 Agent 地址")
+    token = str(distributed.get("token") or "")
+    if not token:
+        raise ValueError("多机协同需要 Agent 令牌")
+    return agents, token
+
+
+def check_agents(distributed):
+    """Probe all configured agents concurrently and return sanitized node metadata."""
+    if VSOA_IMPORT_ERROR:
+        raise ValueError(f"控制端 VSOA 不可用：{VSOA_IMPORT_ERROR}")
+    from standalone.distributed import AgentClient
+
+    agents, token = parse_distributed(distributed)
+
+    def probe(index, url):
+        began = time.perf_counter_ns()
+        info = AgentClient(url, token, timeout=4).health()
+        elapsed_ms = (time.perf_counter_ns() - began) / 1e6
+        version = str(info.get("vsoa") or "")
+        expected = str(getattr(vsoa_package, "__version__", ""))
+        if version != expected:
+            raise ValueError(f"VSOA 版本不一致：节点 {version or '未知'}，控制端 {expected}")
+        return {"index": index, "url": url, "ok": True, "latency_ms": round(elapsed_ms, 2),
+                "advertise_host": info.get("advertise_host"), "machine": info.get("machine"),
+                "os": info.get("os"), "python": info.get("python"), "vsoa": version}
+
+    results = [None] * len(agents)
+    with ThreadPoolExecutor(max_workers=min(8, len(agents))) as executor:
+        futures = {executor.submit(probe, index, url): (index, url) for index, url in enumerate(agents)}
+        for future in as_completed(futures):
+            index, url = futures[future]
+            try:
+                results[index] = future.result()
+            except Exception as error:
+                results[index] = {"index": index, "url": url, "ok": False, "error": str(error)}
+    return {"ok": all(item["ok"] for item in results), "agents": results}
 
 
 def read_log_tail(path, limit=LOG_LIMIT):
@@ -154,6 +211,7 @@ def vsoa_backend():
             "transport_options": ["tcp", "udp"],
             "qos_options": [{"value": "default", "label": "原生默认"}],
             "notes": [f"VSOA 已全量接入：S01–S12 共 {len(TEMPLATES)} 个标准条件，全部指标由真实引擎测量，不生成模拟数据。",
+                      "支持本机回环与认证 Agent 多机协同；多机节点仍直接调用 VSOA Python 库。",
                       "网络条件通过真实 UDP 代理进程注入（丢包/延迟/抖动/断网）；TCP 模式不支持网络损伤。",
                       "UDP 单消息上限 60 KiB，TCP 大消息自动应用层分片；发布者 ≤ 8、订阅者 ≤ 16。"]}
 
@@ -207,6 +265,7 @@ class JobManager:
         self.process = None
         self.logs: list[dict] = []
         self.stopping = False
+        self.remote_cleanup = None
 
     def job_dir(self, job_id):
         return RESULTS / "vsoa" / str(job_id)
@@ -283,7 +342,7 @@ class JobManager:
             raise ValueError(translate_validation(str(error))) from None
         return case
 
-    def start(self, template_index, configuration, matrix):
+    def start(self, template_index, configuration, matrix, execution_mode="local", distributed=None):
         with self.lock:
             if self.job and self.job["status"] in ACTIVE_STATES:
                 raise ValueError("已有一个实验正在运行，请先停止或等待其完成")
@@ -301,34 +360,65 @@ class JobManager:
             cases = [dict(case) for case in ENGINE_CASES if case["scenario_id"] == scenario_id]
         else:
             cases = [self._build_case(index, configuration)]
+        if execution_mode not in {"local", "multi_machine"}:
+            raise ValueError("无效的执行模式")
+        distributed_spec = None
+        agent_token = None
+        if execution_mode == "multi_machine":
+            unsupported = []
+            for case in cases:
+                if case.get("test_kind") == "fault_recovery":
+                    unsupported.append(case["scenario_name"] + "（远程故障重启）")
+                elif (case.get("blackout_duration_seconds") or
+                      any(case.get(key, 0) for key in ("loss_rate", "network_delay_ms", "network_jitter_ms"))):
+                    unsupported.append(case["scenario_name"] + "（人工网络损伤）")
+            if unsupported:
+                raise ValueError("当前条件不能用于多机协同：" + "、".join(unsupported))
+            agents, agent_token = parse_distributed(distributed)
+            probe = check_agents({"agents": agents, "token": agent_token})
+            failures = [f"{item['url']}：{item.get('error', '不可用')}" for item in probe["agents"] if not item["ok"]]
+            if failures:
+                raise ValueError("Agent 检测失败；" + "；".join(failures))
+            distributed_spec = {"agents": agents}
         total = sum(case["case_repeats"] for case in cases)
         plan = [{"scenario_id": case["scenario_id"], "scenario_name": case["scenario_name"],
                  "scenario_title": case.get("scenario_title"), "phase": case.get("phase"),
                  "status": "planned", "reason": None, "configuration": case,
                  "planned_repeats": case["case_repeats"]} for case in cases]
         job_id = datetime.now().strftime("%Y%m%dT%H%M%S") + "_" + uuid.uuid4().hex[:8]
+        if distributed_spec:
+            distributed_spec["job_id"] = job_id
         job_dir = self.job_dir(job_id)
         job_dir.mkdir(parents=True, exist_ok=True)
         output = job_dir / "output"
         job = {"id": job_id, "middleware_id": "vsoa", "status": "starting",
                "started": time.time(), "ended": None, "total": total, "matrix": bool(matrix),
                "scenario": scenario_id, "case": template["case"], "template_index": index,
-               "configuration": configuration}
+               "configuration": configuration, "execution_mode": execution_mode,
+               "agents": distributed_spec["agents"] if distributed_spec else []}
         spec = {"config": VSOA_CONFIG, "cases": cases, "plan": plan,
                 "output": str(output), "logs": str(output / "logs")}
+        if distributed_spec:
+            spec["distributed"] = distributed_spec
         (job_dir / "spec.json").write_text(json.dumps(spec, ensure_ascii=False, indent=2), encoding="utf-8")
         self._write_job(job)
         command = [sys.executable, str(RUNNER), str(job_dir / "spec.json")]
         flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
+        environment = dict(os.environ, PYTHONUTF8="1")
+        if agent_token:
+            environment["VSOA_AGENT_TOKEN"] = agent_token
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                   creationflags=flags, cwd=str(VSOA_PY),
-                                   env=dict(os.environ, PYTHONUTF8="1"))
+                                    creationflags=flags, cwd=str(VSOA_PY),
+                                    env=environment)
         with self.lock:
             self.job = job
             self.process = process
             self.stopping = False
+            self.remote_cleanup = (list(distributed_spec["agents"]), agent_token, job_id) if distributed_spec else None
             self.logs = [{"time": datetime.now().strftime("%H:%M:%S"),
-                          "text": f"控制台已启动 VSOA 引擎：{template['case']}" + ("（完整矩阵）" if matrix else "（当前条件）")}]
+                          "text": f"控制台已启动 VSOA 引擎：{template['case']}" +
+                                  ("（多机协同）" if distributed_spec else "（本机回环）") +
+                                  ("（完整矩阵）" if matrix else "（当前条件）")}]
         threading.Thread(target=self._follow, args=(process, job, job_dir), daemon=True).start()
         return job
 
@@ -371,6 +461,7 @@ class JobManager:
             else:
                 status = "error"
             self.stopping = False
+            self.remote_cleanup = None
             job["status"] = status
             job["ended"] = time.time()
             self.logs.append({"time": datetime.now().strftime("%H:%M:%S"),
@@ -379,12 +470,24 @@ class JobManager:
 
     def stop(self):
         with self.lock:
-            job, process = self.job, self.process
+            job, process, remote_cleanup = self.job, self.process, self.remote_cleanup
             if not job or job["status"] not in ACTIVE_STATES:
                 return {"ok": True, "message": "当前没有正在运行的实验"}
             job["status"] = "stopping"
             self.stopping = True
         self._write_job(job)
+        if remote_cleanup:
+            agents, agent_token, owner = remote_cleanup
+            payload = json.dumps({"owner": owner}).encode("utf-8")
+            for agent in agents:
+                try:
+                    request = Request(agent + "/v1/stop-owner", data=payload, method="POST",
+                                      headers={"X-VSOA-Agent-Token": agent_token,
+                                               "Content-Type": "application/json"})
+                    with urlopen(request, timeout=3):
+                        pass
+                except Exception:
+                    pass
         if process is not None:
             _kill_tree(process.pid)
             try:
@@ -550,6 +653,9 @@ class Handler(BaseHTTPRequestHandler):
     def _html(self, data):
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -563,6 +669,9 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if path in {"", "/"} or path == "/index.html":
                 self._html(INDEX_HTML)
+            elif path == "/favicon.ico":
+                self.send_response(204)
+                self.end_headers()
             elif path == "/api/init":
                 self._json(api_init())
             elif path == "/api/state":
@@ -613,7 +722,11 @@ class Handler(BaseHTTPRequestHandler):
             if self.path == "/api/start":
                 if body.get("middleware") != "vsoa":
                     raise ValueError("当前控制台仅接入 VSOA")
-                self._json(MANAGER.start(body.get("template_index"), body.get("configuration") or {}, bool(body.get("matrix"))))
+                self._json(MANAGER.start(body.get("template_index"), body.get("configuration") or {},
+                                         bool(body.get("matrix")), body.get("execution_mode") or "local",
+                                         body.get("distributed") or {}))
+            elif self.path == "/api/agents/check":
+                self._json(check_agents(body.get("distributed") or {}))
             elif self.path == "/api/stop":
                 self._json(MANAGER.stop())
             elif self.path == "/api/shutdown":

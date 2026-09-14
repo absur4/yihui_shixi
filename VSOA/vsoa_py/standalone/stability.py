@@ -62,18 +62,24 @@ def subscriber(spec):
     lock = threading.Lock()
     clients, threads = [], []
     expected_payload = bytes(index % 251 for index in range(config["message_size_bytes"]))
+    clock_offset_ns = int(spec.get("clock_offset_ns", 0))
+    clock_uncertainty_ns = int(spec.get("clock_uncertainty_ns", 0))
+
+    def common_now_ns():
+        return time.perf_counter_ns() + clock_offset_ns
     sample_names = {field: f"subscriber-{identifier}.{field}.f64" for field in ("latencies_ms", "jitter_samples_ms")}
     sample_files = {field: open(folder / name, "wb") for field, name in sample_names.items()}
 
     def receive(native, url, payload, quick):
-        arrived = time.perf_counter_ns()
+        arrived = common_now_ns()
         with lock:
             if not control or arrived > control["end_ns"] + int(config["drain_seconds"] * 1e9):
                 return
             params = payload.param
             try:
                 source, sequence, sent_ns = params["publisher"], params["sequence"], params["send_ns"]
-                valid = (0 <= source < len(seen) and 0 <= sequence < planned and arrived >= sent_ns
+                valid = (0 <= source < len(seen) and 0 <= sequence < planned
+                         and arrived + clock_uncertainty_ns >= sent_ns
                          and bytes(payload.data or b"") == expected_payload and not quick)
             except (KeyError, TypeError):
                 valid = False
@@ -84,7 +90,7 @@ def subscriber(spec):
                 counts["duplicates"] += 1
                 return
             seen[source][sequence] = 1
-            delay = (arrived - sent_ns) / 1e6
+            delay = max(0, arrived - sent_ns) / 1e6
             latency.add(delay)
             sample_files["latencies_ms"].write(struct.pack("d", delay))
             if source in previous:
@@ -101,10 +107,12 @@ def subscriber(spec):
 
     try:
         for endpoint in spec["endpoints"]:
+            host, port = ((endpoint.get("host"), endpoint.get("port"))
+                          if isinstance(endpoint, dict) else ("127.0.0.1", endpoint))
             client = vsoa.Client()
             clients.append(client)
             client.onmessage = receive
-            if client.connect(f"vsoa://127.0.0.1:{endpoint}", timeout=5) != vsoa.Client.CONNECT_OK:
+            if client.connect(f"vsoa://{host}:{port}", timeout=5) != vsoa.Client.CONNECT_OK:
                 raise ConnectionError("Stability subscriber could not connect")
             thread = threading.Thread(target=client.run, daemon=True)
             threads.append(thread)
@@ -123,7 +131,7 @@ def subscriber(spec):
         with lock:
             control.update(initial_control)
         cutoff = control["end_ns"] + int(config["drain_seconds"] * 1e9)
-        wait_until_ns(cutoff)
+        wait_until_ns(cutoff - clock_offset_ns)
         published = wait_file(folder / "counts.json", 10)["publishers"]
         with lock:
             result = {"subscriber": identifier, "expected_deliveries": sum(published),
