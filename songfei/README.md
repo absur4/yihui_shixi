@@ -1,9 +1,11 @@
 # Songfei 统一通信性能实验台（CONSOLE 2.0）
 
-以 `example.html` 为原型的统一可视化控制台，当前已**完整接入 VSOA**：S01–S12 全部标准条件
-（37 个条件 × 各自重复轮次）均由 `VSOA/vsoa_py/standalone` 真实测量引擎执行，15 项指标
-（延迟、P95/P99、吞吐、抖动、丢包与恢复、CPU、内存、启动、发现、重复/乱序/损坏等）
-全部来自真实测量，不生成任何模拟数据。
+以 `example.html` 为原型的统一可视化控制台。控制台本身**不包含任何中间件逻辑**，
+它按固定目录顺序扫描各中间件模块的 `adapter.py` 并自动注册：
+
+```
+vsoa → dds → mqtt → zenoh        （目录名大小写均可，必须有 adapter.py 才会被注册）
+```
 
 启动：
 
@@ -11,29 +13,57 @@
 python songfei/run.py
 ```
 
-浏览器打开 `http://127.0.0.1:8787/`：
-
-- 左侧按 `example.html` 的参数体系配置：payload、速率、发布者/订阅者数量、消息数/时长、
-  传输模式（TCP/UDP）、QoS、重复轮次、随机种子、网络条件（延迟/抖动/丢包，经真实 UDP 代理注入）、
-  预热/排空/超时。
-- **开始回环测试**：用当前表单参数运行所选条件（任意参数可改，后端按引擎规则校验并给出中文错误提示）。
-- **运行此场景完整矩阵**：忽略表单修改，按标准参数运行该场景全部条件。
-- 右侧实时展示：指标卡（延迟/P95/P99/吞吐/丢失）、延迟样本曲线（取自 subscriber-0 原始样本）、
-  统一指标表、运行日志；每轮结果可单独切换查看，"查看完整结果"显示引擎原始 JSON。
-- 实验产物保存在 `songfei/results/vsoa/<job_id>/`（`job.json`、`spec.json`、`console.log`、
-  `output/result.json`、`output/runs/`、`output/artifacts/`），重启服务后仍可在历史记录中回看，
-  并可打开完整报告页 `/files/vsoa/<job_id>/report.html`。
-
-## 架构
+浏览器打开 `http://127.0.0.1:8787/`。终端会打印已加载的中间件与条件数量，例如：
 
 ```
-songfei/app.py          控制台 HTTP 服务（标准库实现，实现 example.html 的 API 契约）
-songfei/vsoa_runner.py  引擎子进程执行器（调用 standalone.engine.run_suite，可整体终止）
-songfei/static/index.html  前端（复制自 example.html，默认中间件改为 vsoa，会话 token 由服务注入）
-songfei/results/        实验产物（按中间件/作业分目录）
+统一通信性能实验台: http://127.0.0.1:8787/
+  已加载 vsoa: VSOA · 37 个标准条件
+  已加载 mqtt: MQTT · 不可用（入口缺失）
 ```
 
-API 契约（供其他中间件后续接入参考）：
+## 控制台依赖的适配器契约（五个钩子）
+
+| 钩子 | 必需 | 作用 |
+|---|---|---|
+| `metadata()` | 是 | 中间件元数据与**真实**可用性（`available` 为 false 时控制台显示"入口缺失"并展示 `notes`） |
+| `catalog()` | 是 | S01–S12 全部标准条件（UI 输入字段，见根 README §5） |
+| `build_cases(template_index, configuration, matrix)` | 是 | 把"当前表单参数"或"完整矩阵"展开成引擎可执行条件（`matrix=True` 时忽略表单，返回该场景全部标准条件） |
+| `base_config()` | 否 | 引擎全局配置，写入 `spec.json` 的 `config` |
+| `runner_command()` | 是 | 启动执行器的命令行（可指定专用解释器，如中间件私有 venv） |
+
+同时兼容根 README §4 的写法（`create_adapter()` / `Adapter` 类，含 `run()`）。
+加载失败时注册为 `available=false`，控制台仍能正常启动并提示原因。
+
+执行器协议：控制台把 `spec.json` 写到作业目录，再用 `runner_command()` 启动子进程：
+
+```
+spec.json = {middleware, config, cases, plan, output, logs}
+产物       = output/result.json、output/runs/<run_id>.json、output/artifacts/<run_id>/
+日志       = stdout 每行 [HH:MM:SS] …，结束打印 RESULT <path> status=<status>
+退出码     = 0 全部完成 / 130 取消 / 其他为失败
+```
+
+## 目录
+
+```
+songfei/
+├─ app.py                 控制台 HTTP 服务（标准库实现；通用适配器加载）
+├─ run.py                 启动入口
+├─ static/index.html      前端页面（复制自 example.html，会话 token 由服务注入）
+└─ results/<中间件>/<job_id>/   实验产物归档（job.json / spec.json / console.log / output/**）
+```
+
+当前接入状态：
+
+| 中间件 | 位置 | 状态 |
+|---|---|---|
+| VSOA | `VSOA/adapter.py` + `VSOA/console_runner.py` | 已完成（参考实现） |
+| DDS | `DDS/adapter.py` + `DDS/console_runner.py` | 待实现，要求见 `DDS/DDS_readme_1.md` |
+| MQTT | `mqtt/adapter.py` + `mqtt/console_runner.py` | 待实现，要求见 `mqtt/mqtt_readme_1.md` |
+
+新增中间件只改自己目录，不需要改 `songfei/` 或 `interfaces/`。
+
+## API（前端 ↔ 控制台）
 
 - `GET /api/init` → `{middleware:[...], catalogs:{...}, names:{...}, history:[...]}`
 - `GET /api/state` → `{job, logs}`
@@ -41,5 +71,3 @@ API 契约（供其他中间件后续接入参考）：
 - `POST /api/start`（`{middleware, template_index, configuration, matrix}`）
 - `POST /api/stop`、`POST /api/shutdown`（请求头需 `X-MQTT-Token`）
 - `GET /files/<middleware>/<job>/report.html`
-
-接入新中间件时：实现与 VSOA 相同的“条件目录 + 作业执行器”结构即可复用整套前端。

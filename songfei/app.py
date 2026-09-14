@@ -1,14 +1,20 @@
-"""统一通信性能实验台：为 example.html 控制台提供 API，VSOA 全量真实测量。
+"""统一通信性能实验台：为 example.html 控制台提供 API，多中间件通用加载。
 
-前端:  static/index.html（源自 example.html，token 注入）
-引擎:  VSOA/vsoa_py/standalone（S01-S12 标准条件全部由真实引擎执行）
-产物:  results/vsoa/<job_id>/{job.json, spec.json, console.log, output/...}
+前端:     static/index.html（源自 example.html，token 注入）
+适配器:    <middleware>/adapter.py（契约见仓库根 README.md）
+执行器:    <middleware>/console_runner.py（由适配器 runner_command() 指定，子进程运行）
+产物:      results/<middleware>/<job_id>/{job.json, spec.json, console.log, output/...}
 
-不做任何模拟或伪造：未接入的中间件不会出现在下拉列表中。
+控制台只依赖适配器的五个钩子：
+    metadata() / catalog() / build_cases(template_index, configuration, matrix)
+    / base_config()（可选）/ runner_command()
+按固定顺序扫描 vsoa → dds → mqtt → zenoh（目录大小写均可）。
+只注册存在 adapter.py 的目录；导入失败时注册为"入口缺失"并给出原因，不让控制台启动失败。
 """
 
 from __future__ import annotations
 
+import importlib.util
 import io
 import json
 import os
@@ -28,25 +34,14 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 STATIC = HERE / "static"
 RESULTS = HERE / "results"
-VSOA_PY = ROOT / "VSOA" / "vsoa_py"
-RUNNER = HERE / "vsoa_runner.py"
-BASE_CONFIG = VSOA_PY / "delivery_template" / "config.yaml"
 
-for _path in (str(ROOT), str(VSOA_PY)):
-    if _path not in sys.path:
-        sys.path.insert(0, _path)
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
 from interfaces.scenarios import SCENARIOS  # noqa: E402
 
-try:
-    import vsoa as vsoa_package  # noqa: E402
-    from standalone.configuration import load_config, validate_case  # noqa: E402
-    from standalone.qualification import qualification_cases  # noqa: E402
-    VSOA_IMPORT_ERROR: str | None = None
-except Exception as error:  # 环境异常时控制台仍可启动，但 VSOA 不可用
-    VSOA_IMPORT_ERROR = f"{type(error).__name__}: {error}"
-
 SCENARIO_TITLES = {scenario.scenario_id: scenario.title for scenario in SCENARIOS}
+MIDDLEWARE_ORDER = ("vsoa", "dds", "mqtt", "zenoh")
 ACTIVE_STATES = {"starting", "running", "stopping"}
 LOG_LIMIT = 400
 SAMPLE_LIMIT = 4000
@@ -85,88 +80,64 @@ def read_log_tail(path, limit=LOG_LIMIT):
     return [entry for entry in entries if entry["text"]][-limit:]
 
 
-def translate_validation(message):
-    """把引擎的英文校验错误翻译为面向使用者的中文提示。"""
-    rules = (
-        ("message_size_bytes", "消息大小超出限制：UDP 单消息最大 60000 字节，TCP 最大 16 MiB"),
-        ("publish_rate_hz", "发送速率需在 1–50000 Hz 之间"),
-        ("publisher_count", "VSOA 发布者数量需在 1–8 之间"),
-        ("subscriber_count", "VSOA 订阅者数量需在 1–16 之间"),
-        ("Network impairment", "网络损伤（丢包/延迟/抖动）仅支持 UDP 传输模式"),
-        ("planned deliveries", "单轮计划交付总数超过 200 万，请降低时长、速率或拓扑规模"),
-        ("duration_seconds", "正式时长需在 0.1–3600 秒之间"),
-        ("loss_rate", "丢包率需在 0–100% 之间"),
-        ("network_delay_ms", "基础延迟需在 0–1000 ms 之间"),
-        ("network_jitter_ms", "网络抖动需在 0–1000 ms 之间"),
-        ("transport_mode", "传输模式仅支持 TCP 或 UDP"),
-    )
-    for key, text in rules:
-        if key in message:
-            return text
-    return f"配置校验失败：{message}"
+def _find_adapter_folder(name):
+    """按 小写 / 原样 / 大写 / 首字母大写 查找含 adapter.py 的目录。"""
+    for candidate in (name, name.lower(), name.upper(), name.capitalize()):
+        folder = ROOT / candidate
+        if (folder / "adapter.py").exists():
+            return folder
+    return None
 
 
-def build_catalog():
-    """加载 VSOA 标准配置并展开 S01–S12 全部标准条件。"""
-    config, _expanded = load_config(BASE_CONFIG)
-    cases, _plan = qualification_cases(config, "all")
-    templates = []
-    for case in cases:
-        templates.append({
-            "scenario_name": case["scenario_id"],
-            "case": case["scenario_name"],
-            "condition_id": case["scenario_name"],
-            "title": case.get("scenario_title"),
-            "payload_size_bytes": case["message_size_bytes"],
-            "publish_rate_hz": case["publish_rate_hz"],
-            "publisher_count": case["publisher_count"],
-            "subscriber_count": case["subscriber_count"],
-            "message_count": case["message_count"],
-            "duration_seconds": case["duration_seconds"],
-            "repeats": case["case_repeats"],
-            "random_seed": case["seed"],
-            "warmup_seconds": case["warmup_seconds"],
-            "drain_seconds": case["drain_seconds"],
-            "timeout_seconds": case["startup_timeout_seconds"],
-            "network_delay_ms": case["network_delay_ms"],
-            "network_jitter_ms": case["network_jitter_ms"],
-            "network_loss_rate": case["loss_rate"],
-            "network_profile": case.get("network_profile"),
-            "transport_mode": case["transport_mode"],
-            "qos_profile": case.get("qos_profile", "default"),
-        })
-    return config, templates, cases
+def _import_adapter(name, folder):
+    spec = importlib.util.spec_from_file_location(f"console_adapter_{name}", folder / "adapter.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
-if VSOA_IMPORT_ERROR is None:
-    VSOA_CONFIG, TEMPLATES, ENGINE_CASES = build_catalog()
-else:  # pragma: no cover
-    VSOA_CONFIG, TEMPLATES, ENGINE_CASES = None, [], []
+def load_backends():
+    """扫描各中间件目录并注册适配器。"""
+    registry: dict[str, dict] = {}
+    for name in MIDDLEWARE_ORDER:
+        folder = _find_adapter_folder(name)
+        if folder is None:
+            continue
+        module, meta, templates, config = None, None, [], None
+        try:
+            module = _import_adapter(name, folder)
+            meta = module.metadata() if hasattr(module, "metadata") else module.create_adapter().metadata()
+            if meta.get("available"):
+                templates = list(module.catalog())
+                if hasattr(module, "base_config"):
+                    config = module.base_config()
+        except Exception as error:
+            print(f"警告：{name} 适配器加载失败：{type(error).__name__}: {error}", flush=True)
+            module = None
+            meta = None
+        if meta is None:
+            meta = {"id": name, "name": name, "label": name.upper(), "available": False, "version": None,
+                    "transport_options": [], "qos_options": [],
+                    "notes": [f"{name}/adapter.py 加载失败，请查看控制台启动日志。"]}
+        middleware_id = meta.get("id") or getattr(module, "MIDDLEWARE_ID", None) or name
+        registry[middleware_id] = {"module": module, "meta": meta, "folder": folder,
+                                   "templates": templates, "config": config}
+    return registry
 
 
-def vsoa_backend():
-    if VSOA_IMPORT_ERROR:
-        return {"id": "vsoa", "label": "VSOA", "available": False, "version": None,
-                "transport_options": [], "qos_options": [],
-                "notes": [f"VSOA 引擎导入失败：{VSOA_IMPORT_ERROR}"]}
-    return {"id": "vsoa", "label": "VSOA", "available": True,
-            "version": getattr(vsoa_package, "__version__", None),
-            "transport_options": ["tcp", "udp"],
-            "qos_options": [{"value": "default", "label": "原生默认"}],
-            "notes": [f"VSOA 已全量接入：S01–S12 共 {len(TEMPLATES)} 个标准条件，全部指标由真实引擎测量，不生成模拟数据。",
-                      "网络条件通过真实 UDP 代理进程注入（丢包/延迟/抖动/断网）；TCP 模式不支持网络损伤。",
-                      "UDP 单消息上限 60 KiB，TCP 大消息自动应用层分片；发布者 ≤ 8、订阅者 ≤ 16。"]}
+BACKENDS = load_backends()
 
 
 def map_run(run):
     """把引擎单轮报告映射为控制台字段（保留全部原始字段供详情查看）。"""
     configuration = dict(run.get("configuration") or {})
-    configuration["case"] = run.get("scenario_title") or run.get("scenario_name")
+    configuration.setdefault("case", run.get("scenario_title") or run.get("scenario_name"))
     mapped = dict(run)
     mapped.update({
-        "unique_deliveries": run.get("messages_received"),
-        "achieved_publish_rate_hz": run.get("achieved_publish_rate_hz_per_publisher"),
-        "latency_sample_count": ((run.get("statistics") or {}).get("latency_ms") or {}).get("count"),
+        "unique_deliveries": run.get("unique_deliveries", run.get("messages_received")),
+        "achieved_publish_rate_hz": run.get("achieved_publish_rate_hz", run.get("achieved_publish_rate_hz_per_publisher")),
+        "latency_sample_count": run.get("latency_sample_count")
+                                or ((run.get("statistics") or {}).get("latency_ms") or {}).get("count"),
         "configuration": configuration,
     })
     return mapped
@@ -199,28 +170,29 @@ def _kill_tree(pid):
 
 
 class JobManager:
-    """单活动作业管理：启动、跟随日志、停止、查询结果与历史。"""
+    """单活动作业管理：启动、跟随日志、停止、查询结果与历史（多中间件通用）。"""
 
-    def __init__(self):
+    def __init__(self, backends):
+        self.backends = backends
         self.lock = threading.Lock()
         self.job = None
         self.process = None
         self.logs: list[dict] = []
         self.stopping = False
 
-    def job_dir(self, job_id):
-        return RESULTS / "vsoa" / str(job_id)
+    def job_dir(self, middleware_id, job_id):
+        return RESULTS / str(middleware_id) / str(job_id)
 
     def _write_job(self, job):
-        path = self.job_dir(job["id"]) / "job.json"
+        path = self.job_dir(job["middleware_id"], job["id"]) / "job.json"
         path.parent.mkdir(parents=True, exist_ok=True)
         temporary = path.with_name("job.json.tmp")
         temporary.write_text(json.dumps(job, ensure_ascii=False, indent=2), encoding="utf-8")
         os.replace(temporary, path)
 
-    def load_jobs(self):
+    def load_jobs(self, middleware_id):
         records = []
-        base = RESULTS / "vsoa"
+        base = RESULTS / str(middleware_id)
         if base.exists():
             for job_file in sorted(base.glob("*/job.json")):
                 data = read_json_safe(job_file, attempts=1)
@@ -231,104 +203,65 @@ class JobManager:
 
     def recover(self):
         """服务重启后，把残留的运行中状态标记为已中断。"""
-        for job in self.load_jobs():
-            if job.get("status") in ACTIVE_STATES:
-                job["status"] = "interrupted"
-                job["ended"] = job.get("ended") or time.time()
-                self._write_job(job)
+        if not RESULTS.exists():
+            return
+        for job_file in RESULTS.glob("*/*/job.json"):
+            data = read_json_safe(job_file, attempts=1)
+            if data and data.get("status") in ACTIVE_STATES:
+                data["status"] = "interrupted"
+                data["ended"] = data.get("ended") or time.time()
+                temporary = job_file.with_name("job.json.tmp")
+                temporary.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+                os.replace(temporary, job_file)
 
-    def _number(self, values, key, default, minimum, maximum, integer=False):
-        raw = values.get(key, default)
-        try:
-            value = int(raw) if integer else float(raw)
-        except (TypeError, ValueError):
-            raise ValueError(f"参数 {key} 必须是数字") from None
-        if minimum is not None and value < minimum:
-            raise ValueError(f"参数 {key} 低于允许的最小值 {minimum}")
-        if maximum is not None and value > maximum:
-            raise ValueError(f"参数 {key} 超过允许的最大值 {maximum}")
-        return value
-
-    def _build_case(self, template_index, configuration):
-        """用控制台表单参数覆盖标准条件，返回可直接交给引擎的 case。"""
-        case = dict(ENGINE_CASES[template_index])
-        values = configuration or {}
-        case.update(
-            message_size_bytes=self._number(values, "payload_size_bytes", case["message_size_bytes"], 1, 16 * 1024 ** 2, True),
-            publish_rate_hz=self._number(values, "publish_rate_hz", case["publish_rate_hz"], 1, 50000),
-            publisher_count=self._number(values, "publisher_count", case["publisher_count"], 1, 8, True),
-            subscriber_count=self._number(values, "subscriber_count", case["subscriber_count"], 1, 16, True),
-            message_count=self._number(values, "message_count", case["message_count"], 0, 100_000_000, True),
-            duration_seconds=self._number(values, "duration_seconds", case["duration_seconds"], 0.1, 3600),
-            warmup_seconds=self._number(values, "warmup_seconds", case["warmup_seconds"], 0, 60),
-            drain_seconds=self._number(values, "drain_seconds", case["drain_seconds"], 0.05, 30),
-            network_delay_ms=self._number(values, "network_delay_ms", case["network_delay_ms"], 0, 1000),
-            network_jitter_ms=self._number(values, "network_jitter_ms", case["network_jitter_ms"], 0, 1000),
-        )
-        case["case_repeats"] = self._number(values, "repeats", case["case_repeats"], 1, 30, True)
-        case["seed"] = self._number(values, "random_seed", case["seed"], 0, 2 ** 31 - 1, True)
-        case["startup_timeout_seconds"] = self._number(values, "timeout_seconds", case["startup_timeout_seconds"], 2, 120)
-        case["loss_rate"] = self._number(values, "network_loss_rate", case["loss_rate"], 0, 1)
-        transport = str(values.get("transport_mode") or case["transport_mode"]).lower()
-        if transport not in {"tcp", "udp"}:
-            raise ValueError("传输模式仅支持 TCP 或 UDP")
-        case["transport_mode"] = transport
-        case["qos_profile"] = str(values.get("qos_profile") or case.get("qos_profile") or "default")
-        case["payload_size_bytes"] = case["message_size_bytes"]
-        case["network_loss_rate"] = case["loss_rate"]
-        case["random_seed"] = case["seed"]
-        try:
-            validate_case(case)
-        except ValueError as error:
-            raise ValueError(translate_validation(str(error))) from None
-        return case
-
-    def start(self, template_index, configuration, matrix):
+    def start(self, middleware_id, template_index, configuration, matrix):
         with self.lock:
             if self.job and self.job["status"] in ACTIVE_STATES:
                 raise ValueError("已有一个实验正在运行，请先停止或等待其完成")
-        if VSOA_IMPORT_ERROR or not ENGINE_CASES:
-            raise ValueError("VSOA 引擎不可用，无法启动测试")
+        entry = self.backends.get(middleware_id)
+        if entry is None:
+            raise ValueError(f"未知中间件：{middleware_id}（已接入：{', '.join(self.backends) or '无'}）")
+        label = entry["meta"].get("label") or middleware_id
+        if entry["module"] is None or not entry["meta"].get("available") or not entry["templates"]:
+            raise ValueError(f"{label} 适配器不可用，无法启动测试")
+        cases = list(entry["module"].build_cases(template_index, configuration, matrix))  # ValueError → 400
+        if not cases:
+            raise ValueError("没有可执行的条件")
         try:
             index = int(template_index)
-        except (TypeError, ValueError):
-            raise ValueError("无效的测试条件") from None
-        if not 0 <= index < len(ENGINE_CASES):
-            raise ValueError("无效的测试条件")
-        template = TEMPLATES[index]
-        scenario_id = template["scenario_name"]
-        if matrix:
-            cases = [dict(case) for case in ENGINE_CASES if case["scenario_id"] == scenario_id]
-        else:
-            cases = [self._build_case(index, configuration)]
-        total = sum(case["case_repeats"] for case in cases)
-        plan = [{"scenario_id": case["scenario_id"], "scenario_name": case["scenario_name"],
+            template = entry["templates"][index]
+        except (TypeError, ValueError, IndexError):
+            template = {"scenario_name": "", "case": ""}
+        scenario_id = template.get("scenario_name", "")
+        total = sum(int(case.get("case_repeats") or case.get("repeats") or 1) for case in cases)
+        plan = [{"scenario_id": case.get("scenario_id"), "scenario_name": case.get("scenario_name"),
                  "scenario_title": case.get("scenario_title"), "phase": case.get("phase"),
                  "status": "planned", "reason": None, "configuration": case,
-                 "planned_repeats": case["case_repeats"]} for case in cases]
+                 "planned_repeats": int(case.get("case_repeats") or 1)} for case in cases]
         job_id = datetime.now().strftime("%Y%m%dT%H%M%S") + "_" + uuid.uuid4().hex[:8]
-        job_dir = self.job_dir(job_id)
+        job_dir = self.job_dir(middleware_id, job_id)
         job_dir.mkdir(parents=True, exist_ok=True)
         output = job_dir / "output"
-        job = {"id": job_id, "middleware_id": "vsoa", "status": "starting",
+        job = {"id": job_id, "middleware_id": middleware_id, "status": "starting",
                "started": time.time(), "ended": None, "total": total, "matrix": bool(matrix),
-               "scenario": scenario_id, "case": template["case"], "template_index": index,
+               "scenario": scenario_id, "case": template.get("case", ""), "template_index": template_index,
                "configuration": configuration}
-        spec = {"config": VSOA_CONFIG, "cases": cases, "plan": plan,
+        spec = {"middleware": middleware_id, "config": entry["config"] or {}, "cases": cases, "plan": plan,
                 "output": str(output), "logs": str(output / "logs")}
-        (job_dir / "spec.json").write_text(json.dumps(spec, ensure_ascii=False, indent=2), encoding="utf-8")
+        (job_dir / "spec.json").write_text(json.dumps(spec, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
         self._write_job(job)
-        command = [sys.executable, str(RUNNER), str(job_dir / "spec.json")]
+        command = list(entry["module"].runner_command()) + [str(job_dir / "spec.json")]
         flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                   creationflags=flags, cwd=str(VSOA_PY),
+                                   creationflags=flags, cwd=str(entry["folder"]),
                                    env=dict(os.environ, PYTHONUTF8="1"))
         with self.lock:
             self.job = job
             self.process = process
             self.stopping = False
             self.logs = [{"time": datetime.now().strftime("%H:%M:%S"),
-                          "text": f"控制台已启动 VSOA 引擎：{template['case']}" + ("（完整矩阵）" if matrix else "（当前条件）")}]
+                          "text": f"控制台已启动 {label} 引擎：{template.get('case', '')}"
+                                  + ("（完整矩阵）" if matrix else "（当前条件）")}]
         threading.Thread(target=self._follow, args=(process, job, job_dir), daemon=True).start()
         return job
 
@@ -411,15 +344,18 @@ class JobManager:
                 samples.append({"sequence": index, "latency": round(float(value), 4)})
         link = None
         for item in run.get("link_metrics") or []:
-            if item.get("publisher") == 0 and item.get("subscriber") == 0:
-                link = {"latency_p95_ms": (item.get("latency_ms") or {}).get("p95")}
+            publisher = item.get("publisher", item.get("publisher_id"))
+            subscriber = item.get("subscriber", item.get("subscriber_id"))
+            if publisher == 0 and subscriber == 0:
+                latency = item.get("latency_ms")
+                link = {"latency_p95_ms": latency.get("p95") if isinstance(latency, dict) else latency}
                 break
         if link is None:
             link = {"latency_p95_ms": run.get("latency_p95_ms")}
         return samples, link
 
-    def results(self, job_id, run_id=None):
-        job_dir = self.job_dir(job_id)
+    def results(self, middleware_id, job_id, run_id=None):
+        job_dir = self.job_dir(middleware_id, job_id)
         if not (job_dir / "job.json").exists():
             raise ValueError("找不到该实验记录")
         result = read_json_safe(job_dir / "output" / "result.json")
@@ -451,14 +387,17 @@ class JobManager:
                 "report": bool(result and result.get("runs")), "logs": logs}
 
 
-MANAGER = JobManager()
+MANAGER = JobManager(BACKENDS)
 
 
 def api_init():
-    return {"middleware": [vsoa_backend()],
-            "catalogs": {"vsoa": TEMPLATES},
+    default_middleware = next(iter(BACKENDS), None)
+    history = ([{"id": job["id"], "status": job.get("status")}
+                for job in MANAGER.load_jobs(default_middleware)] if default_middleware else [])
+    return {"middleware": [entry["meta"] for entry in BACKENDS.values()],
+            "catalogs": {middleware_id: entry["templates"] for middleware_id, entry in BACKENDS.items()},
             "names": SCENARIO_TITLES,
-            "history": [{"id": job["id"], "status": job.get("status")} for job in MANAGER.load_jobs()]}
+            "history": history}
 
 
 def escape(value):
@@ -482,6 +421,8 @@ def build_report(job, result):
     runs = result.get("runs") or []
     summaries = result.get("scenario_summaries") or []
     completed = sum(1 for run in runs if run.get("status") == "completed")
+    label = (BACKENDS.get(job.get("middleware_id"), {}).get("meta", {}) or {}).get("label") or job.get("middleware_id", "")
+    environment = result.get("environment") or {}
 
     def summary_row(item):
         return (f"<tr><td>{escape(item.get('scenario_name'))}</td><td>{escape(item.get('repeat_count'))}</td>"
@@ -501,13 +442,13 @@ def build_report(job, result):
                 f"<td>{format_metric(run.get('jitter_ms'))}</td><td>{format_metric(run.get('cpu_percent'), 2)}</td>"
                 f"<td>{format_metric(run.get('memory_mb'), 2)}</td></tr>")
 
-    environment = result.get("environment") or {}
     limitations = "".join(f"<li>{escape(item)}</li>" for item in result.get("limitations") or [])
-    header = (f"<h1>VSOA 实验报告 · {escape(job['id'])}</h1>"
+    header = (f"<h1>{escape(label)} 实验报告 · {escape(job['id'])}</h1>"
               f"<p class='meta'>状态 {escape(result.get('status'))} · 完成 {completed}/{escape(result.get('planned_runs') or len(runs))} 轮 · "
               f"开始 {escape(result.get('test_start_time'))} · 结束 {escape(result.get('test_end_time'))}</p>"
-              f"<p class='meta'>环境：{escape(environment.get('os'))} · Python {escape(environment.get('python_embedded'))} · "
-              f"VSOA {escape(environment.get('vsoa'))} · {escape(environment.get('logical_cpus'))} 逻辑核心 · "
+              f"<p class='meta'>环境：{escape(environment.get('os'))} · Python {escape(environment.get('python_version') or environment.get('python_embedded'))} · "
+              f"{escape(label)} {escape(environment.get('version') or environment.get('vsoa') or environment.get('middleware_version'))} · "
+              f"{escape(environment.get('logical_cpus') or environment.get('logical_cpu_count'))} 逻辑核心 · "
               f"{escape(environment.get('topology'))}</p>")
     summary_table = ("<h2>条件汇总</h2><table><thead><tr><th>条件</th><th>轮数</th><th>延迟均值 ms</th>"
                      "<th>P95 ms</th><th>P99 ms</th><th>吞吐 Mbps</th><th>原始丢失 %</th><th>CPU %</th><th>内存 MB</th>"
@@ -523,7 +464,7 @@ def build_report(job, result):
              "th,td{border:1px solid #2c3b40;padding:7px 9px;text-align:right}th:first-child,td:first-child{text-align:left}"
              "th{background:#151d20;color:#9bb2bd}tr:nth-child(even) td{background:#111a1f}li{color:#91a7ae;margin:4px 0}")
     return (f"<!doctype html><html lang='zh-CN'><head><meta charset='utf-8'>"
-            f"<title>VSOA 实验报告 {escape(job['id'])}</title><style>{style}</style></head>"
+            f"<title>{escape(label)} 实验报告 {escape(job['id'])}</title><style>{style}</style></head>"
             f"<body>{header}{summary_table}{runs_table}{limitations_block}</body></html>")
 
 
@@ -540,7 +481,7 @@ class Handler(BaseHTTPRequestHandler):
         return
 
     def _json(self, payload, status=200):
-        data = json.dumps(payload, ensure_ascii=False).encode("utf-8")
+        data = json.dumps(payload, ensure_ascii=False, default=str).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
         self.send_header("Content-Length", str(len(data)))
@@ -557,6 +498,12 @@ class Handler(BaseHTTPRequestHandler):
     def _authorized(self):
         return self.headers.get("X-MQTT-Token") == TOKEN
 
+    def _middleware_param(self, query):
+        middleware = (query.get("middleware") or [""])[0]
+        if middleware not in BACKENDS:
+            raise ValueError(f"未知中间件：{middleware or '（空）'}（已接入：{', '.join(BACKENDS) or '无'}）")
+        return middleware
+
     def do_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
@@ -568,18 +515,13 @@ class Handler(BaseHTTPRequestHandler):
             elif path == "/api/state":
                 self._json(MANAGER.state())
             elif path == "/api/history":
-                middleware = (parse_qs(parsed.query).get("middleware") or [""])[0]
-                if middleware != "vsoa":
-                    raise ValueError("当前控制台仅接入 VSOA")
-                self._json(MANAGER.load_jobs())
+                self._json(MANAGER.load_jobs(self._middleware_param(parse_qs(parsed.query))))
             elif path == "/api/results":
                 params = parse_qs(parsed.query)
-                middleware = (params.get("middleware") or [""])[0]
+                middleware = self._middleware_param(params)
                 job_id = (params.get("job") or [""])[0]
                 run_id = (params.get("run") or [None])[0]
-                if middleware != "vsoa":
-                    raise ValueError("当前控制台仅接入 VSOA")
-                self._json(MANAGER.results(job_id, run_id))
+                self._json(MANAGER.results(middleware, job_id, run_id))
             elif path.startswith("/files/"):
                 self._files(path)
             else:
@@ -589,15 +531,15 @@ class Handler(BaseHTTPRequestHandler):
 
     def _files(self, path):
         parts = [unquote(part) for part in path.split("/") if part]
-        if len(parts) != 4 or parts[1] != "vsoa" or parts[3] != "report.html":
+        if len(parts) != 4 or parts[3] != "report.html" or parts[1] not in BACKENDS:
             self._json({"error": "not found"}, 404)
             return
-        job_id = parts[2]
+        middleware, job_id = parts[1], parts[2]
         if not re.fullmatch(r"[A-Za-z0-9_\-]+", job_id):
             self._json({"error": "not found"}, 404)
             return
-        job = read_json_safe(MANAGER.job_dir(job_id) / "job.json")
-        result = read_json_safe(MANAGER.job_dir(job_id) / "output" / "result.json")
+        job = read_json_safe(MANAGER.job_dir(middleware, job_id) / "job.json")
+        result = read_json_safe(MANAGER.job_dir(middleware, job_id) / "output" / "result.json")
         if not job or not result:
             self._json({"error": "not found"}, 404)
             return
@@ -611,9 +553,11 @@ class Handler(BaseHTTPRequestHandler):
             length = int(self.headers.get("Content-Length", "0"))
             body = json.loads(self.rfile.read(length) or b"{}")
             if self.path == "/api/start":
-                if body.get("middleware") != "vsoa":
-                    raise ValueError("当前控制台仅接入 VSOA")
-                self._json(MANAGER.start(body.get("template_index"), body.get("configuration") or {}, bool(body.get("matrix"))))
+                middleware = str(body.get("middleware", ""))
+                if middleware not in BACKENDS:
+                    raise ValueError(f"未知中间件：{middleware or '（空）'}（已接入：{', '.join(BACKENDS) or '无'}）")
+                self._json(MANAGER.start(middleware, body.get("template_index"),
+                                         body.get("configuration") or {}, bool(body.get("matrix"))))
             elif self.path == "/api/stop":
                 self._json(MANAGER.stop())
             elif self.path == "/api/shutdown":
@@ -638,10 +582,11 @@ def serve(host="127.0.0.1", port=8787, open_browser=True):
         import webbrowser
         threading.Timer(.35, lambda: webbrowser.open(f"http://{host}:{port}/")).start()
     print(f"统一通信性能实验台: http://{host}:{port}/", flush=True)
-    if VSOA_IMPORT_ERROR:
-        print(f"警告：VSOA 引擎导入失败：{VSOA_IMPORT_ERROR}", flush=True)
-    else:
-        print(f"VSOA 已接入：{len(TEMPLATES)} 个标准条件（S01–S12）", flush=True)
+    for middleware_id, entry in BACKENDS.items():
+        state_text = f"{len(entry['templates'])} 个标准条件" if entry["meta"].get("available") else "不可用（入口缺失）"
+        print(f"  已加载 {middleware_id}: {entry['meta'].get('label')} · {state_text}", flush=True)
+    if not BACKENDS:
+        print("  警告：没有找到任何 <目录>/adapter.py，控制台没有可测中间件。", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:
