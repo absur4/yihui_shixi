@@ -1,0 +1,465 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:unified:result:1.0",
+  "title": "Unified per-run result",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "metric_definition_version",
+    "module_name",
+    "module_version",
+    "transport_mode",
+    "qos_profile",
+    "network_profile",
+    "run_id",
+    "scenario_name",
+    "status",
+    "repeat",
+    "publisher_count",
+    "subscriber_count",
+    "payload_size_bytes",
+    "publish_rate_hz",
+    "latency_ms",
+    "latency_p95_ms",
+    "latency_p99_ms",
+    "latency_std_ms",
+    "jitter_ms",
+    "throughput_mbps",
+    "offered_throughput_mbps",
+    "cpu_percent",
+    "memory_mb",
+    "startup_time_ms",
+    "discovery_time_ms",
+    "recovery_time_ms",
+    "configured_publish_rate_hz",
+    "achieved_publish_rate_hz",
+    "packet_loss",
+    "final_packet_loss",
+    "injected_network_loss_rate",
+    "messages_planned",
+    "messages_sent",
+    "messages_received",
+    "expected_deliveries",
+    "duplicate_count",
+    "out_of_order_count",
+    "corrupted_count",
+    "application_recovered",
+    "late_native_deliveries",
+    "messages_not_sent",
+    "actual_payload_size_bytes",
+    "metadata_size_bytes",
+    "wire_message_size_bytes",
+    "latency_sample_count",
+    "test_start_time",
+    "test_end_time",
+    "discovery_supported",
+    "environment",
+    "configuration",
+    "measurement_window",
+    "limitations",
+    "errors"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "metric_definition_version": {
+      "const": "1.0"
+    },
+    "module_name": {
+      "enum": [
+        "mqtt",
+        "dds",
+        "vsoa",
+        "zenoh"
+      ]
+    },
+    "module_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "transport_mode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "qos_profile": {
+      "type": "string",
+      "minLength": 1
+    },
+    "network_profile": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_id": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "scenario_name": {
+      "enum": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S12"
+      ]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "error",
+        "timeout",
+        "cancelled",
+        "unsupported",
+        "not_tested"
+      ]
+    },
+    "repeat": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "publisher_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "subscriber_count": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "payload_size_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "publish_rate_hz": {
+      "type": "number",
+      "minimum": 0
+    },
+    "latency_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "latency_p95_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "latency_p99_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "latency_std_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "jitter_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "throughput_mbps": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "offered_throughput_mbps": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "cpu_percent": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "memory_mb": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "startup_time_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "discovery_time_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "recovery_time_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "configured_publish_rate_hz": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "achieved_publish_rate_hz": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "packet_loss": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "final_packet_loss": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "injected_network_loss_rate": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0,
+      "maximum": 1
+    },
+    "messages_planned": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "messages_sent": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "messages_received": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "expected_deliveries": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "duplicate_count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "out_of_order_count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "corrupted_count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "application_recovered": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "late_native_deliveries": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "messages_not_sent": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "actual_payload_size_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "metadata_size_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "wire_message_size_bytes": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "latency_sample_count": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "test_start_time": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "test_end_time": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "discovery_supported": {
+      "type": "boolean"
+    },
+    "environment": {
+      "type": "object",
+      "required": [
+        "os",
+        "logical_cpu_count",
+        "fingerprint",
+        "broker_version"
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "required": [
+        "module_name",
+        "module_version",
+        "scenario_name",
+        "duration_seconds",
+        "message_count",
+        "payload_size_bytes",
+        "publish_rate_hz",
+        "publisher_count",
+        "subscriber_count",
+        "transport_mode",
+        "qos_profile",
+        "warmup_seconds",
+        "drain_seconds",
+        "repeats",
+        "timeout_seconds",
+        "network_delay_ms",
+        "network_jitter_ms",
+        "network_loss_rate",
+        "random_seed"
+      ]
+    },
+    "measurement_window": {
+      "type": "object"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "completed"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "messages_sent": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "packet_loss": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "measurement_window": {
+            "required": [
+              "warmup_start",
+              "measurement_start",
+              "send_end",
+              "drain_end"
+            ]
+          },
+          "cpu_percent": {
+            "type": "number",
+            "minimum": 0
+          },
+          "memory_mb": {
+            "type": "number",
+            "minimum": 0
+          }
+        }
+      }
+    }
+  ]
+}

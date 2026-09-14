@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "feature_name",
+    "category",
+    "status",
+    "test_method",
+    "configuration",
+    "evidence",
+    "performance_impact",
+    "limitations"
+  ],
+  "properties": {
+    "feature_name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "supported",
+        "partial",
+        "unsupported",
+        "not_tested"
+      ]
+    },
+    "test_method": {
+      "type": "string"
+    },
+    "configuration": {
+      "type": "object"
+    },
+    "evidence": {
+      "type": "array"
+    },
+    "performance_impact": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "limitations": {
+      "type": "array"
+    }
+  }
+}

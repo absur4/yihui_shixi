@@ -1,0 +1,5 @@
+# MQTT adapter dependencies (repository contract)
+paho-mqtt==2.1.0
+psutil==5.9.8
+PyYAML==6.0.1
+jsonschema>=4.18,<5
