@@ -13,7 +13,26 @@ import paho.mqtt.client as mqtt
 from mqtt_wire import HEADER, MAGIC, pack, unpack
 
 
-def endpoint(role, index, cfg, run_id, folder, ready, start, stop, recovery,
+def endpoint(role, index, cfg, run_id, folder, *args):
+    import contextlib
+    import logging
+    import signal
+    # Parent owns graceful cancellation and sets the shared stop event.
+    signal.signal(signal.SIGINT, signal.SIG_IGN)
+    logs = Path(cfg.get('logs_dir', folder)) / run_id
+    logs.mkdir(parents=True, exist_ok=True)
+    with (logs / f'{role}-{index}.log').open('a', encoding='utf-8', buffering=1) as log:
+        logging.basicConfig(stream=log, level=logging.WARNING, force=True)
+        with contextlib.redirect_stdout(log), contextlib.redirect_stderr(log):
+            try:
+                return _endpoint(role, index, cfg, run_id, folder, *args)
+            except BaseException:
+                import traceback
+                traceback.print_exc()
+                raise
+
+
+def _endpoint(role, index, cfg, run_id, folder, ready, start, stop, recovery,
              start_ns, restart=False, connect_gate=None):
     timer = None
     if os.name == 'nt':

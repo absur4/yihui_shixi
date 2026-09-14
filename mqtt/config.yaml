@@ -1,297 +1,377 @@
-module_name: mqtt
-module_version: 2.0.0
-host: 127.0.0.1
-port: 0
-scenario_name: S01
-transport_mode: tcp
-qos_profile: qos1
-duration_seconds: 10
-message_count: 0
-payload_size_bytes: 1024
-publish_rate_hz: 1000
-publisher_count: 1
-subscriber_count: 1
-warmup_seconds: 1
-drain_seconds: 0.5
-repeats: 5
-timeout_seconds: 60
-network_delay_ms: 0
-network_jitter_ms: 0
-network_loss_rate: 0
-random_seed: 20260910
-output_dir: outputs
-broker_executable: broker/mosquitto.exe
-benchmark_profile: acceptance
-scenarios:
-- scenario_name: S01
-  case: 100Hz
-  message_count: 10000
-  publish_rate_hz: 100
-  timeout_seconds: 150
-- scenario_name: S01
-  case: 1000Hz
-  message_count: 10000
-  publish_rate_hz: 1000
-  timeout_seconds: 150
-- scenario_name: S02
-  case: payload_scan
-  payload_size_bytes: 1024
-  publish_rate_hz: 100
-  duration_seconds: 2
-- scenario_name: S02
-  case: payload_scan
-  payload_size_bytes: 4096
-  publish_rate_hz: 100
-  duration_seconds: 2
-- scenario_name: S02
-  case: payload_scan
-  payload_size_bytes: 16384
-  publish_rate_hz: 100
-  duration_seconds: 2
-- scenario_name: S02
-  case: payload_scan
-  payload_size_bytes: 32768
-  publish_rate_hz: 100
-  duration_seconds: 2
-- scenario_name: S02
-  case: payload_scan
-  payload_size_bytes: 49152
-  publish_rate_hz: 100
-  duration_seconds: 2
-- scenario_name: S02
-  case: payload_scan
-  payload_size_bytes: 65536
-  publish_rate_hz: 100
-  duration_seconds: 2
-- scenario_name: S02
-  case: payload_scan
-  payload_size_bytes: 262144
-  publish_rate_hz: 100
-  duration_seconds: 2
-- scenario_name: S02
-  case: payload_scan
-  payload_size_bytes: 1048576
-  publish_rate_hz: 100
-  duration_seconds: 2
-- scenario_name: S02
-  case: payload_scan
-  payload_size_bytes: 4194304
-  publish_rate_hz: 100
-  duration_seconds: 2
-- scenario_name: S03
-  case: stable_throughput
-  payload_size_bytes: 65536
-  duration_seconds: 10
-  rate_search: true
-  publish_rate_hz: 0
-  require_stable_rate: true
-  stable_rate_candidates:
-  - 5
-  - 10
-  - 20
-  - 50
-  - 100
-  - 200
-  - 500
-  - 1000
-  - 2000
-  - 5000
-- scenario_name: S03
-  case: stable_throughput
-  payload_size_bytes: 262144
-  duration_seconds: 10
-  rate_search: true
-  publish_rate_hz: 0
-  require_stable_rate: true
-  stable_rate_candidates:
-  - 5
-  - 10
-  - 20
-  - 50
-  - 100
-  - 200
-  - 500
-  - 1000
-  - 2000
-  - 5000
-- scenario_name: S03
-  case: stable_throughput
-  payload_size_bytes: 1048576
-  duration_seconds: 10
-  rate_search: true
-  publish_rate_hz: 0
-  require_stable_rate: true
-  stable_rate_candidates:
-  - 5
-  - 10
-  - 20
-  - 50
-  - 100
-  - 200
-  - 500
-  - 1000
-  - 2000
-  - 5000
-- scenario_name: S04
-  case: 100Hz
-  publish_rate_hz: 100
-  duration_seconds: 5
-  metric_window_seconds: 1
-  rate_search: false
-- scenario_name: S04
-  case: 1000Hz
-  publish_rate_hz: 1000
-  duration_seconds: 5
-  metric_window_seconds: 1
-  rate_search: false
-- scenario_name: S04
-  case: 5000Hz
-  publish_rate_hz: 5000
-  duration_seconds: 5
-  metric_window_seconds: 1
-  rate_search: false
-- scenario_name: S04
-  case: stable_rate
-  publish_rate_hz: 0
-  duration_seconds: 5
-  metric_window_seconds: 1
-  rate_search: true
-- scenario_name: S05
-  subscriber_count: 4
-  duration_seconds: 5
-- scenario_name: S06
-  publisher_count: 4
-  duration_seconds: 5
-- scenario_name: S07
-  publisher_count: 4
-  subscriber_count: 4
-  duration_seconds: 5
-- scenario_name: S08
-  duration_seconds: 300
-  timeout_seconds: 340
-  metric_window_seconds: 10
-- scenario_name: S09
-  network_profile: baseline
-  network_loss_rate: 0
-  network_delay_ms: 0
-  network_jitter_ms: 0
-  duration_seconds: 5
-- scenario_name: S09
-  network_profile: light
-  network_loss_rate: 0.01
-  network_delay_ms: 5
-  network_jitter_ms: 5
-  duration_seconds: 5
-- scenario_name: S09
-  network_profile: moderate
-  network_loss_rate: 0.05
-  network_delay_ms: 20
-  network_jitter_ms: 20
-  duration_seconds: 5
-- scenario_name: S09
-  network_profile: severe
-  network_loss_rate: 0.1
-  network_delay_ms: 50
-  network_jitter_ms: 50
-  duration_seconds: 5
-- scenario_name: S10
-  case: cold
-  startup_mode: cold
-  message_count: 10
-  repeats: 10
-  publisher_count: 1
-  subscriber_count: 1
-  warmup_seconds: 0
-  drain_seconds: 0.1
-  connect_timeout_seconds: 5
-- scenario_name: S10
-  case: hot
-  startup_mode: hot
-  message_count: 10
-  repeats: 10
-  publisher_count: 1
-  subscriber_count: 1
-  warmup_seconds: 0
-  drain_seconds: 0.1
-  connect_timeout_seconds: 5
-- scenario_name: S10
-  case: multi_endpoint
-  startup_mode: cold
-  message_count: 10
-  repeats: 10
-  publisher_count: 4
-  subscriber_count: 4
-  warmup_seconds: 0
-  drain_seconds: 0.1
-  connect_timeout_seconds: 5
-- scenario_name: S10
-  case: simultaneous_discovery
-  startup_mode: cold
-  message_count: 10
-  repeats: 10
-  publisher_count: 4
-  subscriber_count: 4
-  warmup_seconds: 0
-  drain_seconds: 0.1
-  connect_timeout_seconds: 5
-- scenario_name: S10
-  case: startup_timeout
-  startup_mode: cold
-  message_count: 10
-  repeats: 10
-  publisher_count: 1
-  subscriber_count: 1
-  warmup_seconds: 0
-  drain_seconds: 0.1
-  connect_timeout_seconds: 5
-- scenario_name: S10
-  case: discovery_failure
-  startup_mode: cold
-  message_count: 10
-  repeats: 10
-  publisher_count: 1
-  subscriber_count: 1
-  warmup_seconds: 0
-  drain_seconds: 0.1
-  connect_timeout_seconds: 5
-- scenario_name: S11
-  case: publisher_restart
-  duration_seconds: 2
-  recovery_timeout_seconds: 5
-- scenario_name: S11
-  case: subscriber_restart
-  duration_seconds: 2
-  recovery_timeout_seconds: 5
-- scenario_name: S11
-  case: broker_restart
-  duration_seconds: 2
-  recovery_timeout_seconds: 5
-- scenario_name: S11
-  case: network_interruption
-  duration_seconds: 2
-  recovery_timeout_seconds: 5
-- scenario_name: S11
-  case: remote_close
-  duration_seconds: 2
-  recovery_timeout_seconds: 5
-- scenario_name: S12
-  case: correctness
-  qos_profile: qos0
-  publisher_count: 4
-  subscriber_count: 4
-  message_count: 1000
-  duration_seconds: 0
-- scenario_name: S12
-  case: correctness
-  qos_profile: qos1
-  publisher_count: 4
-  subscriber_count: 4
-  message_count: 1000
-  duration_seconds: 0
-- scenario_name: S12
-  case: correctness
-  qos_profile: qos2
-  publisher_count: 4
-  subscriber_count: 4
-  message_count: 1000
-  duration_seconds: 0
+{
+  "module_name": "mqtt",
+  "module_version": "2.0.0",
+  "host": "127.0.0.1",
+  "port": 0,
+  "scenario_name": "S01",
+  "transport_mode": "tcp",
+  "qos_profile": "qos1",
+  "duration_seconds": 10,
+  "message_count": 0,
+  "payload_size_bytes": 1024,
+  "publish_rate_hz": 1000,
+  "publisher_count": 1,
+  "subscriber_count": 1,
+  "warmup_seconds": 1,
+  "drain_seconds": 0.5,
+  "repeats": 5,
+  "timeout_seconds": 60,
+  "network_delay_ms": 0,
+  "network_jitter_ms": 0,
+  "network_loss_rate": 0,
+  "random_seed": 20260910,
+  "output_dir": "outputs",
+  "broker_executable": "broker/mosquitto.exe",
+  "benchmark_profile": "acceptance",
+  "scenarios": [
+    {
+      "scenario_name": "S01",
+      "case": "100Hz",
+      "message_count": 10000,
+      "publish_rate_hz": 100,
+      "timeout_seconds": 150
+    },
+    {
+      "scenario_name": "S01",
+      "case": "1000Hz",
+      "message_count": 10000,
+      "publish_rate_hz": 1000,
+      "timeout_seconds": 150
+    },
+    {
+      "scenario_name": "S02",
+      "case": "payload_scan",
+      "payload_size_bytes": 1024,
+      "publish_rate_hz": 100,
+      "duration_seconds": 2
+    },
+    {
+      "scenario_name": "S02",
+      "case": "payload_scan",
+      "payload_size_bytes": 4096,
+      "publish_rate_hz": 100,
+      "duration_seconds": 2
+    },
+    {
+      "scenario_name": "S02",
+      "case": "payload_scan",
+      "payload_size_bytes": 16384,
+      "publish_rate_hz": 100,
+      "duration_seconds": 2
+    },
+    {
+      "scenario_name": "S02",
+      "case": "payload_scan",
+      "payload_size_bytes": 32768,
+      "publish_rate_hz": 100,
+      "duration_seconds": 2
+    },
+    {
+      "scenario_name": "S02",
+      "case": "payload_scan",
+      "payload_size_bytes": 49152,
+      "publish_rate_hz": 100,
+      "duration_seconds": 2
+    },
+    {
+      "scenario_name": "S02",
+      "case": "payload_scan",
+      "payload_size_bytes": 65536,
+      "publish_rate_hz": 100,
+      "duration_seconds": 2
+    },
+    {
+      "scenario_name": "S02",
+      "case": "payload_scan",
+      "payload_size_bytes": 262144,
+      "publish_rate_hz": 100,
+      "duration_seconds": 2
+    },
+    {
+      "scenario_name": "S02",
+      "case": "payload_scan",
+      "payload_size_bytes": 1048576,
+      "publish_rate_hz": 100,
+      "duration_seconds": 2
+    },
+    {
+      "scenario_name": "S03",
+      "case": "stable_throughput",
+      "payload_size_bytes": 65536,
+      "duration_seconds": 10,
+      "rate_search": true,
+      "publish_rate_hz": 0,
+      "require_stable_rate": true,
+      "stable_rate_candidates": [
+        5,
+        10,
+        20,
+        50,
+        100,
+        200,
+        500,
+        1000,
+        2000,
+        5000
+      ]
+    },
+    {
+      "scenario_name": "S03",
+      "case": "stable_throughput",
+      "payload_size_bytes": 262144,
+      "duration_seconds": 10,
+      "rate_search": true,
+      "publish_rate_hz": 0,
+      "require_stable_rate": true,
+      "stable_rate_candidates": [
+        5,
+        10,
+        20,
+        50,
+        100,
+        200,
+        500,
+        1000,
+        2000,
+        5000
+      ]
+    },
+    {
+      "scenario_name": "S03",
+      "case": "stable_throughput",
+      "payload_size_bytes": 1048576,
+      "duration_seconds": 10,
+      "rate_search": true,
+      "publish_rate_hz": 0,
+      "require_stable_rate": true,
+      "stable_rate_candidates": [
+        5,
+        10,
+        20,
+        50,
+        100,
+        200,
+        500,
+        1000,
+        2000,
+        5000
+      ]
+    },
+    {
+      "scenario_name": "S04",
+      "case": "100Hz",
+      "publish_rate_hz": 100,
+      "duration_seconds": 5,
+      "metric_window_seconds": 1,
+      "rate_search": false
+    },
+    {
+      "scenario_name": "S04",
+      "case": "1000Hz",
+      "publish_rate_hz": 1000,
+      "duration_seconds": 5,
+      "metric_window_seconds": 1,
+      "rate_search": false
+    },
+    {
+      "scenario_name": "S04",
+      "case": "5000Hz",
+      "publish_rate_hz": 5000,
+      "duration_seconds": 5,
+      "metric_window_seconds": 1,
+      "rate_search": false
+    },
+    {
+      "scenario_name": "S04",
+      "case": "stable_rate",
+      "publish_rate_hz": 0,
+      "duration_seconds": 5,
+      "metric_window_seconds": 1,
+      "rate_search": true
+    },
+    {
+      "scenario_name": "S05",
+      "subscriber_count": 4,
+      "duration_seconds": 5
+    },
+    {
+      "scenario_name": "S06",
+      "publisher_count": 4,
+      "duration_seconds": 5
+    },
+    {
+      "scenario_name": "S07",
+      "publisher_count": 4,
+      "subscriber_count": 4,
+      "duration_seconds": 5
+    },
+    {
+      "scenario_name": "S08",
+      "duration_seconds": 300,
+      "timeout_seconds": 340,
+      "metric_window_seconds": 10
+    },
+    {
+      "scenario_name": "S09",
+      "network_profile": "baseline",
+      "network_loss_rate": 0,
+      "network_delay_ms": 0,
+      "network_jitter_ms": 0,
+      "duration_seconds": 5
+    },
+    {
+      "scenario_name": "S09",
+      "network_profile": "light",
+      "network_loss_rate": 0.01,
+      "network_delay_ms": 5,
+      "network_jitter_ms": 5,
+      "duration_seconds": 5
+    },
+    {
+      "scenario_name": "S09",
+      "network_profile": "moderate",
+      "network_loss_rate": 0.05,
+      "network_delay_ms": 20,
+      "network_jitter_ms": 20,
+      "duration_seconds": 5
+    },
+    {
+      "scenario_name": "S09",
+      "network_profile": "severe",
+      "network_loss_rate": 0.1,
+      "network_delay_ms": 50,
+      "network_jitter_ms": 50,
+      "duration_seconds": 5
+    },
+    {
+      "scenario_name": "S10",
+      "case": "cold",
+      "startup_mode": "cold",
+      "message_count": 10,
+      "repeats": 10,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "warmup_seconds": 0,
+      "drain_seconds": 0.1,
+      "connect_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S10",
+      "case": "hot",
+      "startup_mode": "hot",
+      "message_count": 10,
+      "repeats": 10,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "warmup_seconds": 0,
+      "drain_seconds": 0.1,
+      "connect_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S10",
+      "case": "multi_endpoint",
+      "startup_mode": "cold",
+      "message_count": 10,
+      "repeats": 10,
+      "publisher_count": 4,
+      "subscriber_count": 4,
+      "warmup_seconds": 0,
+      "drain_seconds": 0.1,
+      "connect_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S10",
+      "case": "simultaneous_discovery",
+      "startup_mode": "cold",
+      "message_count": 10,
+      "repeats": 10,
+      "publisher_count": 4,
+      "subscriber_count": 4,
+      "warmup_seconds": 0,
+      "drain_seconds": 0.1,
+      "connect_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S10",
+      "case": "startup_timeout",
+      "startup_mode": "cold",
+      "message_count": 10,
+      "repeats": 10,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "warmup_seconds": 0,
+      "drain_seconds": 0.1,
+      "connect_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S10",
+      "case": "discovery_failure",
+      "startup_mode": "cold",
+      "message_count": 10,
+      "repeats": 10,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "warmup_seconds": 0,
+      "drain_seconds": 0.1,
+      "connect_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S11",
+      "case": "publisher_restart",
+      "duration_seconds": 2,
+      "recovery_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S11",
+      "case": "subscriber_restart",
+      "duration_seconds": 2,
+      "recovery_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S11",
+      "case": "broker_restart",
+      "duration_seconds": 2,
+      "recovery_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S11",
+      "case": "network_interruption",
+      "duration_seconds": 2,
+      "recovery_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S11",
+      "case": "remote_close",
+      "duration_seconds": 2,
+      "recovery_timeout_seconds": 5
+    },
+    {
+      "scenario_name": "S12",
+      "case": "correctness",
+      "qos_profile": "qos0",
+      "publisher_count": 4,
+      "subscriber_count": 4,
+      "message_count": 1000,
+      "duration_seconds": 0
+    },
+    {
+      "scenario_name": "S12",
+      "case": "correctness",
+      "qos_profile": "qos1",
+      "publisher_count": 4,
+      "subscriber_count": 4,
+      "message_count": 1000,
+      "duration_seconds": 0
+    },
+    {
+      "scenario_name": "S12",
+      "case": "correctness",
+      "qos_profile": "qos2",
+      "publisher_count": 4,
+      "subscriber_count": 4,
+      "message_count": 1000,
+      "duration_seconds": 0
+    }
+  ],
+  "rate_scope": "per_publisher"
+}

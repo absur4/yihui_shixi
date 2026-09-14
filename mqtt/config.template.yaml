@@ -1,24 +1,28 @@
-module_name: mqtt
-module_version: 2.0.0
-host: 127.0.0.1
-port: 0
-scenario_name: S01
-transport_mode: tcp
-qos_profile: qos1
-duration_seconds: 10
-message_count: 0
-payload_size_bytes: 1024
-publish_rate_hz: 1000
-publisher_count: 1
-subscriber_count: 1
-warmup_seconds: 1
-drain_seconds: 0.5
-repeats: 5
-timeout_seconds: 60
-network_delay_ms: 0
-network_jitter_ms: 0
-network_loss_rate: 0
-random_seed: 20260910
-output_dir: outputs
-broker_executable: broker/mosquitto.exe
-benchmark_profile: acceptance
+{
+  "module_name": "mqtt",
+  "module_version": "2.0.0",
+  "host": "127.0.0.1",
+  "port": 0,
+  "scenario_name": "S01",
+  "transport_mode": "tcp",
+  "qos_profile": "qos1",
+  "duration_seconds": 10,
+  "message_count": 0,
+  "payload_size_bytes": 1024,
+  "publish_rate_hz": 1000,
+  "publisher_count": 1,
+  "subscriber_count": 1,
+  "warmup_seconds": 1,
+  "drain_seconds": 0.5,
+  "repeats": 5,
+  "timeout_seconds": 60,
+  "network_delay_ms": 0,
+  "network_jitter_ms": 0,
+  "network_loss_rate": 0,
+  "random_seed": 20260910,
+  "output_dir": "outputs",
+  "broker_executable": "broker/mosquitto.exe",
+  "benchmark_profile": "acceptance",
+  "scenarios": [],
+  "rate_scope": "per_publisher"
+}

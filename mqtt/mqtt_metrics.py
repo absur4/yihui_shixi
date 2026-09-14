@@ -19,7 +19,7 @@ def describe(values):
                 variance=statistics.pvariance(x) if x else None,
                 std=statistics.pstdev(x) if x else None,
                 min=min(x) if x else None, max=max(x) if x else None,
-                p95=percentile(x, .95), p99=percentile(x, .99))
+                p50=percentile(x, .5), p95=percentile(x, .95), p99=percentile(x, .99))
 
 
 def latency_metrics(links):

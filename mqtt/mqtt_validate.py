@@ -31,20 +31,22 @@ def validate_output(output):
     raw_count = 0
     for run in suite['runs']:
         validator.validate(run)
-        stored = json.loads((output/'runs'/run['run_id']/'result.json').read_text(encoding='utf-8'))
+        stored = json.loads((output/'runs'/f"{run['run_id']}.json").read_text(encoding='utf-8'))
         equivalent(run, stored)
         if 'drain_end_ns' in run['measurement_window']:
-            recalculated = analyze(output/'runs'/run['run_id'], run['configuration'],
+            recalculated = analyze(output/'artifacts'/run['run_id'], run['configuration'],
                                    run['measurement_window']['measurement_start_ns'], run['measurement_window']['drain_end_ns'])
             for key, value in recalculated.items():
-                if key == 'time_windows':
+                if key == 'statistics':
+                    equivalent(value, {k: run[key][k] for k in value}, key)
+                elif key == 'time_windows':
                     # CPU/RSS are joined from a separate resource stream.
                     assert len(value)==len(run[key]), 'Time window count differs from raw data'
                     for a, b in zip(value, run[key]):
                         equivalent(a, {k: b[k] for k in a}, key)
                 else:
                     equivalent(value, run[key], key)
-            resources = [json.loads(x) for x in (output/'runs'/run['run_id']/'resources.jsonl').read_text().splitlines()]
+            resources = [json.loads(x) for x in (output/'artifacts'/run['run_id']/'resources.jsonl').read_text(encoding='utf-8').splitlines()]
             for window in run['time_windows']:
                 a=run['measurement_window']['measurement_start_ns']+window['start_offset_seconds']*1e9
                 b=run['measurement_window']['measurement_start_ns']+window['end_offset_seconds']*1e9
