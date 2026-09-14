@@ -6,11 +6,11 @@ if not exist ".venv\Scripts\python.exe" (
   pause
   exit /b 2
 )
-".venv\Scripts\python.exe" launch.py run --config config.example.yaml --output outputs\one_example.json --overwrite
+".venv\Scripts\python.exe" launch.py run --config config.example.yaml --output results\one_example --overwrite
 set "BENCH_EXIT=%errorlevel%"
 if not "%BENCH_EXIT%"=="0" (
   echo.
-  echo EXAMPLE FAILED with exit code %BENCH_EXIT%. Check logs under outputs\raw.
+  echo EXAMPLE FAILED with exit code %BENCH_EXIT%. Check logs under results\one_example\artifacts.
   pause
 )
 exit /b %BENCH_EXIT%

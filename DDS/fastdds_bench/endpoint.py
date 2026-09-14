@@ -21,7 +21,7 @@ from .rawio import (
     SendRecord,
     SendRecordWriter,
 )
-from .scheduler import aggregate_slot, aggregate_target_ns
+from .scheduler import paced_target_ns
 from .util import atomic_write_json, read_json, utc_now_iso, wait_until_ns
 
 PROCESS_WALL_START_NS = time.perf_counter_ns()
@@ -162,14 +162,16 @@ def _cleanup(factory: Any, participant: Any) -> str | None:
 def run_publisher(args: argparse.Namespace, condition: dict[str, Any]) -> int:
     endpoint_id = int(args.endpoint_id)
     run_dir = Path(args.run_dir)
+    suffix = str(getattr(args, "raw_suffix", "") or "")
+    start_sequence = int(getattr(args, "start_sequence", 0) or 0)
     status = StatusTracker(
         run_dir / "status" / f"publisher_{endpoint_id}.json",
         "publisher",
         endpoint_id,
     )
-    raw_name = f"publisher_{endpoint_id}.send.bin"
+    raw_name = f"publisher_{endpoint_id}{suffix}.send.bin"
     raw_writer = SendRecordWriter(run_dir / raw_name)
-    result_path = run_dir / f"publisher_{endpoint_id}.result.json"
+    result_path = run_dir / f"publisher_{endpoint_id}{suffix}.result.json"
     factory = participant = None
     sent_failure_count = 0
     warmup_success_count = 0
@@ -244,50 +246,46 @@ def run_publisher(args: argparse.Namespace, condition: dict[str, Any]) -> int:
         data.checksum(checksum)
         data.payload(payload)
 
-        publisher_count = int(condition["publisher_count"])
-        aggregate_rate = float(condition["publish_rate_hz"])
+        rate_hz = float(condition["publish_rate_hz"])
         spin_threshold_us = int(condition["spin_threshold_us"])
         warmup_start_ns = int(start_info["warmup_start_ns"])
         formal_start_ns = int(start_info["formal_start_ns"])
         wait_until_ns(warmup_start_ns, spin_threshold_us)
 
         warmup_rate = (
-            aggregate_rate
-            if aggregate_rate > 0
+            rate_hz
+            if rate_hz > 0
             else float(condition["warmup_unlimited_rate_hz"])
         )
         warmup_sequence = 0
-        while True:
-            global_slot = aggregate_slot(
-                warmup_sequence, endpoint_id, publisher_count
-            )
-            target_ns = aggregate_target_ns(
-                warmup_start_ns, global_slot, warmup_rate
-            )
-            if target_ns >= formal_start_ns:
-                break
-            wait_until_ns(target_ns, spin_threshold_us)
-            data.phase(0)
-            data.sequence_number(warmup_sequence)
-            data.send_timestamp_ns(time.perf_counter_ns())
-            if writer.write(data) == fastdds.RETCODE_OK:
-                warmup_success_count += 1
-            warmup_sequence += 1
+        # 续跑（故障重启）的发布者不再重放预热，避免污染正式序列。
+        if start_sequence == 0:
+            while True:
+                target_ns = paced_target_ns(
+                    warmup_start_ns, warmup_sequence, warmup_rate
+                )
+                if target_ns >= formal_start_ns:
+                    break
+                wait_until_ns(target_ns, spin_threshold_us)
+                data.phase(0)
+                data.sequence_number(warmup_sequence)
+                data.send_timestamp_ns(time.perf_counter_ns())
+                if writer.write(data) == fastdds.RETCODE_OK:
+                    warmup_success_count += 1
+                warmup_sequence += 1
 
         wait_until_ns(formal_start_ns, spin_threshold_us)
         data.phase(1)
         message_count = int(condition["message_count"])
         duration_ns = int(float(condition["duration_seconds"]) * 1_000_000_000)
         formal_end_ns = formal_start_ns + duration_ns
-        sequence = 0
+        # 每发布者口径：本进程只按自己的序号调度。
+        sequence = start_sequence
         while True:
-            global_slot = aggregate_slot(sequence, endpoint_id, publisher_count)
-            if message_count > 0 and global_slot >= message_count:
+            if message_count > 0 and sequence >= message_count:
                 break
-            if aggregate_rate > 0:
-                target_ns = aggregate_target_ns(
-                    formal_start_ns, global_slot, aggregate_rate
-                )
+            if rate_hz > 0:
+                target_ns = paced_target_ns(formal_start_ns, sequence, rate_hz)
                 if message_count == 0 and target_ns >= formal_end_ns:
                     break
                 wait_until_ns(target_ns, spin_threshold_us)
@@ -375,7 +373,7 @@ def run_publisher(args: argparse.Namespace, condition: dict[str, Any]) -> int:
                 "role": "publisher",
                 "endpoint_id": endpoint_id,
                 "pid": os.getpid(),
-                "status": "failed",
+                "status": "error",
                 "raw_file": raw_name,
                 "raw_record_count": raw_count,
                 "sent_success_count": raw_count,
@@ -393,14 +391,15 @@ def run_publisher(args: argparse.Namespace, condition: dict[str, Any]) -> int:
 def run_subscriber(args: argparse.Namespace, condition: dict[str, Any]) -> int:
     endpoint_id = int(args.endpoint_id)
     run_dir = Path(args.run_dir)
+    suffix = str(getattr(args, "raw_suffix", "") or "")
     status = StatusTracker(
         run_dir / "status" / f"subscriber_{endpoint_id}.json",
         "subscriber",
         endpoint_id,
     )
-    raw_name = f"subscriber_{endpoint_id}.receive.bin"
+    raw_name = f"subscriber_{endpoint_id}{suffix}.receive.bin"
     raw_writer = ReceiveRecordWriter(run_dir / raw_name)
-    result_path = run_dir / f"subscriber_{endpoint_id}.result.json"
+    result_path = run_dir / f"subscriber_{endpoint_id}{suffix}.result.json"
     factory = participant = None
     cleanup_error: str | None = None
     snapshot_record_count: int | None = None
@@ -594,7 +593,7 @@ def run_subscriber(args: argparse.Namespace, condition: dict[str, Any]) -> int:
                 "role": "subscriber",
                 "endpoint_id": endpoint_id,
                 "pid": os.getpid(),
-                "status": "failed",
+                "status": "error",
                 "raw_file": raw_name,
                 "raw_record_count": raw_count,
                 "snapshot_record_count": snapshot_record_count or 0,
@@ -617,6 +616,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--topic-name", required=True)
     parser.add_argument("--domain-id", type=int, required=True)
     parser.add_argument("--profile-name", required=True)
+    # 故障重启场景：同一轮内第二次启动的端点使用独立原始记录，并从指定序号续跑。
+    parser.add_argument("--raw-suffix", default="")
+    parser.add_argument("--start-sequence", type=int, default=0)
     return parser
 
 

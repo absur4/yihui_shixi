@@ -168,6 +168,29 @@ def find_cmake_package(prefix: Path, package: str) -> Path:
     return sorted(candidates)[0]
 
 
+def detect_fastdds_version(prefix: Path) -> str | None:
+    """尽力从安装前缀里探测 Fast DDS 版本；探测不到返回 None。
+
+    结果只作为 runtime/build_info.json 的提示信息，adapter 会优先使用它，
+    探测不到时回落到 config.yaml 里声明的目标版本。
+    """
+    pattern = re.compile(r"(\d+\.\d+(?:\.\d+)?)")
+    for config in sorted(prefix.rglob("fastdds-config.cmake")):
+        try:
+            text = config.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        match = re.search(r"PACKAGE_VERSION[\s\"']+(\d+\.\d+(?:\.\d+)?)", text)
+        if match:
+            return match.group(1)
+    for directory in sorted((prefix / "lib" / "cmake").glob("fastdds*")):
+        match = pattern.search(directory.name)
+        if match:
+            return match.group(1)
+    match = pattern.search(prefix.name)
+    return match.group(1) if match else None
+
+
 def cmake_configure_and_install(
     cmake: Path,
     source: Path,
@@ -465,6 +488,7 @@ def main(argv: list[str] | None = None) -> int:
 
     build_info = {
         "fastdds_home": str(fastdds_home),
+        "fastdds_version": detect_fastdds_version(fastdds_home),
         "fastdds_cmake": str(fastdds_cmake),
         "fastcdr_cmake": str(fastcdr_cmake),
         "fastdds_python_tag": BINDING_TAG,

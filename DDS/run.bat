@@ -6,8 +6,8 @@ if not exist ".venv\Scripts\python.exe" (
   pause
   exit /b 2
 )
-".venv\Scripts\python.exe" launch.py run --config config.yaml --output outputs\results.json
+rem 产物布局：results\formal\result.json + results\formal\runs\<run_id>.json + results\formal\artifacts\<run_id>\
+".venv\Scripts\python.exe" launch.py run --config config.yaml --output results\formal
 set "BENCH_EXIT=%errorlevel%"
 if not "%BENCH_EXIT%"=="0" pause
 exit /b %BENCH_EXIT%
-

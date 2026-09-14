@@ -24,10 +24,21 @@ def command_check(args: argparse.Namespace) -> int:
         from .controller import probe_fastdds_runtime
 
         probe = probe_fastdds_runtime()
+    not_tested = [
+        c["condition_id"]
+        for c in config["conditions"]
+        if c.get("capability") != "supported" or not c.get("enabled", True)
+    ]
     result = {
         "config_ok": True,
+        "middleware_id": config["suite"]["middleware_id"],
+        "vendor": config["suite"]["vendor"],
+        "version": config["suite"]["module_version"],
+        "total_condition_count": len(config["conditions"]),
         "enabled_condition_count": len(selected),
         "planned_run_count": sum(int(c["repeats"]) for c in selected),
+        "not_tested_condition_count": len(not_tested),
+        "not_tested_condition_ids": not_tested,
         "warnings": warnings,
         "runtime_probe": probe,
     }
@@ -39,18 +50,24 @@ def command_run(args: argparse.Namespace) -> int:
     from .controller import run_suite
     from .schema_validation import validate_result
 
+    output_dir = Path(args.output)
+    if (output_dir / "result.json").exists() and not args.overwrite:
+        raise FileExistsError(
+            f"Refusing to overwrite existing result: {output_dir / 'result.json'}. "
+            "Choose another --output directory or pass --overwrite explicitly."
+        )
     suite = run_suite(
         args.config,
-        args.output,
+        output_dir,
         condition_ids=args.condition,
         repeats_override=args.repeats,
-        overwrite=args.overwrite,
+        label="launch.py",
     )
     validate_result(suite)
-    passed = sum(run["status"] == "passed" for run in suite["runs"])
-    failed = len(suite["runs"]) - passed
-    print(f"Result: {args.output}")
-    print(f"Runs: {len(suite['runs'])}, passed: {passed}, failed: {failed}")
+    completed = sum(run["status"] == "completed" for run in suite["runs"])
+    failed = len(suite["runs"]) - completed
+    print(f"Result: {output_dir / 'result.json'}")
+    print(f"Runs: {len(suite['runs'])}, completed: {completed}, not completed: {failed}")
     if len(suite["runs"]) == 1:
         run = suite["runs"][0]
         for key in (
@@ -88,11 +105,11 @@ def command_resummarize(args: argparse.Namespace) -> int:
     from .schema_validation import validate_result
 
     document = read_json(args.input)
-    document["summary"] = summarize_runs(document["runs"])
+    document["scenario_summaries"] = summarize_runs(document.get("runs") or [])
     output = args.output or args.input
     atomic_write_json(output, document)
     validate_result(document)
-    print(f"Summary rebuilt from run results: {output}")
+    print(f"scenario_summaries rebuilt from run results: {output}")
     return 0
 
 
@@ -110,13 +127,18 @@ def build_parser() -> argparse.ArgumentParser:
 
     run = subparsers.add_parser("run", help="run one or more benchmark conditions")
     run.add_argument("--config", type=Path, required=True)
-    run.add_argument("--output", type=Path, required=True)
+    run.add_argument(
+        "--output",
+        type=Path,
+        required=True,
+        help="suite directory; writes result.json, runs/<run_id>.json and artifacts/<run_id>/",
+    )
     run.add_argument("--condition", action="append")
     run.add_argument("--repeats", type=int)
     run.add_argument(
         "--overwrite",
         action="store_true",
-        help="explicitly replace an existing suite JSON (raw run folders are retained)",
+        help="explicitly replace an existing suite result.json (artifact folders are retained)",
     )
     run.set_defaults(func=command_run)
 
@@ -135,7 +157,7 @@ def build_parser() -> argparse.ArgumentParser:
     export.set_defaults(func=command_export_raw)
 
     summarize = subparsers.add_parser(
-        "resummarize", help="rebuild summary only from existing run results"
+        "resummarize", help="rebuild scenario_summaries only from existing run results"
     )
     summarize.add_argument("--input", type=Path, required=True)
     summarize.add_argument("--output", type=Path)

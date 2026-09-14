@@ -1,14 +1,21 @@
 schema_version: "1.0"
 metrics_definition_version: "1.0"
 
+# 最小示例配置：1 个条件、1 次重复，用于验证原生环境确实能跑通真实 Fast DDS 通信。
+# 正式矩阵见 config.yaml。
 suite:
-  module_name: fastdds
+  middleware_id: dds
+  module_name: dds
+  vendor: eProsima Fast DDS
+  label: DDS
   module_version: "3.6.2"
   fastdds_python_version: "2.6.1"
   domain_id_base: 80
   same_host: true
-  rate_scope: aggregate
-  message_count_scope: aggregate
+  rate_scope: per_publisher
+  message_count_scope: per_publisher
+  default_repeats: 5
+  formal_repeats: 10
   startup_timeout_seconds: 30
   discovery_timeout_seconds: 30
   barrier_delay_ms: 250
@@ -38,15 +45,16 @@ network_profiles:
     external_impairment_confirmed: true
 
 conditions:
-  - condition_id: EXAMPLE_S01_1k_100
+  - condition_id: EXAMPLE_S01_1KiB_100
     scenario_id: S01
-    scenario_name: point_to_point_low_latency
+    scenario_name: point_to_point_latency
+    scenario_title: 示例 · 1 KiB @ 100 Hz
     payload_size_bytes: 1024
     message_count: 200
     publish_rate_hz: 100
     publisher_count: 1
     subscriber_count: 1
-    transport_mode: UDPv4
+    transport_mode: udp
     qos_profile: reliable
     warmup_seconds: 1
     drain_seconds: 1

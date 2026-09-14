@@ -9,7 +9,7 @@
 3. 等待所有 Publisher/Subscriber 完成全匹配，记录发现窗口。
 4. 控制器写统一 barrier 时间；所有端点使用同一个 `perf_counter_ns` 时间域。
 5. 执行 warm-up；消息标为 phase 0，不写正式原始记录。
-6. 正式发送；消息标为 phase 1，使用聚合速率/聚合条数调度。
+6. 正式发送；消息标为 phase 1，使用**每发布者**速率/每发布者条数调度。
 7. 所有发布者写完后，控制器记录统一 `send_complete_ns` 并写 `send_complete.json`；订阅者在看到它时另存接收快照供审计。
 8. 继续接收 `drain_seconds`，然后统一停止。
 9. 端点关闭中间件对象并写 CPU 时间；控制器停止资源采样。
@@ -33,14 +33,15 @@
 
 唯一键为 `(publisher_id, sequence_number)`。广播时，同一消息在每个订阅者上分别构成一次预期交付。
 
-`publish_rate_hz` 和 `message_count` 都使用聚合口径。若有 P 个发布者，调度槽为：
+`publish_rate_hz` 和 `message_count` 都使用**每发布者**口径（与 VSOA、MQTT、Zenoh 一致）：
 
 ```text
-global_slot = local_sequence * P + publisher_id
-target_ns   = formal_start_ns + global_slot * 1e9 / publish_rate_hz
+target_ns = formal_start_ns + sequence * 1e9 / publish_rate_hz
 ```
 
-因此 4P、1000 Hz 是总计 1000 Hz，而不是每个发布者 1000 Hz。
+每个发布者只按自己的序号排队，不再摊到全局槽位。因此 4P、1000 Hz 表示
+**每个发布者** 1000 Hz（合计 4000 Hz）；`message_count` 同理。横向比较必须
+保持口径一致，DDS 结果里恒写 `rate_scope: "per_publisher"`。
 
 ## 3. 有效样本和恢复样本
 
@@ -115,19 +116,30 @@ flags：bit0 数据有效，bit1 解码成功，bit2 长度正确，bit3 校验�
 
 Suite 顶层包含环境、单轮 `runs` 和可重算 `summary`。每轮包含完整实际配置、统一指标、计数、错误、时间、原始文件路径和 SHA-256。
 
+产物布局（与控制台契约一致）：
+
+```text
+output/result.json                          套件级：status/planned_runs/environment/configuration/
+                                            scenario_summaries/runs/limitations
+output/runs/<run_id>.json                   单轮统一字段（缺测为 null）
+output/artifacts/<run_id>/                  每轮原始证据（原始 bin + SHA-256 + 端点日志）
+output/artifacts/<run_id>/subscriber-0.result.json   前端延迟曲线样本 latencies_ms
+```
+
 横向比较只能使用以下全部字段完全一致的组：
 
 ```text
-module_name, scenario_name, payload_size_bytes, publish_rate_hz,
+middleware_id, scenario_name, payload_size_bytes, publish_rate_hz,
 publisher_count, subscriber_count, transport_mode, qos_profile,
 network_profile
 ```
 
-此外报告层必须检查 duration、warm-up、drain、指标版本、操作系统和硬件一致；本实现把这些保存在单轮配置和环境中，不会偷偷混入组平均。`summary.valid_repeats` 只统计 `status=passed` 的轮次，少于 5 时 `formal_minimum_met=false`。
+此外报告层必须检查 duration、warm-up、drain、指标版本、操作系统和硬件一致；本实现把这些保存在单轮配置和环境中，不会偷偷混入组平均。`summary.valid_repeats` 只统计 `status=completed` 的轮次，少于 5 时 `formal_minimum_met=false`。状态枚举统一为
+`completed` / `error` / `cancelled` / `timeout` / `unsupported` / `not_tested`。
 
 ## 7. 外部注入接口边界
 
-S09 网络仿真和 S11 故障动作必须放在四种中间件共用的控制层，不能在某个适配器的接收回调中伪造。共同编排器至少应记录：
+S09 网络仿真必须在四种中间件共用的控制层完成，不能在接收回调里随机丢消息：那样不会真实影响网络负载、重传、CPU 和延迟，结果不可横向比较。共同编排器至少应记录：
 
 - 目标进程/接口和可复核身份；
 - 计划与实际故障开始、恢复时间（单调时钟和 UTC）；
@@ -136,7 +148,16 @@ S09 网络仿真和 S11 故障动作必须放在四种中间件共用的控制�
 - 故障前、故障中、恢复后的阶段边界；
 - 原始注入日志及 SHA-256。
 
-只有注入动作实际成功后，才允许把 `external_impairment_confirmed` 设为 `true`。进程/Broker/Router/网络故障也必须由编排器确认完成；配置中仅存在 `fault_plan` 不代表故障已发生。
+只有注入动作实际成功后，才允许把 `external_impairment_confirmed` 设为 `true`；未确认时相关条件标为 `capability: not_tested`，控制器会拒绝执行。
+
+S11 在本适配器里分成两类：
+
+- **可由本适配器自己真实执行**：`fault_plan.kind` 为 `restart_publisher` / `restart_subscriber`，
+  控制器在测量窗口内真实终止并重新拉起对应端点进程（新进程用独立原始记录并从指定序号续跑），
+  恢复时间、丢包与重启次数都来自真实记录，写入每轮 `fault_events` / `restart_count`；
+- **必须由共用编排器提供**：网络中断等 `fault_plan.kind` 不在可执行集合内时，
+  配置校验会要求把该条件标记为 `not_tested`，控制器也会拒绝执行——配置里写了 `fault_plan`
+  不代表故障真的发生过。
 
 ## 8. Fast DDS 特有映射
 

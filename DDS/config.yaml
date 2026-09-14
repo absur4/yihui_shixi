@@ -1,14 +1,23 @@
 schema_version: "1.0"
 metrics_definition_version: "1.0"
 
+# 中间件命名（根 README §2 / DDS_readme_1.md §3.2）：
+#   middleware_id / Adapter.name / 归档目录名 = dds（必须小写）
+#   厂商与版本单独记录在 vendor / module_version / fastdds_python_version
 suite:
-  module_name: fastdds
+  middleware_id: dds
+  module_name: dds
+  vendor: eProsima Fast DDS
+  label: DDS
   module_version: "3.6.2"
   fastdds_python_version: "2.6.1"
   domain_id_base: 80
   same_host: true
-  rate_scope: aggregate
-  message_count_scope: aggregate
+  # 速率与条数口径均为「每发布者」，与 VSOA/MQTT/Zenoh 对齐（DDS_readme_1.md §5.6）
+  rate_scope: per_publisher
+  message_count_scope: per_publisher
+  default_repeats: 5
+  formal_repeats: 10
   startup_timeout_seconds: 30
   discovery_timeout_seconds: 30
   barrier_delay_ms: 250
@@ -67,181 +76,209 @@ network_profiles:
     impairment_required: true
     external_impairment_confirmed: false
 
-# This is the 30-condition / 5-repeat matrix (150 runs). S09 and S11 are
-# deliberately disabled until the common external impairment/fault orchestrator
-# is connected. Enabling them without real injection would produce false data.
+# 36 个标准条件，其中 30 个 capability=supported（每条件 5 次重复 = 150 轮正式矩阵）。
+# capability 说明（DDS_readme_1.md §6.4）：
+#   supported  —— 本适配器可以真实执行并测量
+#   not_tested —— 需要外部注入器 / 后续阶段能力，条件保留在目录里但不会伪造数据
+# not_tested 的条件同时 enabled=false，正式 CLI 矩阵不会尝试执行它们。
 conditions:
-  # S01: point-to-point low latency. The 100 Hz case sends 10,000 messages.
-  - condition_id: S01_1k_100
+  # S01 点对点低延迟：1 KiB，100 Hz（10,000 条 / 100 s）与 1000 Hz（10,000 条 / 10 s）。
+  - condition_id: S01_1KiB_100
     scenario_id: S01
-    scenario_name: point_to_point_low_latency
+    scenario_name: point_to_point_latency
+    scenario_title: 点对点低延迟 · 1 KiB @ 100 Hz
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 100
     duration_seconds: 100
 
-  - condition_id: S01_1k_1000
+  - condition_id: S01_1KiB_1000
     scenario_id: S01
-    scenario_name: point_to_point_low_latency
+    scenario_name: point_to_point_latency
+    scenario_title: 点对点低延迟 · 1 KiB @ 1000 Hz
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 1000
     duration_seconds: 10
 
-  # S02: fixed 100 Hz, reliable UDPv4, all required payload sizes.
-  - condition_id: S02_1k
+  # S02 消息大小扫描：固定 1P/1S、100 Hz、reliable，遍历全部必测 payload 档位。
+  - condition_id: S02_1KiB
     scenario_id: S02
     scenario_name: message_size_scan
+    scenario_title: 消息大小扫描 · 1 KiB
     payload_size_bytes: 1024
     message_count: 1000
     publish_rate_hz: 100
     duration_seconds: 10
-  - condition_id: S02_4k
+  - condition_id: S02_4KiB
     scenario_id: S02
     scenario_name: message_size_scan
+    scenario_title: 消息大小扫描 · 4 KiB
     payload_size_bytes: 4096
     message_count: 1000
     publish_rate_hz: 100
     duration_seconds: 10
-  - condition_id: S02_16k
+  - condition_id: S02_16KiB
     scenario_id: S02
     scenario_name: message_size_scan
+    scenario_title: 消息大小扫描 · 16 KiB
     payload_size_bytes: 16384
     message_count: 1000
     publish_rate_hz: 100
     duration_seconds: 10
-  - condition_id: S02_32k
+  - condition_id: S02_32KiB
     scenario_id: S02
     scenario_name: message_size_scan
+    scenario_title: 消息大小扫描 · 32 KiB
     payload_size_bytes: 32768
     message_count: 1000
     publish_rate_hz: 100
     duration_seconds: 10
-  - condition_id: S02_48k
+  - condition_id: S02_48KiB
     scenario_id: S02
     scenario_name: message_size_scan
+    scenario_title: 消息大小扫描 · 48 KiB
     payload_size_bytes: 49152
     message_count: 1000
     publish_rate_hz: 100
     duration_seconds: 10
-  - condition_id: S02_64k
+  - condition_id: S02_64KiB
     scenario_id: S02
     scenario_name: message_size_scan
+    scenario_title: 消息大小扫描 · 64 KiB
     payload_size_bytes: 65536
     message_count: 1000
     publish_rate_hz: 100
     duration_seconds: 10
-  - condition_id: S02_256k
+  - condition_id: S02_256KiB
     scenario_id: S02
     scenario_name: message_size_scan
+    scenario_title: 消息大小扫描 · 256 KiB
     payload_size_bytes: 262144
     message_count: 1000
     publish_rate_hz: 100
     duration_seconds: 10
-  - condition_id: S02_1m
+  - condition_id: S02_1MiB
     scenario_id: S02
     scenario_name: message_size_scan
+    scenario_title: 消息大小扫描 · 1 MiB
     payload_size_bytes: 1048576
     message_count: 1000
     publish_rate_hz: 100
     duration_seconds: 10
 
-  # S03: max-rate large messages; publish_rate_hz=0 means unpaced.
-  - condition_id: S03_64k_max
+  # S03 大消息吞吐：publish_rate_hz=0 表示不限速（由调度器与传输尽力而为决定）。
+  # 结果里会写 rate_calibration，明确"实测达成速率"而不是"全局最大稳定速率"。
+  - condition_id: S03_64KiB_unpaced
     scenario_id: S03
     scenario_name: large_message_throughput
+    scenario_title: 大消息吞吐 · 64 KiB 不限速
     payload_size_bytes: 65536
     message_count: 2000
     publish_rate_hz: 0
-  - condition_id: S03_256k_max
+  - condition_id: S03_256KiB_unpaced
     scenario_id: S03
     scenario_name: large_message_throughput
+    scenario_title: 大消息吞吐 · 256 KiB 不限速
     payload_size_bytes: 262144
     message_count: 1000
     publish_rate_hz: 0
-  - condition_id: S03_1m_max
+  - condition_id: S03_1MiB_unpaced
     scenario_id: S03
     scenario_name: large_message_throughput
+    scenario_title: 大消息吞吐 · 1 MiB 不限速
     payload_size_bytes: 1048576
     message_count: 500
     publish_rate_hz: 0
 
-  # S04: send-rate scan.
+  # S04 发送速率扫描：100 / 1000 / 5000 Hz 与不限速。
   - condition_id: S04_100
     scenario_id: S04
-    scenario_name: publish_rate_scan
+    scenario_name: send_rate_scan
+    scenario_title: 发送速率扫描 · 100 Hz
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 100
     duration_seconds: 100
   - condition_id: S04_1000
     scenario_id: S04
-    scenario_name: publish_rate_scan
+    scenario_name: send_rate_scan
+    scenario_title: 发送速率扫描 · 1000 Hz
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 1000
     duration_seconds: 10
   - condition_id: S04_5000
     scenario_id: S04
-    scenario_name: publish_rate_scan
+    scenario_name: send_rate_scan
+    scenario_title: 发送速率扫描 · 5000 Hz
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 5000
     duration_seconds: 2
-  - condition_id: S04_max
+  - condition_id: S04_unpaced
     scenario_id: S04
-    scenario_name: publish_rate_scan
+    scenario_name: send_rate_scan
+    scenario_title: 发送速率扫描 · 不限速
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 0
 
-  # S05-S07: topology matrix. Rates and counts are aggregate, not per publisher.
-  - condition_id: S05_1p4s_100
+  # S05 一对多广播：1P/4S，分别统计每个订阅者与总交付。
+  - condition_id: S05_1P4S_100
     scenario_id: S05
     scenario_name: one_to_many_broadcast
+    scenario_title: 一对多广播 · 1P/4S @ 100 Hz
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 100
     subscriber_count: 4
     duration_seconds: 100
-  - condition_id: S05_1p4s_1000
+  - condition_id: S05_1P4S_1000
     scenario_id: S05
     scenario_name: one_to_many_broadcast
+    scenario_title: 一对多广播 · 1P/4S @ 1000 Hz
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 1000
     subscriber_count: 4
     duration_seconds: 10
 
-  - condition_id: S06_4p1s_100
+  # S06 多对一汇聚：4P/1S，每个发布者独立按 publish_rate_hz 发送。
+  - condition_id: S06_4P1S_100
     scenario_id: S06
-    scenario_name: many_to_one_aggregation
+    scenario_name: many_to_one_fanin
+    scenario_title: 多对一汇聚 · 4P/1S @ 100 Hz/发布者
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 100
     publisher_count: 4
     duration_seconds: 100
-  - condition_id: S06_4p1s_1000
+  - condition_id: S06_4P1S_1000
     scenario_id: S06
-    scenario_name: many_to_one_aggregation
+    scenario_name: many_to_one_fanin
+    scenario_title: 多对一汇聚 · 4P/1S @ 1000 Hz/发布者
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 1000
     publisher_count: 4
     duration_seconds: 10
 
-  - condition_id: S07_4p4s_100
+  # S07 多对多并发：4P/4S，交付矩阵 + 资源消耗。
+  - condition_id: S07_4P4S_100
     scenario_id: S07
-    scenario_name: many_to_many_concurrency
+    scenario_name: many_to_many_mesh
+    scenario_title: 多对多并发 · 4P/4S @ 100 Hz/发布者
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 100
     publisher_count: 4
     subscriber_count: 4
     duration_seconds: 100
-  - condition_id: S07_4p4s_1000
+  - condition_id: S07_4P4S_1000
     scenario_id: S07
-    scenario_name: many_to_many_concurrency
+    scenario_name: many_to_many_mesh
+    scenario_title: 多对多并发 · 4P/4S @ 1000 Hz/发布者
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 1000
@@ -249,19 +286,33 @@ conditions:
     subscriber_count: 4
     duration_seconds: 10
 
+  # S08 长时间稳定性：≥5 分钟，观察延迟漂移与内存增长。
   - condition_id: S08_5min
     scenario_id: S08
-    scenario_name: long_running_stability
+    scenario_name: long_duration_stability
+    scenario_title: 长时间稳定性 · 5 分钟 @ 1000 Hz
     payload_size_bytes: 1024
     message_count: 0
     publish_rate_hz: 1000
     duration_seconds: 300
 
-  # S09 requires a real packet interception/network emulator. Disabled safely.
+  # S09 弱网与恢复：baseline（0 损伤）可执行；三档丢包需要四种中间件共用的外部网络仿真器。
+  - condition_id: S09_baseline
+    scenario_id: S09
+    scenario_name: weak_network_recovery
+    scenario_title: 弱网与恢复 · baseline（0 损伤）
+    payload_size_bytes: 1024
+    message_count: 10000
+    publish_rate_hz: 1000
+    duration_seconds: 10
+    network_profile: normal
   - condition_id: S09_loss_1pct
     enabled: false
+    capability: not_tested
+    capability_note: 需要四种中间件共用的外部网络仿真器注入 1% 丢包；注入器确认前不产生数据
     scenario_id: S09
-    scenario_name: weak_network_and_recovery
+    scenario_name: weak_network_recovery
+    scenario_title: 弱网与恢复 · 1% 丢包
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 1000
@@ -269,8 +320,11 @@ conditions:
     network_profile: loss_1pct
   - condition_id: S09_loss_5pct
     enabled: false
+    capability: not_tested
+    capability_note: 需要四种中间件共用的外部网络仿真器注入 5% 丢包；注入器确认前不产生数据
     scenario_id: S09
-    scenario_name: weak_network_and_recovery
+    scenario_name: weak_network_recovery
+    scenario_title: 弱网与恢复 · 5% 丢包
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 1000
@@ -278,40 +332,115 @@ conditions:
     network_profile: loss_5pct
   - condition_id: S09_loss_10pct
     enabled: false
+    capability: not_tested
+    capability_note: 需要四种中间件共用的外部网络仿真器注入 10% 丢包；注入器确认前不产生数据
     scenario_id: S09
-    scenario_name: weak_network_and_recovery
+    scenario_name: weak_network_recovery
+    scenario_title: 弱网与恢复 · 10% 丢包
     payload_size_bytes: 1024
     message_count: 10000
     publish_rate_hz: 1000
     duration_seconds: 10
     network_profile: loss_10pct
 
+  # S10 启动与发现：冷启动与多端点发现可执行；热启动与启动超时属于后续阶段。
   - condition_id: S10_cold_start
     scenario_id: S10
-    scenario_name: startup_and_discovery
+    scenario_name: startup_discovery
+    scenario_title: 启动与发现 · 冷启动
     payload_size_bytes: 1024
     message_count: 100
     publish_rate_hz: 100
     warmup_seconds: 0
+    drain_seconds: 1
+    duration_seconds: 1
+  - condition_id: S10_warm_start
+    enabled: false
+    capability: not_tested
+    capability_note: 需要参与者预热/复用支持（当前实现每轮都是全新冷启动），列入后续阶段
+    scenario_id: S10
+    scenario_name: startup_discovery
+    scenario_title: 启动与发现 · 热启动
+    payload_size_bytes: 1024
+    message_count: 100
+    publish_rate_hz: 100
+    warmup_seconds: 0
+    drain_seconds: 1
+    duration_seconds: 1
+  - condition_id: S10_multi_endpoint
+    scenario_id: S10
+    scenario_name: startup_discovery
+    scenario_title: 启动与发现 · 多端点发现（1P/4S）
+    payload_size_bytes: 1024
+    message_count: 1000
+    publish_rate_hz: 100
+    subscriber_count: 4
+    duration_seconds: 10
+  - condition_id: S10_startup_timeout
+    enabled: false
+    capability: not_tested
+    capability_note: 需要可控的"发现超时"注入（缺少对端时强制等待到超时），列入后续阶段
+    scenario_id: S10
+    scenario_name: startup_discovery
+    scenario_title: 启动与发现 · 启动超时
+    payload_size_bytes: 1024
+    message_count: 100
+    publish_rate_hz: 100
+    warmup_seconds: 0
+    drain_seconds: 1
     duration_seconds: 1
 
-  # S11 is reserved for the same external fault orchestrator used by all modules.
-  - condition_id: S11_restart_subscriber
-    enabled: false
+  # S11 重连与故障恢复：DDS 没有 Broker/Router，用 Participant 重启 / DataReader 断开重连表示；
+  # 网络中断需要外部注入器。前两类由本适配器自己的控制器真实执行。
+  - condition_id: S11_participant_restart
     scenario_id: S11
-    scenario_name: reconnect_and_fault_recovery
+    scenario_name: reconnect_fault_recovery
+    scenario_title: 重连与故障恢复 · Publisher Participant 重启
     payload_size_bytes: 1024
     message_count: 20000
     publish_rate_hz: 1000
     duration_seconds: 20
     fault_plan:
+      kind: restart_publisher
+      endpoint_id: 0
+      at_seconds: 6
+      downtime_seconds: 1
+  - condition_id: S11_reader_reconnect
+    scenario_id: S11
+    scenario_name: reconnect_fault_recovery
+    scenario_title: 重连与故障恢复 · DataReader 断开重连
+    payload_size_bytes: 1024
+    message_count: 20000
+    publish_rate_hz: 1000
+    duration_seconds: 20
+    qos_profile: best_effort
+    fault_plan:
       kind: restart_subscriber
-      at_seconds: 5
-      downtime_seconds: 2
+      endpoint_id: 0
+      at_seconds: 6
+      downtime_seconds: 1
+  - condition_id: S11_network_interruption
+    enabled: false
+    capability: not_tested
+    capability_note: 网络中断需要四种中间件共用的外部故障/网络注入器，注入器确认前不产生数据
+    scenario_id: S11
+    scenario_name: reconnect_fault_recovery
+    scenario_title: 重连与故障恢复 · 网络中断
+    payload_size_bytes: 1024
+    message_count: 20000
+    publish_rate_hz: 1000
+    duration_seconds: 20
+    network_profile: loss_1pct
+    fault_plan:
+      kind: network_interruption
+      at_seconds: 6
+      downtime_seconds: 1
 
+  # S12 数据正确性：长度、校验和、序列号、重复、乱序、损坏。
   - condition_id: S12_integrity
     scenario_id: S12
     scenario_name: data_correctness
+    scenario_title: 数据正确性 · 16 KiB @ 1000 Hz
     payload_size_bytes: 16384
     message_count: 10000
     publish_rate_hz: 1000

@@ -1,12 +1,13 @@
 from __future__ import annotations
 
 import copy
+import re
 from pathlib import Path
 from typing import Any
 
 import yaml
 
-from . import METRICS_DEFINITION_VERSION, SCHEMA_VERSION
+from . import METRICS_DEFINITION_VERSION, MIDDLEWARE_ID, SCHEMA_VERSION, VENDOR
 
 
 class ConfigError(ValueError):
@@ -14,13 +15,18 @@ class ConfigError(ValueError):
 
 
 SUITE_DEFAULTS: dict[str, Any] = {
-    "module_name": "fastdds",
+    "middleware_id": MIDDLEWARE_ID,
+    "module_name": MIDDLEWARE_ID,
+    "vendor": VENDOR,
+    "label": "DDS",
     "module_version": "3.6.2",
     "fastdds_python_version": "2.6.1",
     "domain_id_base": 80,
     "same_host": True,
-    "rate_scope": "aggregate",
-    "message_count_scope": "aggregate",
+    "rate_scope": "per_publisher",
+    "message_count_scope": "per_publisher",
+    "default_repeats": 5,
+    "formal_repeats": 10,
     "startup_timeout_seconds": 30.0,
     "discovery_timeout_seconds": 30.0,
     "barrier_delay_ms": 250,
@@ -32,11 +38,14 @@ SUITE_DEFAULTS: dict[str, Any] = {
 
 CONDITION_DEFAULTS: dict[str, Any] = {
     "enabled": True,
+    "capability": "supported",
+    "capability_note": None,
+    "scenario_title": None,
     "message_count": 0,
     "publish_rate_hz": 0,
     "publisher_count": 1,
     "subscriber_count": 1,
-    "transport_mode": "UDPv4",
+    "transport_mode": "udp",
     "qos_profile": "reliable",
     "warmup_seconds": 1.0,
     "drain_seconds": 2.0,
@@ -44,14 +53,25 @@ CONDITION_DEFAULTS: dict[str, Any] = {
     "repeats": 5,
     "network_profile": "normal",
     "random_seed": 7401,
+    "timeout_seconds": None,
     "fault_plan": {"kind": "none"},
 }
 
-SUPPORTED_TRANSPORTS = {"UDPv4", "SHM", "DEFAULT"}
+SUPPORTED_TRANSPORTS = {"udp", "shm", "default"}
 SUPPORTED_RELIABILITY = {"reliable", "best_effort"}
 SUPPORTED_DURABILITY = {"volatile", "transient_local"}
 SUPPORTED_HISTORY = {"keep_last", "keep_all"}
 SUPPORTED_PUBLISH_MODE = {"synchronous", "asynchronous"}
+# capability 说明见 DDS_readme_1.md §6.4：
+#   supported  —— 本适配器可以真实执行并测量
+#   not_tested —— 条件保留在目录里，但当前不产生数据（需要外部注入器 / 后续阶段能力）
+#   unsupported—— 中间件语义上不支持
+SUPPORTED_CAPABILITIES = {"supported", "not_tested", "unsupported"}
+
+SCENARIO_ID_PATTERN = re.compile(r"^S(0[1-9]|1[0-2])$")
+
+# 引擎真正会执行的故障动作；其余故障必须交给四种中间件共用的编排器。
+EXECUTABLE_FAULTS = {"none", "restart_publisher", "restart_subscriber"}
 
 
 def _require(mapping: dict[str, Any], key: str, context: str) -> Any:
@@ -82,13 +102,56 @@ def _boolean(value: Any, name: str) -> bool:
     return value
 
 
-def load_config(path: Path) -> tuple[dict[str, Any], list[str]]:
+def load_raw_config(path: Path) -> dict[str, Any]:
+    """读取未规范化的配置字典（供不依赖 PyYAML 的调用方复用同一份矩阵）。"""
     path = Path(path)
     with path.open("r", encoding="utf-8") as stream:
         loaded = yaml.safe_load(stream)
     if not isinstance(loaded, dict):
         raise ConfigError("The YAML root must be an object")
-    return normalize_config(loaded)
+    return loaded
+
+
+def load_config(path: Path) -> tuple[dict[str, Any], list[str]]:
+    return normalize_config(load_raw_config(path))
+
+
+def condition_from_console_case(case: dict[str, Any]) -> dict[str, Any]:
+    """把控制台 spec.json 的 case 转成引擎条件。
+
+    控制台 case 里 `scenario_name` 是场景编号（S01…S12）、`case` 是
+    `interfaces/scenarios.py` 的规范名；引擎侧反过来：`scenario_name` 存规范名，
+    `scenario_id` 存编号。
+    """
+    repeats = case.get("case_repeats") or case.get("repeats") or 1
+    return {
+        "condition_id": str(case.get("condition_id")),
+        "scenario_id": str(case.get("scenario_id") or case.get("scenario_name")),
+        "scenario_name": str(case.get("case") or case.get("scenario_name")),
+        "scenario_title": case.get("scenario_title") or case.get("title"),
+        "payload_size_bytes": int(case.get("payload_size_bytes") or 0),
+        "message_count": int(case.get("message_count") or 0),
+        "publish_rate_hz": float(case.get("publish_rate_hz") or 0),
+        "publisher_count": int(case.get("publisher_count") or 1),
+        "subscriber_count": int(case.get("subscriber_count") or 1),
+        "transport_mode": str(case.get("transport_mode") or "udp").lower(),
+        "qos_profile": str(case.get("qos_profile") or "reliable"),
+        "warmup_seconds": float(case.get("warmup_seconds") or 0),
+        "drain_seconds": float(case.get("drain_seconds") or 0),
+        "duration_seconds": float(case.get("duration_seconds") or 0),
+        "repeats": int(repeats),
+        "random_seed": int(case.get("random_seed") or 0),
+        "network_profile": str(case.get("network_profile") or "normal"),
+        "timeout_seconds": (
+            None
+            if case.get("timeout_seconds") in (None, "")
+            else float(case["timeout_seconds"])
+        ),
+        "capability": str(case.get("capability") or "supported"),
+        "capability_note": case.get("capability_note"),
+        "enabled": bool(case.get("enabled", True)),
+        "fault_plan": case.get("fault_plan") or {"kind": "none"},
+    }
 
 
 def normalize_config(source: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
@@ -107,16 +170,20 @@ def normalize_config(source: dict[str, Any]) -> tuple[dict[str, Any], list[str]]
         raise ConfigError("suite must be an object")
     for key, value in SUITE_DEFAULTS.items():
         suite.setdefault(key, value)
-    if suite["module_name"] != "fastdds":
-        raise ConfigError("suite.module_name must be 'fastdds'")
+    if suite["middleware_id"] != MIDDLEWARE_ID or suite["module_name"] != MIDDLEWARE_ID:
+        raise ConfigError(f"suite.module_name must be {MIDDLEWARE_ID!r}")
+    if not str(suite["vendor"]):
+        raise ConfigError("suite.vendor must not be empty")
     if suite["same_host"] is not True:
         raise ConfigError(
             "This adapter uses perf_counter_ns across local processes; same_host must be true"
         )
-    if suite["rate_scope"] != "aggregate":
-        raise ConfigError("suite.rate_scope must be 'aggregate'")
-    if suite["message_count_scope"] != "aggregate":
-        raise ConfigError("suite.message_count_scope must be 'aggregate'")
+    if suite["rate_scope"] != "per_publisher":
+        raise ConfigError("suite.rate_scope must be 'per_publisher'")
+    if suite["message_count_scope"] != "per_publisher":
+        raise ConfigError("suite.message_count_scope must be 'per_publisher'")
+    _integer(suite["default_repeats"], "suite.default_repeats", 1)
+    _integer(suite["formal_repeats"], "suite.formal_repeats", 1)
     domain_base = _integer(suite["domain_id_base"], "suite.domain_id_base")
     if domain_base > 232:
         raise ConfigError("suite.domain_id_base must be <= 232")
@@ -237,6 +304,11 @@ def normalize_config(source: dict[str, Any]) -> tuple[dict[str, Any], list[str]]
         condition.update(item)
         condition_id = str(_require(condition, "condition_id", context))
         scenario_id = str(_require(condition, "scenario_id", context))
+        if not SCENARIO_ID_PATTERN.match(scenario_id):
+            raise ConfigError(
+                f"{context}.scenario_id must look like 'S01'..'S12' "
+                "(interfaces/scenarios.py is the single source of scenario ids)"
+            )
         scenario_name = str(_require(condition, "scenario_name", context))
         if not condition_id or condition_id in seen:
             raise ConfigError(f"{context}.condition_id must be non-empty and unique")
@@ -244,6 +316,15 @@ def normalize_config(source: dict[str, Any]) -> tuple[dict[str, Any], list[str]]
         condition["condition_id"] = condition_id
         condition["scenario_id"] = scenario_id
         condition["scenario_name"] = scenario_name
+        condition["capability"] = str(condition["capability"])
+        if condition["capability"] not in SUPPORTED_CAPABILITIES:
+            raise ConfigError(
+                f"{context}.capability must be one of {sorted(SUPPORTED_CAPABILITIES)}"
+            )
+        if condition["capability"] != "supported" and not condition["capability_note"]:
+            raise ConfigError(
+                f"{context}.capability_note is required when capability is not 'supported'"
+            )
         condition["payload_size_bytes"] = _integer(
             _require(condition, "payload_size_bytes", context),
             f"{context}.payload_size_bytes",
@@ -269,6 +350,10 @@ def normalize_config(source: dict[str, Any]) -> tuple[dict[str, Any], list[str]]
         condition["random_seed"] = _integer(
             condition["random_seed"], f"{context}.random_seed", 0
         )
+        if condition["timeout_seconds"] is not None:
+            condition["timeout_seconds"] = _number(
+                condition["timeout_seconds"], f"{context}.timeout_seconds", 0.001
+            )
         _boolean(condition["enabled"], f"{context}.enabled")
         if condition["message_count"] == 0 and condition["duration_seconds"] == 0:
             raise ConfigError(
@@ -294,12 +379,20 @@ def normalize_config(source: dict[str, Any]) -> tuple[dict[str, Any], list[str]]
             tolerance = max(0.05, planned * 0.01)
             if abs(planned - duration) > tolerance:
                 warnings.append(
-                    f"{condition_id}: message_count / publish_rate_hz = {planned:g}s, "
-                    f"but duration_seconds = {duration:g}s; message_count is the stop condition"
+                    f"{condition_id}: message_count / publish_rate_hz = {planned:g}s "
+                    f"(per publisher), but duration_seconds = {duration:g}s; "
+                    "message_count is the stop condition"
                 )
         fault_plan = condition.get("fault_plan", {"kind": "none"})
         if not isinstance(fault_plan, dict) or "kind" not in fault_plan:
             raise ConfigError(f"{context}.fault_plan must be an object with kind")
+        fault_kind = str(fault_plan["kind"])
+        condition["fault_plan"] = fault_plan
+        if fault_kind not in EXECUTABLE_FAULTS and condition["capability"] == "supported":
+            raise ConfigError(
+                f"{context}.fault_plan.kind={fault_kind!r} must be supplied by the shared "
+                "cross-middleware fault orchestrator; mark the condition capability='not_tested'"
+            )
         normalized_conditions.append(condition)
 
     config["conditions"] = normalized_conditions
@@ -334,13 +427,18 @@ def normalize_config(source: dict[str, Any]) -> tuple[dict[str, Any], list[str]]
 def select_conditions(
     config: dict[str, Any], condition_ids: list[str] | None = None
 ) -> list[dict[str, Any]]:
-    selected = [c for c in config["conditions"] if c.get("enabled", True)]
+    """返回正式可执行的条件：enabled 且 capability=supported。"""
+    selected = [
+        c
+        for c in config["conditions"]
+        if c.get("enabled", True) and c.get("capability") == "supported"
+    ]
     if condition_ids:
         wanted = set(condition_ids)
         selected = [c for c in selected if c["condition_id"] in wanted]
         missing = wanted - {c["condition_id"] for c in selected}
         if missing:
-            raise ConfigError(f"Enabled condition(s) not found: {sorted(missing)}")
+            raise ConfigError(f"Executable condition(s) not found: {sorted(missing)}")
     if not selected:
         raise ConfigError("No enabled conditions selected")
     return selected
