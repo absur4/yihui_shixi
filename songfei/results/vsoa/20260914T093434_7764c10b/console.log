@@ -1,0 +1,12 @@
+[09:34:34] SUITE 开始：1 个条件，共 5 轮
+[09:34:34] START S11_publisher_restart repeat=1/5
+[09:34:39] END S11_publisher_restart status=completed sent=207 received=54
+[09:34:39] START S11_publisher_restart repeat=2/5
+[09:34:44] END S11_publisher_restart status=completed sent=213 received=62
+[09:34:44] START S11_publisher_restart repeat=3/5
+[09:34:49] END S11_publisher_restart status=completed sent=211 received=55
+[09:34:49] START S11_publisher_restart repeat=4/5
+[09:34:54] END S11_publisher_restart status=completed sent=210 received=54
+[09:34:54] START S11_publisher_restart repeat=5/5
+[09:34:59] END S11_publisher_restart status=completed sent=216 received=62
+[09:34:59] RESULT D:\AI_project\yihui_shixi\songfei\results\vsoa\20260914T093434_7764c10b\output\result.json status=completed

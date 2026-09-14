@@ -1,0 +1,12 @@
+[11:03:08] SUITE 开始：1 个条件，共 5 轮
+[11:03:08] START S05_1P_4S_broadcast repeat=1/5
+[11:03:16] END S05_1P_4S_broadcast status=completed sent=4998 received=19992
+[11:03:16] START S05_1P_4S_broadcast repeat=2/5
+[11:03:23] END S05_1P_4S_broadcast status=completed sent=4997 received=19988
+[11:03:23] START S05_1P_4S_broadcast repeat=3/5
+[11:03:31] END S05_1P_4S_broadcast status=completed sent=4986 received=19944
+[11:03:31] START S05_1P_4S_broadcast repeat=4/5
+[11:03:38] END S05_1P_4S_broadcast status=completed sent=4999 received=19996
+[11:03:38] START S05_1P_4S_broadcast repeat=5/5
+[11:03:45] END S05_1P_4S_broadcast status=completed sent=5000 received=20000
+[11:03:45] RESULT D:\AI_project\yihui_shixi\songfei\results\vsoa\20260912T110308_f11c7cf9\output\result.json status=completed

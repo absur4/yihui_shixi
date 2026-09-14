@@ -1,0 +1,18 @@
+{
+  "publisher": 2,
+  "messages_sent": 5000,
+  "publish_calls_accepted": 5000,
+  "publish_calls_failed": 0,
+  "planned_releases": 5000,
+  "unissued_releases": 0,
+  "scheduler_skipped_releases": 0,
+  "fragments_per_message": 1,
+  "fragment_size_bytes": 1024,
+  "fragments_sent": 5000,
+  "offered_payload_mbps": 8.192,
+  "first_successful_send_ns": 696345930700,
+  "last_successful_send_ns": 701344921200,
+  "finished_ns": 701345254800,
+  "start_ns": 696345917600,
+  "end_ns": 701345917600
+}
