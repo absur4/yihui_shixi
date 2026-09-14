@@ -1,0 +1,11 @@
+{
+  "module_name": "MQTT",
+  "discovery_mechanism": "Broker-based topic subscription and retained session state",
+  "communication_model": "Publish/subscribe with retained message and offline session support",
+  "cross_platform_support": "Windows, Linux, macOS, embedded clients through mature MQTT libraries",
+  "qos_support": "QoS 0/1/2, retained messages, persistent sessions, last will",
+  "reliability": "High for QoS 1/2; broker persistence and offline queue behavior depend on broker configuration",
+  "realtime": "Suitable for soft real-time telemetry and command delivery, not deterministic hard real-time control",
+  "transport_support": "Typically TCP/TLS; some brokers also support WebSocket and other transports",
+  "ecosystem_maturity": "Very mature IoT ecosystem with broad broker and client support"
+}
