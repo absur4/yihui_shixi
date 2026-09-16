@@ -1,0 +1,26 @@
+{
+  "nodes": {
+    "A": {"url": "http://192.168.1.10:8765", "mqtt_host": "192.168.1.10"},
+    "B": {"url": "http://192.168.1.20:8765", "mqtt_host": "192.168.1.20"}
+  },
+  "broker_port": 1883,
+  "cooldown_s": 20,
+  "clock": {
+    "model_validated": false,
+    "model_validation_reference": "",
+    "drift_bound_ppm": 100,
+    "interval_s": 5,
+    "latency_limit_ms": 1,
+    "window_limit_ms": 20
+  },
+  "environment": {
+    "ap_model": "fill-before-formal-test",
+    "band": "5GHz",
+    "channel": "fill-before-formal-test",
+    "channel_width_mhz": null,
+    "A_position": "fill-before-formal-test",
+    "B_position": "fill-before-formal-test",
+    "control_network": "same-LAN",
+    "network_baseline_artifacts": []
+  }
+}

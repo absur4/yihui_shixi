@@ -1,0 +1,9 @@
+{
+  "description": "Replace these template entries with measured references; validated=false entries are never used.",
+  "capacities": [
+    {"middleware": "VSOA", "direction": "A_to_B", "R_pass": null, "R_fail": null, "validated": false, "profile": "sender_service_tcp_v2", "bound_status": "not_tested", "comparison_fingerprint": "copy-from-current-suite", "source": "original-measurement-path"},
+    {"middleware": "VSOA", "direction": "B_to_A", "R_pass": null, "R_fail": null, "validated": false, "profile": "sender_service_tcp_v2", "bound_status": "not_tested", "comparison_fingerprint": "copy-from-current-suite", "source": "original-measurement-path"},
+    {"middleware": "ZENOH", "direction": "A_to_B", "R_pass": null, "R_fail": null, "validated": false, "profile": "sender_service_tcp_v2", "bound_status": "not_tested", "comparison_fingerprint": "copy-from-current-suite", "source": "original-measurement-path"},
+    {"middleware": "ZENOH", "direction": "B_to_A", "R_pass": null, "R_fail": null, "validated": false, "profile": "sender_service_tcp_v2", "bound_status": "not_tested", "comparison_fingerprint": "copy-from-current-suite", "source": "original-measurement-path"}
+  ]
+}
