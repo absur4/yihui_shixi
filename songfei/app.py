@@ -25,20 +25,28 @@ import sys
 import threading
 import time
 import uuid
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
+from urllib.request import Request, urlopen
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 STATIC = HERE / "static"
 RESULTS = HERE / "results"
+VSOA_PY = ROOT / "VSOA" / "vsoa_py"
+CROSS_DEVICE_RUNNER = HERE / "cross_device_runner.py"
 
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
+for _path in (str(ROOT), str(VSOA_PY)):
+    if _path not in sys.path:
+        sys.path.insert(0, _path)
 
 from interfaces.scenarios import SCENARIOS  # noqa: E402
+from cross_device import CATALOG as CROSS_DEVICE_CATALOG  # noqa: E402
+from cross_device import SCENARIO_NAMES as CROSS_DEVICE_NAMES  # noqa: E402
+from cross_device import build_cases as build_cross_device_cases  # noqa: E402
 
 SCENARIO_TITLES = {scenario.scenario_id: scenario.title for scenario in SCENARIOS}
 MIDDLEWARE_ORDER = ("vsoa", "dds", "mqtt", "zenoh")
@@ -68,6 +76,29 @@ def parse_log_line(text):
     if match:
         return {"time": match.group(1), "text": match.group(2)}
     return {"time": datetime.now().strftime("%H:%M:%S"), "text": text}
+
+
+def parse_distributed(distributed, require_two=True):
+    """校验并标准化网页提交的 Agent 配置，令牌不会写入作业文件。"""
+    distributed = distributed or {}
+    raw_agents = distributed.get("agents") or []
+    if isinstance(raw_agents, str):
+        raw_agents = [item.strip() for item in re.split(r"[,\r\n]+", raw_agents) if item.strip()]
+    agents = []
+    for value in raw_agents:
+        parsed = urlparse(str(value))
+        if (parsed.scheme not in {"http", "https"} or not parsed.hostname or parsed.path.rstrip("/")
+                or parsed.query or parsed.fragment or parsed.username or parsed.password):
+            raise ValueError(f"无效的 Agent 地址：{value}")
+        normalized = str(value).rstrip("/")
+        if normalized not in agents:
+            agents.append(normalized)
+    if require_two and len(agents) != 2:
+        raise ValueError("跨设备 2.0 固定使用两台物理机，请按 A、B 顺序提供两个不同的 Agent 地址")
+    token = str(distributed.get("token") or "")
+    if not token:
+        raise ValueError("多机协同需要 Agent 令牌")
+    return agents, token
 
 
 def read_log_tail(path, limit=LOG_LIMIT):
@@ -136,6 +167,58 @@ def load_backends():
 BACKENDS = load_backends()
 
 
+def check_agents(distributed, middleware_id="vsoa"):
+    """并行检测当前中间件 Agent，返回不包含共享令牌的节点信息。"""
+    if middleware_id == "zenoh":
+        from Zenoh.zenoh_bench.distributed import AgentClient as ZenohAgentClient
+        agents, token = parse_distributed(distributed)
+        results = []
+        for index, url in enumerate(agents):
+            try:
+                info = ZenohAgentClient(url, token, timeout=4).probe_clock(samples=9)
+                results.append({"index": index, "url": url, "ok": True,
+                                "latency_ms": info.get("round_trip_ms"),
+                                "advertise_host": info.get("hostname"), "machine": info.get("hostname"),
+                                "os": info.get("platform"), "python": info.get("python"),
+                                "clock_uncertainty_ms": info.get("clock_uncertainty_ms"),
+                                "service": "zenoh-bench-agent"})
+            except Exception as error:
+                results.append({"index": index, "url": url, "ok": False, "error": str(error)})
+        return {"ok": all(item["ok"] for item in results), "agents": results}
+    if middleware_id == "mqtt":
+        raise ValueError("MQTT 跨设备 Agent 尚未实现 2.0 固定窗口证据协议，不能以本机测试代替")
+    entry = BACKENDS.get("vsoa")
+    if not entry or entry["module"] is None or not entry["meta"].get("available"):
+        raise ValueError("控制端 VSOA 不可用，无法检测多机节点")
+    from standalone.distributed import AgentClient
+
+    agents, token = parse_distributed(distributed)
+    expected = str(entry["meta"].get("version") or "")
+
+    def probe(index, url):
+        began = time.perf_counter_ns()
+        info = AgentClient(url, token, timeout=4).health()
+        elapsed_ms = (time.perf_counter_ns() - began) / 1e6
+        version = str(info.get("vsoa") or "")
+        if version != expected:
+            raise ValueError(f"VSOA 版本不一致：节点 {version or '未知'}，控制端 {expected or '未知'}")
+        return {"index": index, "url": url, "ok": True, "latency_ms": round(elapsed_ms, 2),
+                "advertise_host": info.get("advertise_host"), "machine": info.get("machine"),
+                "os": info.get("os"), "python": info.get("python"), "vsoa": version}
+
+    results = [None] * len(agents)
+    with ThreadPoolExecutor(max_workers=min(8, len(agents))) as executor:
+        futures = {executor.submit(probe, index, url): (index, url)
+                   for index, url in enumerate(agents)}
+        for future in as_completed(futures):
+            index, url = futures[future]
+            try:
+                results[index] = future.result()
+            except Exception as error:
+                results[index] = {"index": index, "url": url, "ok": False, "error": str(error)}
+    return {"ok": all(item["ok"] for item in results), "agents": results}
+
+
 def map_run(run):
     """把引擎单轮报告映射为控制台字段（保留全部原始字段供详情查看）。"""
     configuration = dict(run.get("configuration") or {})
@@ -187,6 +270,7 @@ class JobManager:
         self.process = None
         self.logs: list[dict] = []
         self.stopping = False
+        self.remote_cleanup = None
 
     def job_dir(self, middleware_id, job_id):
         return RESULTS / str(middleware_id) / str(job_id)
@@ -222,7 +306,9 @@ class JobManager:
                 temporary.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
                 os.replace(temporary, job_file)
 
-    def start(self, middleware_id, template_index, configuration, matrix):
+    def start(self, middleware_id, template_index, configuration, matrix,
+              execution_mode="local", distributed=None):
+        configuration = dict(configuration or {})
         with self.lock:
             if self.job and self.job["status"] in ACTIVE_STATES:
                 raise ValueError("已有一个实验正在运行，请先停止或等待其完成")
@@ -234,13 +320,45 @@ class JobManager:
             raise ValueError(f"{label} 适配器加载失败，无法启动测试（详见控制台启动日志）")
         if not entry["templates"]:
             raise ValueError(f"{label} 没有可用条件，无法启动测试")
-        # available=False 仍允许启动：执行器会按契约返回 not_tested 并写明原因（用于冒烟验证，不伪造数据）
-        cases = list(entry["module"].build_cases(template_index, configuration, matrix))  # ValueError → 400
+        if execution_mode not in {"local", "multi_machine"}:
+            raise ValueError("无效的执行模式")
+        if execution_mode == "multi_machine" and middleware_id not in {"vsoa", "mqtt", "zenoh"}:
+            raise ValueError("跨设备 CD1–CD4 仅支持 VSOA、MQTT 和 Zenoh")
+        if execution_mode == "multi_machine":
+            configuration["direction"] = str((distributed or {}).get("direction") or "A_TO_B")
+        # 跨设备使用独立 CD 命名空间和 2.0 固定窗口口径；本机模式继续使用适配器原目录。
+        cases = (build_cross_device_cases(template_index, configuration, matrix)
+                 if execution_mode == "multi_machine" else
+                 list(entry["module"].build_cases(template_index, configuration, matrix)))
         if not cases:
             raise ValueError("没有可执行的条件")
+        distributed_spec = None
+        agent_token = None
+        if execution_mode == "multi_machine":
+            unsupported = []
+            for case in cases:
+                if case.get("test_kind") == "fault_recovery":
+                    unsupported.append(str(case.get("scenario_name")) + "（远程故障重启）")
+                elif (case.get("blackout_duration_seconds") or
+                      any(case.get(key, 0) for key in ("loss_rate", "network_delay_ms", "network_jitter_ms"))):
+                    unsupported.append(str(case.get("scenario_name")) + "（人工网络损伤）")
+            if unsupported:
+                raise ValueError("当前条件不能用于多机协同：" + "、".join(unsupported))
+            physical_agents, agent_token = parse_distributed(distributed)
+            direction = cases[0].get("direction", "A_TO_B")
+            agents = physical_agents if direction == "A_TO_B" else list(reversed(physical_agents))
+            probe = check_agents({"agents": agents, "token": agent_token}, middleware_id)
+            failures = [f"{item['url']}：{item.get('error', '不可用')}"
+                        for item in probe["agents"] if not item["ok"]]
+            if failures:
+                raise ValueError("Agent 检测失败；" + "；".join(failures))
+            distributed_spec = {"agents": agents, "physical_agents": {"A": physical_agents[0],
+                                                                        "B": physical_agents[1]},
+                                "direction": direction, "profile": "sender_service_tcp_v2"}
         try:
             index = int(template_index)
-            template = entry["templates"][index]
+            template = (CROSS_DEVICE_CATALOG if execution_mode == "multi_machine"
+                        else entry["templates"])[index]
         except (TypeError, ValueError, IndexError):
             template = {"scenario_name": "", "case": ""}
         scenario_id = template.get("scenario_name", "")
@@ -250,29 +368,45 @@ class JobManager:
                  "status": "planned", "reason": None, "configuration": case,
                  "planned_repeats": int(case.get("case_repeats") or 1)} for case in cases]
         job_id = datetime.now().strftime("%Y%m%dT%H%M%S") + "_" + uuid.uuid4().hex[:8]
+        if distributed_spec:
+            distributed_spec["job_id"] = job_id
         job_dir = self.job_dir(middleware_id, job_id)
         job_dir.mkdir(parents=True, exist_ok=True)
         output = job_dir / "output"
         job = {"id": job_id, "middleware_id": middleware_id, "status": "starting",
                "started": time.time(), "ended": None, "total": total, "matrix": bool(matrix),
                "scenario": scenario_id, "case": template.get("case", ""), "template_index": template_index,
-               "configuration": configuration}
+               "configuration": configuration, "execution_mode": execution_mode,
+               "agents": distributed_spec["agents"] if distributed_spec else []}
         spec = {"middleware": middleware_id, "config": entry["config"] or {}, "cases": cases, "plan": plan,
-                "output": str(output), "logs": str(output / "logs")}
+                "output": str(output), "logs": str(output / "logs"),
+                "metric_definition_version": "2.0" if distributed_spec else "1.0",
+                "profile": distributed_spec.get("profile") if distributed_spec else None}
+        if distributed_spec:
+            spec["distributed"] = distributed_spec
         (job_dir / "spec.json").write_text(json.dumps(spec, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
         self._write_job(job)
-        command = list(entry["module"].runner_command()) + [str(job_dir / "spec.json")]
+        command = ([sys.executable, str(CROSS_DEVICE_RUNNER), str(job_dir / "spec.json")]
+                   if distributed_spec else
+                   list(entry["module"].runner_command()) + [str(job_dir / "spec.json")])
         flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
+        environment = dict(os.environ, PYTHONUTF8="1")
+        if agent_token:
+            environment["SONGFEI_AGENT_TOKEN"] = agent_token
         process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                   creationflags=flags, cwd=str(entry["folder"]),
-                                   env=dict(os.environ, PYTHONUTF8="1"))
+                                   creationflags=flags,
+                                   cwd=str(ROOT if distributed_spec else entry["folder"]),
+                                   env=environment)
         with self.lock:
             self.job = job
             self.process = process
             self.stopping = False
+            self.remote_cleanup = ((middleware_id, list(distributed_spec["agents"]), agent_token, job_id)
+                                   if distributed_spec else None)
             degraded = "" if entry["meta"].get("available") else "｜环境未就绪，预期结果为 not_tested（不伪造数据）"
             self.logs = [{"time": datetime.now().strftime("%H:%M:%S"),
                           "text": f"控制台已启动 {label} 引擎：{template.get('case', '')}"
+                                  + ("（多机协同）" if distributed_spec else "（本机回环）")
                                   + ("（完整矩阵）" if matrix else "（当前条件）") + degraded}]
         threading.Thread(target=self._follow, args=(process, job, job_dir), daemon=True).start()
         return job
@@ -316,6 +450,7 @@ class JobManager:
             else:
                 status = "error"
             self.stopping = False
+            self.remote_cleanup = None
             job["status"] = status
             job["ended"] = time.time()
             self.logs.append({"time": datetime.now().strftime("%H:%M:%S"),
@@ -324,12 +459,24 @@ class JobManager:
 
     def stop(self):
         with self.lock:
-            job, process = self.job, self.process
+            job, process, remote_cleanup = self.job, self.process, self.remote_cleanup
             if not job or job["status"] not in ACTIVE_STATES:
                 return {"ok": True, "message": "当前没有正在运行的实验"}
             job["status"] = "stopping"
             self.stopping = True
         self._write_job(job)
+        if remote_cleanup:
+            middleware_id, agents, agent_token, owner = remote_cleanup
+            payload = json.dumps({"owner": owner}).encode("utf-8")
+            for agent in agents if middleware_id == "vsoa" else []:
+                try:
+                    request = Request(agent + "/v1/stop-owner", data=payload, method="POST",
+                                      headers={"X-VSOA-Agent-Token": agent_token,
+                                               "Content-Type": "application/json"})
+                    with urlopen(request, timeout=3):
+                        pass
+                except Exception:
+                    pass
         if process is not None:
             _kill_tree(process.pid)
             try:
@@ -448,7 +595,8 @@ def api_init():
                 for job in MANAGER.load_jobs(default_middleware)] if default_middleware else [])
     return {"middleware": [entry["meta"] for entry in BACKENDS.values()],
             "catalogs": {middleware_id: entry["templates"] for middleware_id, entry in BACKENDS.items()},
-            "names": SCENARIO_TITLES,
+            "cross_device_catalog": CROSS_DEVICE_CATALOG,
+            "names": {**SCENARIO_TITLES, **CROSS_DEVICE_NAMES},
             "history": history}
 
 
@@ -536,6 +684,7 @@ class Handler(BaseHTTPRequestHandler):
         data = json.dumps(payload, ensure_ascii=False, default=str).encode("utf-8")
         self.send_response(status)
         self.send_header("Content-Type", "application/json; charset=utf-8")
+        self.send_header("Cache-Control", "no-store")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -543,6 +692,9 @@ class Handler(BaseHTTPRequestHandler):
     def _html(self, data):
         self.send_response(200)
         self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+        self.send_header("Pragma", "no-cache")
+        self.send_header("Expires", "0")
         self.send_header("Content-Length", str(len(data)))
         self.end_headers()
         self.wfile.write(data)
@@ -562,6 +714,9 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if path in {"", "/"} or path == "/index.html":
                 self._html(INDEX_HTML)
+            elif path == "/favicon.ico":
+                self.send_response(204)
+                self.end_headers()
             elif path == "/api/init":
                 self._json(api_init())
             elif path == "/api/state":
@@ -609,7 +764,11 @@ class Handler(BaseHTTPRequestHandler):
                 if middleware not in BACKENDS:
                     raise ValueError(f"未知中间件：{middleware or '（空）'}（已接入：{', '.join(BACKENDS) or '无'}）")
                 self._json(MANAGER.start(middleware, body.get("template_index"),
-                                         body.get("configuration") or {}, bool(body.get("matrix"))))
+                                         body.get("configuration") or {}, bool(body.get("matrix")),
+                                         body.get("execution_mode") or "local",
+                                         body.get("distributed") or {}))
+            elif self.path == "/api/agents/check":
+                self._json(check_agents(body.get("distributed") or {}, str(body.get("middleware") or "vsoa")))
             elif self.path == "/api/stop":
                 self._json(MANAGER.stop())
             elif self.path == "/api/shutdown":
