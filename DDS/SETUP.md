@@ -23,7 +23,7 @@ DDS/idl/BenchmarkMessage.idl    统一测试消息定义（精确 ASCII payload�
 | 软件 | 要求 |
 |---|---|
 | Python | 3.11 x64（推荐）；3.10 / 3.12 也可用于建 `.venv` |
-| Fast DDS | 3.6.2，含 Fast CDR、DLL 与 CMake package 文件 |
+| Fast DDS | 3.6.1，含 Fast CDR、DLL 与 CMake package 文件 |
 | Fast DDS-Gen | 与 Fast DDS 3.6.x 匹配；`fastddsgen.bat` 可用 |
 | Visual Studio | "使用 C++ 的桌面开发" 工作负载 + x64 MSVC |
 | CMake | `cmake --version` 可用 |

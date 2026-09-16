@@ -132,6 +132,34 @@ configuration, statistics, link_metrics, environment, limitations
 
 图表样本必须来自真实接收样本，并转换为 `[{'sequence': 0, 'latency': 1.23}]` 结构（latency 单位 ms）；不得插值或随机生成。
 
+### 6.1 指标口径统一规范（四家必须一致）
+
+同一字段名在四个中间件只允许有一种含义。以下是唯一定义，`VSOA/`、`DDS/`、`mqtt/`、`Zenoh/` 均按此对齐（各家的实现差异写在 `limitations`，不得改变字段含义）：
+
+| 字段 | 唯一定义 | 单位/取值 |
+|---|---|---|
+| `latency_ms` / `latency_p95_ms` / `latency_p99_ms` / `latency_std_ms` | 同一逻辑消息「订阅端收到时刻 − 发布端发送时刻」，对该轮**全部有效样本**统计；P95/P99 是同样本集的分位数 | ms，float |
+| `latency_sample_count` | 计入上述统计的**有效延迟样本数**（等于该轮延迟样本集大小） | int |
+| `jitter_ms` | **同一链路相邻两个成功交付样本**的 `abs(Δlatency)` 均值 | ms，float |
+| `throughput_mbps` | **实收**吞吐 = 该轮唯一交付字节数 × 8 ÷ **测量窗口秒数**（= 配置的 `duration_seconds`；**不得**换成"实际接收窗口"或其它会因尾部缺失而变短的窗口，否则吞吐虚高） | Mbit/s |
+| `offered_throughput_mbps` | **应发**吞吐 = 发送侧实际发出字节数 × 8 ÷ 发送窗口秒数 | Mbit/s |
+| `achieved_publish_rate_hz` | 本轮实际达成的发布速率，口径与 `publish_rate_hz` 相同（`per_publisher`）；不另设 `*_per_publisher` 之类长名别名 | Hz，float |
+| `packet_loss` | **测量（发送）窗口内**未交付比例 | 0–1 |
+| `final_packet_loss` | **轮次结束时**仍未交付比例（含窗口后到达与应用层恢复） | 0–1 |
+| `startup_time_ms` | 从端点进程启动到该端点**就绪可收发** | ms |
+| `discovery_time_ms` | **每个端点**从启动到该端点完成对端匹配（匹配数达到对端总数）的耗时；多端点取**均值** | ms |
+| `recovery_time_ms` | **仅当本轮注入了故障并完成恢复**时填值；其余场景一律 `null`（不填 `0`） | ms 或 null |
+| `cpu_percent` | 本轮该中间件**全部自有服务进程**（端点 + 中间服务进程，如 MQTT broker；无中间服务的则等于端点） | % |
+| `memory_mb` | 与 `cpu_percent` **同范围**的 RSS（峰值） | MB |
+| `cpu_percent_endpoints` / `memory_mb_endpoints` | **仅端点进程**的资源占用 —— 跨四家唯一可直接对比的资源口径 | %/MB |
+| `messages_sent` / `messages_received` / `unique_deliveries` / `expected_deliveries` | 发送条数 / 接收条数（含重复）/ 唯一有效交付数 / 期望交付数；速率与条数一律 `per_publisher` | int |
+| `duplicate_count` / `out_of_order_count` / `corrupted_count` | 重复 / 乱序 / 内容或元数据校验失败 | int |
+| `link_metrics` | 多端点时逐链路指标，publisher/subscriber 从 0 开始 | 数组 |
+
+取值规则：无法测量一律 `null`（不写 `0`、不写 `"N/A"`）；比例用 0–1 小数；适配器私有字段（`_matrix*`、`samples*`、各家 `statistics`/`*_resources` 等）不进跨中间件对比表。
+
+**收尾窗口规则**：发送窗口结束后仍允许 `drain_seconds` 的收尾期，收尾期内到达的交付计入本轮；收尾期之后到达的不计入，并只能通过 `final_packet_loss` 体现。因此"窗口内交付率 = 1 − `packet_loss`"，"本轮交付率 = 1 − `final_packet_loss`"。若某家的尾部交付耗时超过 `drain_seconds`，它报出的缺失属于**收尾窗口不足**，必须在 `limitations` 中写明，不得描述为随机丢包。
+
 ## 7. 统一 HTTP API（页面已经使用的名称）
 
 新中间件适配后，页面只改变 `middleware` 查询参数，不改变路径、请求字段或返回字段。

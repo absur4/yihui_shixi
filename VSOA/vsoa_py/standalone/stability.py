@@ -62,6 +62,12 @@ def subscriber(spec):
     lock = threading.Lock()
     clients, threads = [], []
     expected_payload = bytes(index % 251 for index in range(config["message_size_bytes"]))
+    # 发布端（workers.publisher）会把超过 fragment_size_bytes 的 payload 切成多片发送：
+    # 一条逻辑消息 = N 个数据报，每片都带 fragment_index / fragment_count / logical_size_bytes。
+    # 1 KiB 的组看不出问题（只有 1 片），64 KiB 就有 2 片，1 MiB 有 18 片 —— 少了重组，
+    # 每片都会被拿去和"整包期望值"比较，整轮必然全判 invalid（曾实测 30000 条 × 2 片 = 60000）。
+    fragment_bytes = min(config.get("fragment_size_bytes", 60000), config["message_size_bytes"])
+    assemblies = {}
     clock_offset_ns = int(spec.get("clock_offset_ns", 0))
     clock_uncertainty_ns = int(spec.get("clock_uncertainty_ns", 0))
 
@@ -78,19 +84,42 @@ def subscriber(spec):
             params = payload.param
             try:
                 source, sequence, sent_ns = params["publisher"], params["sequence"], params["send_ns"]
-                valid = (0 <= source < len(seen) and 0 <= sequence < planned
-                         and arrived + clock_uncertainty_ns >= sent_ns
-                         and bytes(payload.data or b"") == expected_payload and not quick)
-            except (KeyError, TypeError):
+                fragment_index = params.get("fragment_index", 0)
+                fragment_count = params.get("fragment_count", 1)
+                logical_size = params.get("logical_size_bytes", config["message_size_bytes"])
+                declared_size = params.get("payload_size_bytes", config["message_size_bytes"])
+                fragment = bytes(payload.data or b"")
+                expected_fragment = expected_payload[
+                    fragment_index * fragment_bytes:(fragment_index + 1) * fragment_bytes]
+                valid = (0 <= source < len(seen) and isinstance(sequence, int) and 0 <= sequence < planned
+                         and isinstance(fragment_index, int) and isinstance(fragment_count, int)
+                         and 0 <= fragment_index < fragment_count
+                         and logical_size == config["message_size_bytes"]
+                         and declared_size == config["message_size_bytes"]
+                         and fragment == expected_fragment
+                         and arrived + clock_uncertainty_ns >= sent_ns and not quick)
+            except (KeyError, TypeError, ValueError):
                 valid = False
             if not valid:
                 counts["invalid"] += 1
                 return
+            key = (source, sequence)
+            assembly = assemblies.get(key)
+            if assembly is None:
+                assembly = assemblies[key] = {"parts": set(), "count": fragment_count, "arrival_ns": arrived}
+            if fragment_index in assembly["parts"]:
+                counts["duplicates"] += 1
+                return
+            assembly["parts"].add(fragment_index)
+            assembly["arrival_ns"] = max(assembly["arrival_ns"], arrived)
+            if len(assembly["parts"]) != assembly["count"]:
+                return                       # 分片还没收齐，等齐了才记一条
+            del assemblies[key]
             if seen[source][sequence]:
                 counts["duplicates"] += 1
                 return
             seen[source][sequence] = 1
-            delay = max(0, arrived - sent_ns) / 1e6
+            delay = max(0, assembly["arrival_ns"] - sent_ns) / 1e6
             latency.add(delay)
             sample_files["latencies_ms"].write(struct.pack("d", delay))
             if source in previous:
@@ -101,9 +130,9 @@ def subscriber(spec):
                 elif sequence < previous_sequence:
                     counts["out_of_order"] += 1
             previous[source] = (sequence, delay)
-            counts["within_window"] += int(arrived <= control["end_ns"])
-            counts["first_receive_ns"] = counts["first_receive_ns"] or arrived
-            counts["last_receive_ns"] = arrived
+            counts["within_window"] += int(assembly["arrival_ns"] <= control["end_ns"])
+            counts["first_receive_ns"] = counts["first_receive_ns"] or assembly["arrival_ns"]
+            counts["last_receive_ns"] = assembly["arrival_ns"]
 
     try:
         for endpoint in spec["endpoints"]:
@@ -147,6 +176,8 @@ def subscriber(spec):
                       "recovery_time_ms": None, "recovery_latencies_ms": [], "initial_cutoff_ns": cutoff,
                       "first_counted_receive_ns": counts["first_receive_ns"],
                       "last_counted_receive_ns": counts["last_receive_ns"],
+                      # 结束时还没收齐分片的逻辑消息数：用于区分"分片丢失"与"内容错误"
+                      "incomplete_logical_messages": len(assemblies),
                       "sample_capacity": capacity, "receipt_bitmap_bytes": planned * len(seen)}
         for field, handle in sample_files.items():
             handle.flush()

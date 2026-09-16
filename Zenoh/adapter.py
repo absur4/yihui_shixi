@@ -253,6 +253,10 @@ def _single_result(
         "injected_network_loss_rate": configuration["network_loss_rate"],
         "cpu_percent": _metric(raw, "cpu_percent"),
         "memory_mb": _metric(raw, "memory_mb"),
+        # 统一口径（根 README §6.1）：Zenoh 的统计范围本就是端点进程（见 environment.resource_scope），
+        # 因此端点口径与总体口径相同。
+        "cpu_percent_endpoints": _metric(raw, "cpu_percent"),
+        "memory_mb_endpoints": _metric(raw, "memory_mb"),
         "latency_sample_count": len([sample for sample in samples if sample.get("valid") and sample.get("latency_ms") is not None]),
         "transport_mode": configuration["transport_mode"],
         "qos_profile": configuration["qos_profile"],
@@ -398,9 +402,13 @@ def metadata() -> dict[str, Any]:
     return Adapter().metadata()
 
 
+# 界面不展示、也不测量的场景（范围裁剪，理由见 VSOA/adapter.py 同名字段）。
+EXCLUDED_SCENARIOS = frozenset({"S09", "S10", "S11", "S12"})
+
+
 def catalog() -> list[dict[str, Any]]:
-    """S01–S12 全部标准条件（UI 输入字段）。"""
-    return _catalog()
+    """UI 条件下拉数据；已剔除范围裁剪的场景。"""
+    return [row for row in _catalog() if row["scenario_name"] not in EXCLUDED_SCENARIOS]
 
 
 def build_cases(template_index, configuration, matrix) -> list[dict[str, Any]]:
@@ -414,6 +422,8 @@ def build_cases(template_index, configuration, matrix) -> list[dict[str, Any]]:
         index = int(template_index)
     except (TypeError, ValueError):
         raise ValueError("无效的测试条件") from None
+    # 与 catalog() 用同一过滤，保证界面选中的下标与实际执行的条件一致。
+    rows = [row for row in rows if row["scenario_name"] not in EXCLUDED_SCENARIOS]
     if not 0 <= index < len(rows):
         raise ValueError("无效的测试条件")
     selected = rows[index]

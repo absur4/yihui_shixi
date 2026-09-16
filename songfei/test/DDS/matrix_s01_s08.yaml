@@ -1,0 +1,573 @@
+# 四种中间件横向对比矩阵 · DDS 侧执行文件
+# S01–S08 × 4 组 = 32 个条件，每个条件 1 轮。
+#
+# 参数唯一来源：songfei/test/run_matrix.py 的 PLAN（VSOA / MQTT / Zenoh 已按同一组参数跑完）。
+# 目的：让 DDS 与其余三种在"完全相同的影响因子与档位"下可横向对比。
+#
+# 用法（详见仓库根目录 DDS_test.md）：
+#   .venv\Scripts\python.exe launch.py check --config matrix_s01_s08.yaml
+#   .venv\Scripts\python.exe launch.py run   --config matrix_s01_s08.yaml --output results\matrix_s01_s08 --overwrite
+#
+# 全部条件统一：transport_mode=udp（显式 UDPv4，不与 SHM 混测）、qos_profile=reliable、
+# network_profile=normal（不注入网络损伤）、repeats=1、warmup_seconds=1.0、
+# drain_seconds=2.0（收尾窗口，四家统一；阶梯实验：4P4S 在 1.0 s 缺 6.1%、2.0 s 起归零）、
+# timeout_seconds=120（启动/发现等待上限）。
+
+schema_version: "1.0"
+metrics_definition_version: "1.0"
+
+suite:
+  middleware_id: dds
+  module_name: dds
+  domain_id_base: 80
+  default_repeats: 1
+  formal_repeats: 1
+
+qos_profiles:
+  reliable:                 # 与 DDS/config.yaml 的 reliable 档完全一致
+    reliability: reliable
+    durability: volatile
+    history_kind: keep_last
+    history_depth: 1024
+    publish_mode: synchronous
+    max_blocking_time_ms: 1000
+    disable_data_sharing: true
+    wait_for_acknowledgments: true
+
+network_profiles:
+  normal:
+    latency_ms: 0
+    jitter_ms: 0
+    packet_loss_percent: 0
+    bandwidth_mbps: 0
+    impairment_required: false
+    external_impairment_confirmed: true
+
+conditions:
+  # ---------------- S01 点对点低延迟 · 影响因子：发送速率 ----------------
+  - condition_id: S01_G1_100Hz
+    scenario_id: S01
+    scenario_name: point_to_point_latency
+    scenario_title: S01 组1 点对点低延迟 1KiB @ 100Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 100
+    message_count: 1000
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S01_G2_500Hz
+    scenario_id: S01
+    scenario_name: point_to_point_latency
+    scenario_title: S01 组2 点对点低延迟 1KiB @ 500Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 500
+    message_count: 5000
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S01_G3_1000Hz
+    scenario_id: S01
+    scenario_name: point_to_point_latency
+    scenario_title: S01 组3 点对点低延迟 1KiB @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 10000
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S01_G4_2000Hz
+    scenario_id: S01
+    scenario_name: point_to_point_latency
+    scenario_title: S01 组4 点对点低延迟 1KiB @ 2000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 2000
+    message_count: 20000
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+
+  # ---------------- S02 消息大小扫描 · 影响因子：payload 大小（100Hz 固定） ----------------
+  - condition_id: S02_G1_1KiB
+    scenario_id: S02
+    scenario_name: message_size_scan
+    scenario_title: S02 组1 消息大小扫描 1KiB @ 100Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 100
+    message_count: 1000
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S02_G2_4KiB
+    scenario_id: S02
+    scenario_name: message_size_scan
+    scenario_title: S02 组2 消息大小扫描 4KiB @ 100Hz
+    payload_size_bytes: 4096
+    publish_rate_hz: 100
+    message_count: 1000
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S02_G3_16KiB
+    scenario_id: S02
+    scenario_name: message_size_scan
+    scenario_title: S02 组3 消息大小扫描 16KiB @ 100Hz
+    payload_size_bytes: 16384
+    publish_rate_hz: 100
+    message_count: 1000
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S02_G4_64KiB
+    scenario_id: S02
+    scenario_name: message_size_scan
+    scenario_title: S02 组4 消息大小扫描 64KiB @ 100Hz
+    payload_size_bytes: 65536
+    publish_rate_hz: 100
+    message_count: 1000
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+
+  # ---------------- S03 大消息吞吐 · 影响因子：payload 大小（固定 20 Hz，官方 256 KiB 档速率） ----------------
+  - condition_id: S03_G1_64KiB_20Hz
+    scenario_id: S03
+    scenario_name: large_message_throughput
+    scenario_title: S03 组1 大消息吞吐 64KiB @ 20Hz
+    payload_size_bytes: 65536
+    publish_rate_hz: 20
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S03_G2_128KiB_20Hz
+    scenario_id: S03
+    scenario_name: large_message_throughput
+    scenario_title: S03 组2 大消息吞吐 128KiB @ 20Hz
+    payload_size_bytes: 131072
+    publish_rate_hz: 20
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S03_G3_256KiB_20Hz
+    scenario_id: S03
+    scenario_name: large_message_throughput
+    scenario_title: S03 组3 大消息吞吐 256KiB @ 20Hz
+    payload_size_bytes: 262144
+    publish_rate_hz: 20
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S03_G4_512KiB_20Hz
+    scenario_id: S03
+    scenario_name: large_message_throughput
+    scenario_title: S03 组4 大消息吞吐 512KiB @ 20Hz
+    payload_size_bytes: 524288
+    publish_rate_hz: 20
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+
+  # ---------------- S04 发送速率扫描 · 影响因子：发送速率（含不限速） ----------------
+  - condition_id: S04_G1_100Hz
+    scenario_id: S04
+    scenario_name: send_rate_scan
+    scenario_title: S04 组1 发送速率扫描 1KiB @ 100Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 100
+    message_count: 0
+    duration_seconds: 8
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S04_G2_1000Hz
+    scenario_id: S04
+    scenario_name: send_rate_scan
+    scenario_title: S04 组2 发送速率扫描 1KiB @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 8
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S04_G3_5000Hz
+    scenario_id: S04
+    scenario_name: send_rate_scan
+    scenario_title: S04 组3 发送速率扫描 1KiB @ 5000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 5000
+    message_count: 0
+    duration_seconds: 8
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S04_G4_10000Hz
+    scenario_id: S04
+    scenario_name: send_rate_scan
+    scenario_title: S04 组4 发送速率扫描 1KiB @ 10000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 10000
+    message_count: 0
+    duration_seconds: 8
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+
+  # ---------------- S05 一对多广播 · 影响因子：订阅者数量（1000Hz 固定） ----------------
+  - condition_id: S05_G1_1S
+    scenario_id: S05
+    scenario_name: one_to_many_broadcast
+    scenario_title: S05 组1 一对多广播 1P/1S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S05_G2_2S
+    scenario_id: S05
+    scenario_name: one_to_many_broadcast
+    scenario_title: S05 组2 一对多广播 1P/2S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 2
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S05_G3_3S
+    scenario_id: S05
+    scenario_name: one_to_many_broadcast
+    scenario_title: S05 组3 一对多广播 1P/3S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 3
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S05_G4_4S
+    scenario_id: S05
+    scenario_name: one_to_many_broadcast
+    scenario_title: S05 组4 一对多广播 1P/4S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 4
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+
+  # ---------------- S06 多对一汇聚 · 影响因子：发布者数量（1000Hz/发布者） ----------------
+  - condition_id: S06_G1_1P
+    scenario_id: S06
+    scenario_name: many_to_one_fanin
+    scenario_title: S06 组1 多对一汇聚 1P/1S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S06_G2_2P
+    scenario_id: S06
+    scenario_name: many_to_one_fanin
+    scenario_title: S06 组2 多对一汇聚 2P/1S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 2
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S06_G3_3P
+    scenario_id: S06
+    scenario_name: many_to_one_fanin
+    scenario_title: S06 组3 多对一汇聚 3P/1S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 3
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S06_G4_4P
+    scenario_id: S06
+    scenario_name: many_to_one_fanin
+    scenario_title: S06 组4 多对一汇聚 4P/1S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 10
+    publisher_count: 4
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+
+  # ---------------- S07 多对多并发 · 影响因子：并发规模 P x S ----------------
+  - condition_id: S07_G1_1P1S
+    scenario_id: S07
+    scenario_name: many_to_many_mesh
+    scenario_title: S07 组1 多对多并发 1P/1S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 8
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S07_G2_2P2S
+    scenario_id: S07
+    scenario_name: many_to_many_mesh
+    scenario_title: S07 组2 多对多并发 2P/2S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 8
+    publisher_count: 2
+    subscriber_count: 2
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S07_G3_3P3S
+    scenario_id: S07
+    scenario_name: many_to_many_mesh
+    scenario_title: S07 组3 多对多并发 3P/3S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 8
+    publisher_count: 3
+    subscriber_count: 3
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S07_G4_4P4S
+    scenario_id: S07
+    scenario_name: many_to_many_mesh
+    scenario_title: S07 组4 多对多并发 4P/4S @ 1000Hz
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 8
+    publisher_count: 4
+    subscriber_count: 4
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+
+  # ---------------- S08 长时间稳定性 · 影响因子：持续负载（每组 300s） ----------------
+  - condition_id: S08_G1_1KiB_100Hz
+    scenario_id: S08
+    scenario_name: long_duration_stability
+    scenario_title: S08 组1 长时间稳定性 1KiB @ 100Hz / 100s
+    payload_size_bytes: 1024
+    publish_rate_hz: 100
+    message_count: 0
+    duration_seconds: 100
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S08_G2_1KiB_1000Hz
+    scenario_id: S08
+    scenario_name: long_duration_stability
+    scenario_title: S08 组2 长时间稳定性 1KiB @ 1000Hz / 100s
+    payload_size_bytes: 1024
+    publish_rate_hz: 1000
+    message_count: 0
+    duration_seconds: 100
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S08_G3_64KiB_100Hz
+    scenario_id: S08
+    scenario_name: long_duration_stability
+    scenario_title: S08 组3 长时间稳定性 64KiB @ 100Hz / 100s
+    payload_size_bytes: 65536
+    publish_rate_hz: 100
+    message_count: 0
+    duration_seconds: 100
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120
+  - condition_id: S08_G4_1MiB_5Hz
+    scenario_id: S08
+    scenario_name: long_duration_stability
+    scenario_title: S08 组4 长时间稳定性 1MiB @ 5Hz / 100s
+    payload_size_bytes: 1048576
+    publish_rate_hz: 5
+    message_count: 0
+    duration_seconds: 100
+    publisher_count: 1
+    subscriber_count: 1
+    transport_mode: udp
+    qos_profile: reliable
+    warmup_seconds: 1.0
+    drain_seconds: 2.0
+    repeats: 1
+    timeout_seconds: 120

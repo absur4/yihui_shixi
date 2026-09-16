@@ -153,9 +153,15 @@ class Resources:
         return dict(cpu_percent=cpu, cpu_machine_percent=cpu/psutil.cpu_count(), memory_mb=self.peak/1e6,
                     resource_window_seconds=elapsed, resource_start_ns=self.start_ns,
                     resource_end_ns=self.previous_time, resource_processes=roles,
+                    # 统一口径（根 README §6.1）：cpu_percent/memory_mb 含 broker（= 全部自有服务进程），
+                    # *_endpoints 只算发布者/订阅者端点进程，供跨中间件直接对比。
+                    cpu_percent_endpoints=sum(r['cpu_time_delta_seconds'] for r in roles
+                                              if r.get('role') != 'broker')/elapsed*100,
+                    memory_mb_endpoints=sum(r['rss_peak_mb'] for r in roles if r.get('role') != 'broker'),
                     test_infrastructure_resources=[dict(role=i['role'],pid=i['pid'],rss_peak_mb=i['peak']/1e6,
                         cpu_percent=(i['last_cpu']-i['initial_cpu'])/elapsed*100) for i in self.infrastructure],
-                    resource_scope='Dedicated publisher/subscriber processes and managed Mosquitto broker; excludes harness/report',
+                    resource_scope='cpu_percent/memory_mb = all own service processes (publisher/subscriber + managed Mosquitto broker); '
+                                   'cpu_percent_endpoints/memory_mb_endpoints = endpoints only; excludes harness/report',
                     rss_note='Sum of RSS may count shared pages multiple times')
 
 
