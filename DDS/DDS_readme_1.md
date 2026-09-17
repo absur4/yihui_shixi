@@ -113,7 +113,7 @@ def create_adapter() -> Adapter:
 |---|---|
 | `middleware_id` / `Adapter.name` / 归档目录名 | `dds`（**小写，禁止 `fastdds`、`FastDDS`、`DDS-3.6.2`**） |
 | 页面显示名 `label` | `DDS` |
-| 厂商与版本 | 放 `metadata().version` 与结果 `environment`（如 `vendor: eProsima Fast DDS`、`version: 3.6.2`、`python_binding: 2.6.1`） |
+| 厂商与版本 | 放 `metadata().version` 与结果 `environment`（如 `vendor: eProsima Fast DDS`、`version: 3.6.1`、`python_binding: 2.6.1`） |
 
 ### 3.3 `metadata()` 字段（全部必填，必须真实探测）
 
@@ -345,7 +345,7 @@ def backend():
             "transport_options": ["udp", "shm"],
             "qos_options": [{"value": "reliable", "label": "RELIABLE 可靠"},
                             {"value": "best_effort", "label": "BEST_EFFORT 尽力而为"}],
-            "notes": (["Fast DDS 3.6.2 / Python 绑定 2.6.1；transport 使用显式 UDPv4 或 SHM",
+            "notes": (["Fast DDS 3.6.1 / Python 绑定 2.6.1；transport 使用显式 UDPv4 或 SHM",
                        "S09 弱网与 S11 故障需四种中间件共用的外部注入器，注入器确认前标 not_tested"]
                       if ok else [f"环境未就绪：{detail}", "请先执行 DDS/setup_windows.bat，详见 DDS/SETUP.md"])}
 

@@ -186,6 +186,9 @@ def measure_run(config, folder, log_folder, run_id, repeat):
             "throughput_mbps": primary_bytes * 8 / delivery_window_seconds / 1e6 if delivery_window_seconds else None,
             "delivery_window_seconds": delivery_window_seconds, "send_window_seconds": send_window_seconds,
             "cpu_percent": resources["cpu_percent"], "memory_mb": resources["memory_mb"],
+            # 统一口径（根 README §6.1）：VSOA 没有 broker/router，端点口径与总体口径相同。
+            "cpu_percent_endpoints": resources["cpu_percent"], "memory_mb_endpoints": resources["memory_mb"],
+            "latency_sample_count": latency_distribution["count"],
             "packet_loss": (expected - received) / expected if expected else None,
             "startup_time_ms": startup_ms, "discovery_time_ms": stats(discovery_samples)["mean"],
             "jitter_ms": jitter_distribution["mean"], "messages_sent": sent, "messages_received": received,
@@ -201,7 +204,11 @@ def measure_run(config, folder, log_folder, run_id, repeat):
             "application_recovered": sum(report["application_recovered"] for report in subscriber_reports),
             "late_native_deliveries": sum(report["late_native_deliveries"] for report in subscriber_reports),
             "application_retry_requests": sum(report["application_retry_requests"] for report in subscriber_reports),
-            "recovery_time_ms": max((report["recovery_time_ms"] or 0 for report in subscriber_reports), default=0),
+            # 统一口径：非恢复类场景填 null（不填 0），恢复类场景填实际恢复时间
+            "recovery_time_ms": (
+                max((report["recovery_time_ms"] or 0 for report in subscriber_reports), default=0)
+                if config.get("recovery_enabled") else None),
+            "achieved_publish_rate_hz": sent / config["duration_seconds"] / config["publisher_count"],
             "achieved_publish_rate_hz_per_publisher": sent / config["duration_seconds"] / config["publisher_count"],
             "offered_throughput_mbps": sent * config["message_size_bytes"] * 8 / send_window_seconds / 1e6 if send_window_seconds else None,
             "offered_source_payload_mbps": sent * config["message_size_bytes"] * 8 / send_window_seconds / 1e6 if send_window_seconds else None,

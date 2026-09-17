@@ -51,6 +51,9 @@ QOS_OPTIONS = [
 _MATRIX_CACHE: tuple[dict[str, Any], dict[str, Any], dict[str, Any], list[dict[str, Any]]] | None = None
 _ROWS_CACHE: list[dict[str, Any]] | None = None
 
+# 界面不展示、也不测量的场景（范围裁剪，理由见 VSOA/adapter.py 同名字段）。
+EXCLUDED_SCENARIOS = frozenset({"S09", "S10", "S11", "S12"})
+
 
 # --------------------------------------------------------------------------- 环境探测
 
@@ -171,7 +174,11 @@ def _load_matrix():
             raise RuntimeError("DDS/config.yaml 的根必须是映射")
         suite = document.get("suite") or {}
         profiles = document.get("network_profiles") or {}
-        conditions = list(document.get("conditions") or [])
+        conditions = [
+            condition
+            for condition in (document.get("conditions") or [])
+            if str(condition.get("scenario_id") or "").upper() not in EXCLUDED_SCENARIOS
+        ]
         _MATRIX_CACHE = (document, suite, profiles, conditions)
     return _MATRIX_CACHE
 

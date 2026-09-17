@@ -1,0 +1,562 @@
+{
+  "schema_version": "1.0",
+  "metric_definition_version": "1.0",
+  "module_name": "mqtt",
+  "module_version": "2.0.0",
+  "run_id": "0eb56ff1-6119-44ba-9f32-fe0061ba4974",
+  "repeat": 1,
+  "status": "completed",
+  "test_start_time": "2026-09-15T05:30:34.681Z",
+  "test_end_time": "2026-09-15T05:30:46.575Z",
+  "configuration": {
+    "module_name": "mqtt",
+    "module_version": "2.0.0",
+    "scenario_name": "S03",
+    "duration_seconds": 10.0,
+    "message_count": 0,
+    "payload_size_bytes": 65536,
+    "publish_rate_hz": 200,
+    "publisher_count": 1,
+    "subscriber_count": 1,
+    "transport_mode": "tcp",
+    "qos_profile": "qos1",
+    "warmup_seconds": 1.0,
+    "drain_seconds": 0.3,
+    "repeats": 1,
+    "timeout_seconds": 120,
+    "network_delay_ms": 0,
+    "network_jitter_ms": 0,
+    "network_loss_rate": 0,
+    "random_seed": 20260910,
+    "host": "127.0.0.1",
+    "port": 56903,
+    "network_profile": "baseline",
+    "connect_timeout_seconds": 10,
+    "publish_timeout_seconds": 5,
+    "max_inflight": 20,
+    "metric_window_seconds": 10,
+    "broker_executable": "broker/mosquitto.exe",
+    "recovery_probe_count": 100,
+    "fault_duration_seconds": 1,
+    "recovery_timeout_seconds": 12,
+    "benchmark_profile": "acceptance",
+    "suite_kind": "public_comparable",
+    "case": "stable_throughput",
+    "startup_mode": "cold",
+    "saturation_loss_threshold": 0.001,
+    "saturation_latency_p99_ms": 100,
+    "saturation_cpu_percent": 800,
+    "saturation_memory_mb": 2048,
+    "stable_rate_min_fraction": 0.9,
+    "stable_rate_candidates": [
+      5,
+      10,
+      20,
+      50,
+      100,
+      200,
+      500,
+      1000,
+      2000,
+      5000
+    ],
+    "require_stable_rate": true,
+    "rate_search": false,
+    "output_dir": "outputs",
+    "sample_level": "sample_level",
+    "rate_scope": "per_publisher",
+    "qos": 1,
+    "qos_semantics": "at_least_once",
+    "stop_rule": "duration_seconds",
+    "scenario_id": "S03",
+    "title": "大消息吞吐",
+    "scenario_title": "大消息吞吐",
+    "condition_id": "S03_11",
+    "case_repeats": 1,
+    "repeat": 1,
+    "artifact_dir": "D:\\AI_project\\yihui_shixi\\songfei\\test\\mqtt\\S03\\artifacts",
+    "broker_config": "listener 56903 127.0.0.1\nallow_anonymous true\npersistence false\nmax_packet_size 16777216\nmax_queued_messages 100000\nlog_type error\nlog_type warning\n"
+  },
+  "environment": {
+    "os": "Windows-11-10.0.26100-SP0",
+    "machine": "AMD64",
+    "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+    "hostname": "songfei",
+    "logical_cpu_count": 16,
+    "physical_cpu_count": 12,
+    "total_memory_bytes": 16829030400,
+    "python_version": "3.12.13",
+    "broker_version": "mosquitto version 2.1.2",
+    "clock": "time.perf_counter_ns; same-host Windows QueryPerformanceCounter",
+    "one_way_latency_clock_synchronized": true,
+    "adapter_version": "2.0.0",
+    "paho_version": "2.1.0",
+    "fingerprint": "704d8413199afb29f978f855778c6ae4cf3f16fa088895604c57e1f4267e5313"
+  },
+  "measurement_window": {
+    "warmup_start": "2026-09-15T05:30:35.143Z",
+    "measurement_start": "2026-09-15T05:30:36.143Z",
+    "measurement_start_ns": 101189576069700,
+    "send_end": "2026-09-15T05:30:46.144Z",
+    "send_end_ns": 101199577680300,
+    "drain_end": "2026-09-15T05:30:46.445Z",
+    "drain_end_ns": 101199877984000
+  },
+  "limitations": [
+    "Local loopback benchmark; results do not predict physical-network performance.",
+    "MQTT application message size is measured; total on-wire bytes including MQTT/TCP/IP headers are not measured (null).",
+    "Endpoint CPU includes serialization, checksum and raw recording; harness/report CPU is excluded.",
+    "Successful source send requires transport completion (QoS0) or MQTT protocol acknowledgement (QoS1/2).",
+    "Publisher waits for each message completion; maximum stable rate is specific to this adapter and candidate grid."
+  ],
+  "errors": [],
+  "sample_level": "sample_level",
+  "scenario_name": "S03",
+  "payload_size_bytes": 65536,
+  "publish_rate_hz": 200,
+  "publisher_count": 1,
+  "subscriber_count": 1,
+  "transport_mode": "tcp",
+  "qos_profile": "qos1",
+  "network_profile": "baseline",
+  "benchmark_profile": "acceptance",
+  "suite_kind": "public_comparable",
+  "latency_ms": 1.6524813181110534,
+  "latency_p95_ms": 5.60725999999999,
+  "latency_p99_ms": 12.412482,
+  "latency_std_ms": 2.123267604701931,
+  "jitter_ms": 1.109938577362409,
+  "throughput_mbps": 101.29671809827026,
+  "offered_throughput_mbps": 101.30925669066802,
+  "cpu_percent": 41.71271791172818,
+  "memory_mb": 75.288576,
+  "packet_loss": 0.0,
+  "final_packet_loss": 0.0,
+  "startup_time_ms": 460.9404,
+  "discovery_time_ms": 9.873,
+  "recovery_time_ms": null,
+  "achieved_publish_rate_hz": 192.76767687599764,
+  "messages_planned": 2000,
+  "messages_sent": 1927,
+  "messages_received": 1927,
+  "expected_deliveries": 1927,
+  "duplicate_count": 0,
+  "out_of_order_count": 0,
+  "corrupted_count": 0,
+  "application_recovered": 0,
+  "late_native_deliveries": 0,
+  "actual_payload_size_bytes": 65536,
+  "metadata_size_bytes": 49,
+  "wire_message_size_bytes": null,
+  "messages_not_sent": 73,
+  "latency_sample_count": 1927,
+  "configured_publish_rate_hz": 200,
+  "injected_network_loss_rate": 0,
+  "discovery_supported": true,
+  "discovery_ready_condition": "All publisher CONNACKs and all subscriber successful SUBACKs",
+  "startup_ready_condition": "Harness launches managed broker and endpoint processes; broker listening, all CONNACK/SUBACK ready",
+  "purpose": "measurement",
+  "raw_files": {
+    "directory": "artifacts/0eb56ff1-6119-44ba-9f32-fe0061ba4974",
+    "sent": "publisher-N.csv: sequence_id,send_ns,ack_ns,phase,success,mqtt_rc",
+    "received": "subscriber-N.csv: publisher_id,sequence_id,send_ns,receive_ns,phase,validation,wire_bytes,recovery_stage",
+    "phases": {
+      "0": "warmup",
+      "1": "original",
+      "2": "independent_recovery_probe"
+    }
+  },
+  "endpoint_readiness": [
+    {
+      "role": "subscriber",
+      "index": 0,
+      "conn_start_ns": 101188565909500,
+      "ready_ns": 101188569727500
+    },
+    {
+      "role": "publisher",
+      "index": 0,
+      "conn_start_ns": 101188572365900,
+      "ready_ns": 101188575782500
+    }
+  ],
+  "network_injection": {
+    "method": "none",
+    "observed_network_packet_loss_rate": null,
+    "requested_profile": "baseline"
+  },
+  "cpu_machine_percent": 2.607044869483011,
+  "resource_window_seconds": 10.3011149,
+  "resource_start_ns": 101189576930100,
+  "resource_end_ns": 101199878045000,
+  "resource_processes": [
+    {
+      "role": "broker",
+      "pid": 35104,
+      "rss_peak_mb": 9.211904,
+      "cpu_time_delta_seconds": 1.03125
+    },
+    {
+      "role": "subscriber-0",
+      "pid": 30864,
+      "rss_peak_mb": 33.021952,
+      "cpu_time_delta_seconds": 1.09375
+    },
+    {
+      "role": "publisher-0",
+      "pid": 21580,
+      "rss_peak_mb": 33.058816,
+      "cpu_time_delta_seconds": 2.171875
+    }
+  ],
+  "test_infrastructure_resources": [],
+  "resource_scope": "Dedicated publisher/subscriber processes and managed Mosquitto broker; excludes harness/report",
+  "rss_note": "Sum of RSS may count shared pages multiple times",
+  "broker": {
+    "version": "mosquitto version 2.1.2",
+    "pid": 35104,
+    "restart_count": 0,
+    "configuration": "listener 56903 127.0.0.1\nallow_anonymous true\npersistence false\nmax_packet_size 16777216\nmax_queued_messages 100000\nlog_type error\nlog_type warning\n"
+  },
+  "jitter_sample_count": 1926,
+  "mqtt_application_message_size_bytes": 65585,
+  "rate_scope": "per_publisher",
+  "achieved_aggregate_publish_rate_hz": 192.76767687599764,
+  "unique_deliveries": 1927,
+  "final_unique_deliveries": 1927,
+  "missing_count": 0,
+  "final_missing_count": 0,
+  "length_error_count": 0,
+  "checksum_error_count": 0,
+  "unparseable_count": 0,
+  "invalid_metadata_count": 0,
+  "foreign_run_count": 0,
+  "publish_failed_count": 0,
+  "recovery_probe_deliveries": 0,
+  "recovery_first_receive_ns": null,
+  "send_window_seconds": 9.9724646,
+  "delivery_window_seconds": 9.973699,
+  "first_successful_send_ns": 101189598607200,
+  "last_successful_send_ns": 101199571071800,
+  "last_counted_receive_ns": 101199572306200,
+  "delivery_matrix": [
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "messages_sent": 1927,
+      "unique_deliveries": 1927,
+      "final_unique_deliveries": 1927,
+      "missing_count": 0,
+      "final_missing_count": 0,
+      "latency_distribution": {
+        "count": 1927,
+        "mean": 1.6524813181110534,
+        "median": 1.2153,
+        "variance": 4.508265321176674,
+        "std": 2.123267604701931,
+        "min": 0.2568,
+        "max": 20.2337,
+        "p50": 1.2153,
+        "p95": 5.60725999999999,
+        "p99": 12.412482
+      },
+      "duplicate_count": 0,
+      "out_of_order_count": 0,
+      "late_native_deliveries": 0,
+      "packet_loss": 0.0,
+      "final_packet_loss": 0.0,
+      "throughput_mbps": 101.29671809827026,
+      "delivery_window_seconds": 9.973699,
+      "latency_ms": 1.6524813181110534,
+      "latency_p95_ms": 5.60725999999999,
+      "latency_p99_ms": 12.412482,
+      "latency_std_ms": 2.123267604701931,
+      "jitter_ms": 1.109938577362409,
+      "latency_sample_count": 1927,
+      "jitter_sample_count": 1926
+    }
+  ],
+  "complete_delivery": true,
+  "statistics": {
+    "latency_ms": {
+      "count": 1927,
+      "mean": 1.6524813181110534,
+      "median": 1.2153,
+      "variance": 4.508265321176674,
+      "std": 2.123267604701931,
+      "min": 0.2568,
+      "max": 20.2337,
+      "p50": 1.2153,
+      "p95": 5.60725999999999,
+      "p99": 12.412482
+    },
+    "jitter_ms": {
+      "count": 1926,
+      "mean": 1.109938577362409,
+      "median": 0.18765000000000004,
+      "variance": 8.147944338984269,
+      "std": 2.8544604286947592,
+      "min": 9.999999999998899e-05,
+      "max": 19.3635,
+      "p50": 0.18765000000000004,
+      "p95": 9.918775,
+      "p99": 13.766900000000001
+    },
+    "cpu_percent": {
+      "count": 165,
+      "mean": 41.717853971997236,
+      "median": 25.505665114289865,
+      "variance": 1833.9094185486051,
+      "std": 42.824168626473124,
+      "min": 0.0,
+      "max": 152.85110101705084,
+      "p50": 25.505665114289865,
+      "p95": 122.57524427945708,
+      "p99": 135.78006178762982
+    },
+    "memory_mb": {
+      "count": 165,
+      "mean": 75.09365604848485,
+      "median": 75.067392,
+      "variance": 0.013960471488773519,
+      "std": 0.11815443914120839,
+      "min": 74.887168,
+      "max": 75.288576,
+      "p50": 75.067392,
+      "p95": 75.280384,
+      "p99": 75.288576
+    },
+    "discovery_time_ms": {
+      "count": 2,
+      "mean": 3.6173,
+      "median": 3.6173,
+      "variance": 0.040280490000000044,
+      "std": 0.2007000000000001,
+      "min": 3.4166,
+      "max": 3.818,
+      "p50": 3.6173,
+      "p95": 3.79793,
+      "p99": 3.813986
+    }
+  },
+  "per_publisher": [
+    {
+      "publisher_id": 0,
+      "messages_sent": 1927,
+      "unique_deliveries": 1927,
+      "offered_throughput_mbps": 101.30925669066802
+    }
+  ],
+  "per_subscriber": [
+    {
+      "subscriber_id": 0,
+      "unique_deliveries": 1927,
+      "missing_count": 0,
+      "packet_loss": 0.0,
+      "duplicate_count": 0,
+      "out_of_order_count": 0,
+      "throughput_mbps": 101.29671809827026,
+      "latency_ms": 1.6524813181110534,
+      "latency_p95_ms": 5.60725999999999,
+      "latency_p99_ms": 12.412482,
+      "latency_std_ms": 2.123267604701931,
+      "jitter_ms": 1.109938577362409,
+      "latency_sample_count": 1927,
+      "jitter_sample_count": 1926
+    }
+  ],
+  "time_windows": [
+    {
+      "start_offset_seconds": 0,
+      "end_offset_seconds": 10,
+      "unique_deliveries": 1927,
+      "throughput_mbps": 101.0302976,
+      "latency_ms": 1.6524813181110534,
+      "latency_p95_ms": 5.60725999999999,
+      "latency_p99_ms": 12.412482,
+      "latency_std_ms": 2.123267604701931,
+      "jitter_ms": 1.109938577362409,
+      "latency_sample_count": 1927,
+      "jitter_sample_count": 1926,
+      "messages_sent": 1927,
+      "expected_deliveries": 1927,
+      "source_cohort_unique_deliveries": 1927,
+      "source_cohort_missing_count": 0,
+      "source_cohort_packet_loss": 0.0,
+      "cpu_percent": 42.972447349369936,
+      "memory_mb": 75.288576,
+      "resource_sample_coverage_seconds": 9.9991396,
+      "resource_boundary_method": "CPU weighted by sampled interval overlap; uniform allocation within a boundary interval"
+    },
+    {
+      "start_offset_seconds": 10,
+      "end_offset_seconds": 10.3019143,
+      "unique_deliveries": 0,
+      "throughput_mbps": 0.0,
+      "latency_ms": null,
+      "latency_p95_ms": null,
+      "latency_p99_ms": null,
+      "latency_std_ms": null,
+      "jitter_ms": null,
+      "latency_sample_count": 0,
+      "jitter_sample_count": 0,
+      "messages_sent": 0,
+      "expected_deliveries": 0,
+      "source_cohort_unique_deliveries": 0,
+      "source_cohort_missing_count": 0,
+      "source_cohort_packet_loss": null,
+      "cpu_percent": 0.0,
+      "memory_mb": 75.096064,
+      "resource_sample_coverage_seconds": 0.3019143,
+      "resource_boundary_method": "CPU weighted by sampled interval overlap; uniform allocation within a boundary interval"
+    }
+  ],
+  "recovery_phase": {
+    "messages_sent": 0,
+    "expected_deliveries": 0,
+    "unique_deliveries": 0,
+    "missing_count": 0,
+    "packet_loss": null,
+    "duplicate_count": 0,
+    "out_of_order_count": 0,
+    "corrupted_count": 0,
+    "delivery_matrix": [
+      {
+        "publisher_id": 0,
+        "subscriber_id": 0,
+        "unique_deliveries": 0
+      }
+    ]
+  },
+  "long_run_trends": {
+    "latency_last_minus_first_ms": 0.0,
+    "rss_last_minus_first_mb": 0.16383999999999332,
+    "source_queue_policy": "At most one synchronously awaited publish per publisher; no application backlog queue"
+  },
+  "endpoint_event_counts": {
+    "disconnect": 0,
+    "error": 0,
+    "reconnect": 0
+  },
+  "saturation": {
+    "detected": false,
+    "reasons": [],
+    "queue_policy": "bounded synchronous protocol completion; no unbounded application queue"
+  },
+  "samples_path": "artifacts/0eb56ff1-6119-44ba-9f32-fe0061ba4974/subscriber-0.result.json",
+  "middleware_id": "mqtt",
+  "middleware_version": "2.0.0",
+  "scenario_id": "S03",
+  "scenario_title": "大消息吞吐",
+  "link_metrics": [
+    {
+      "publisher": 0,
+      "subscriber": 0,
+      "messages_sent": 1927,
+      "messages_received": 1927,
+      "messages_received_after_recovery": 1927,
+      "duplicate_count": 0,
+      "out_of_order_count": 0,
+      "packet_loss": 0.0,
+      "final_packet_loss": 0.0,
+      "latency_ms": {
+        "count": 1927,
+        "mean": 1.6524813181110534,
+        "median": 1.2153,
+        "variance": 4.508265321176674,
+        "std": 2.123267604701931,
+        "min": 0.2568,
+        "max": 20.2337,
+        "p50": 1.2153,
+        "p95": 5.60725999999999,
+        "p99": 12.412482
+      }
+    }
+  ],
+  "rate_calibration": {
+    "method": "highest passing candidate before first failing candidate",
+    "trials": [
+      {
+        "run_id": "faaa7486-dc51-4424-8b5c-82ab13b6f4d7",
+        "rate": 5,
+        "status": "completed",
+        "saturation": {
+          "detected": false,
+          "reasons": [],
+          "queue_policy": "bounded synchronous protocol completion; no unbounded application queue"
+        },
+        "achieved": 5.549888810752621
+      },
+      {
+        "run_id": "1066a0d3-4861-4206-8526-7a4cbcce458e",
+        "rate": 10,
+        "status": "completed",
+        "saturation": {
+          "detected": false,
+          "reasons": [],
+          "queue_policy": "bounded synchronous protocol completion; no unbounded application queue"
+        },
+        "achieved": 10.51893039308191
+      },
+      {
+        "run_id": "100ef861-2e81-422b-9f90-e18ef56a0a54",
+        "rate": 20,
+        "status": "completed",
+        "saturation": {
+          "detected": false,
+          "reasons": [],
+          "queue_policy": "bounded synchronous protocol completion; no unbounded application queue"
+        },
+        "achieved": 20.49337597731629
+      },
+      {
+        "run_id": "0e21384e-a5b2-4522-b056-a4fe59188007",
+        "rate": 50,
+        "status": "completed",
+        "saturation": {
+          "detected": false,
+          "reasons": [],
+          "queue_policy": "bounded synchronous protocol completion; no unbounded application queue"
+        },
+        "achieved": 50.45357511762873
+      },
+      {
+        "run_id": "d762340c-b516-460e-b538-60a1af8c22e7",
+        "rate": 100,
+        "status": "completed",
+        "saturation": {
+          "detected": false,
+          "reasons": [],
+          "queue_policy": "bounded synchronous protocol completion; no unbounded application queue"
+        },
+        "achieved": 100.41845373857402
+      },
+      {
+        "run_id": "faad358c-c5e7-46e3-8204-33b765491e02",
+        "rate": 200,
+        "status": "completed",
+        "saturation": {
+          "detected": false,
+          "reasons": [],
+          "queue_policy": "bounded synchronous protocol completion; no unbounded application queue"
+        },
+        "achieved": 193.95023237037378
+      },
+      {
+        "run_id": "989f1b5e-dde9-4a04-adc1-d78e84bd9c49",
+        "rate": 500,
+        "status": "completed",
+        "saturation": {
+          "detected": true,
+          "reasons": [
+            "configured_rate_not_achieved"
+          ],
+          "queue_policy": "bounded synchronous protocol completion; no unbounded application queue"
+        },
+        "achieved": 449.3077083840868
+      }
+    ],
+    "selected_rate_hz": 200,
+    "exact_global_maximum_claimed": false
+  }
+}

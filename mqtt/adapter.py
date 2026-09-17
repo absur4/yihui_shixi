@@ -90,8 +90,16 @@ def _title(scenario_id):
     return scenario.title if scenario is not None else scenario_id
 
 
+# 界面不展示、也不测量的场景（范围裁剪，理由见 VSOA/adapter.py 同名字段）。
+EXCLUDED_SCENARIOS = frozenset({"S09", "S10", "S11", "S12"})
+
+
 def catalog():
-    rows = expand(_load_config())
+    rows = [
+        row
+        for row in expand(_load_config())
+        if str(row.get('scenario_name') or '').upper() not in EXCLUDED_SCENARIOS
+    ]
     for index, row in enumerate(rows):
         sid = row['scenario_name']
         if SCENARIO_BY_ID and sid not in SCENARIO_BY_ID:

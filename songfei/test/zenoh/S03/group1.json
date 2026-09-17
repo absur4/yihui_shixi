@@ -1,0 +1,1373 @@
+{
+  "schema_version": "1.0",
+  "metric_definition_version": "unified-middleware-1.0",
+  "metrics_definition_version": "unified-middleware-1.0",
+  "module_name": "Zenoh",
+  "run_id": "321a21b0ed21",
+  "middleware_id": "zenoh",
+  "middleware_version": "1.10.1",
+  "scenario_name": "S03",
+  "scenario_title": "大消息吞吐",
+  "repeat": 1,
+  "status": "completed",
+  "payload_size_bytes": 65536,
+  "publish_rate_hz": 20,
+  "publisher_count": 1,
+  "subscriber_count": 1,
+  "messages_sent": 200,
+  "messages_received": 200,
+  "unique_deliveries": 200,
+  "expected_deliveries": 200,
+  "messages_planned": null,
+  "messages_not_sent": null,
+  "achieved_publish_rate_hz": 19.999252319335938,
+  "latency_ms": 0.898047,
+  "latency_p95_ms": 1.10221,
+  "latency_p99_ms": 2.500625,
+  "latency_std_ms": 0.548964,
+  "throughput_mbps": 10.53407,
+  "offered_throughput_mbps": 10.485368,
+  "jitter_ms": 0.255444,
+  "packet_loss": 0.0,
+  "final_packet_loss": 0.0,
+  "duplicate_count": 0,
+  "out_of_order_count": 0,
+  "corrupted_count": 0,
+  "startup_time_ms": 505.6319,
+  "discovery_time_ms": 2055.2244,
+  "recovery_time_ms": null,
+  "application_recovered": 0,
+  "late_native_deliveries": null,
+  "injected_network_loss_rate": 0.0,
+  "cpu_percent": 1.130975,
+  "memory_mb": 119.676928,
+  "cpu_percent_endpoints": 1.130975,
+  "memory_mb_endpoints": 119.676928,
+  "latency_sample_count": 200,
+  "transport_mode": "tcp",
+  "qos_profile": "reliable-block",
+  "network_profile": "baseline",
+  "configuration": {
+    "scenario_name": "S03",
+    "case": "large_payload",
+    "condition_id": "S03-65536",
+    "title": "大消息吞吐",
+    "payload_size_bytes": 65536,
+    "publish_rate_hz": 20,
+    "publisher_count": 1,
+    "subscriber_count": 1,
+    "message_count": 0,
+    "duration_seconds": 10.0,
+    "repeats": 1,
+    "random_seed": 20260909,
+    "warmup_seconds": 1.0,
+    "drain_seconds": 1.0,
+    "timeout_seconds": 120,
+    "network_delay_ms": 0.0,
+    "network_jitter_ms": 0.0,
+    "network_loss_rate": 0.0,
+    "network_profile": "baseline",
+    "transport_mode": "tcp",
+    "qos_profile": "reliable-block"
+  },
+  "statistics": {
+    "counts": {
+      "sent": 200,
+      "emitted": 200,
+      "received": 200,
+      "expected": 200,
+      "missing": 0,
+      "valid_samples": 200,
+      "duplicates": 0,
+      "out_of_order": 0,
+      "corrupt": 0,
+      "size_mismatch": 0,
+      "recovered": 0,
+      "publish_errors": 0,
+      "injected_loss": 0,
+      "injected_delay_ms": 0.0
+    },
+    "metrics": {
+      "latency_ms": 0.898047,
+      "latency_p95_ms": 1.10221,
+      "latency_p99_ms": 2.500625,
+      "latency_std_ms": 0.548964,
+      "jitter_ms": 0.255444,
+      "throughput_mbps": 10.53407,
+      "offered_throughput_mbps": 10.485368,
+      "cpu_percent": 1.130975,
+      "memory_mb": 119.676928,
+      "packet_loss": 0.0,
+      "final_packet_loss": 0.0,
+      "startup_time_ms": 505.6319,
+      "discovery_time_ms": 2055.2244,
+      "harness_elapsed_ms": 15034.8988
+    },
+    "measurement_level": "sample_level",
+    "actual_payload_size_bytes": 65536,
+    "wire_message_size_bytes": 65568,
+    "offered_throughput_mbps": 10.485368,
+    "network_injected": {
+      "name": "baseline",
+      "delay_ms": 0.0,
+      "jitter_ms": 0.0,
+      "loss_rate": 0.0
+    }
+  },
+  "actual_payload_size_bytes": 65536,
+  "wire_message_size_bytes": 65568,
+  "metadata_size_bytes": 32,
+  "link_metrics": [
+    {
+      "publisher_id": 0,
+      "subscriber_id": 0,
+      "sent": 200,
+      "received": 200
+    }
+  ],
+  "environment": {
+    "controller_host": "songfei",
+    "platform": "Windows-11-10.0.26100-SP0",
+    "python": "3.12.13",
+    "resource_scope": "Zenoh publisher/subscriber processes; controller excluded",
+    "host": "songfei",
+    "discovery_ready_condition": "first valid sample received for the subscribed Key Expression"
+  },
+  "limitations": [],
+  "discovery_supported": true,
+  "samples": [
+    {
+      "sequence": 0,
+      "latency": 1.3097,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 1,
+      "latency": 6.5332,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 2,
+      "latency": 1.0134,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 3,
+      "latency": 0.8811,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 4,
+      "latency": 0.8444,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 5,
+      "latency": 0.792,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 6,
+      "latency": 0.7915,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 7,
+      "latency": 0.8032,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 8,
+      "latency": 0.7749,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 9,
+      "latency": 0.8394,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 10,
+      "latency": 0.4278,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 11,
+      "latency": 0.5962,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 12,
+      "latency": 0.7408,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 13,
+      "latency": 0.6469,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 14,
+      "latency": 0.8537,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 15,
+      "latency": 0.8753,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 16,
+      "latency": 0.92,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 17,
+      "latency": 1.0525,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 18,
+      "latency": 0.9108,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 19,
+      "latency": 0.8104,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 20,
+      "latency": 1.099,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 21,
+      "latency": 0.7514,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 22,
+      "latency": 0.6427,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 23,
+      "latency": 0.6749,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 24,
+      "latency": 0.7949,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 25,
+      "latency": 0.9548,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 26,
+      "latency": 1.0171,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 27,
+      "latency": 0.9365,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 28,
+      "latency": 0.9632,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 29,
+      "latency": 0.8161,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 30,
+      "latency": 0.5153,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 31,
+      "latency": 0.8239,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 32,
+      "latency": 0.9002,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 33,
+      "latency": 0.8735,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 34,
+      "latency": 1.2246,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 35,
+      "latency": 0.775,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 36,
+      "latency": 0.9587,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 37,
+      "latency": 0.5997,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 38,
+      "latency": 0.8819,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 39,
+      "latency": 0.7031,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 40,
+      "latency": 0.5336,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 41,
+      "latency": 0.9036,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 42,
+      "latency": 0.9092,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 43,
+      "latency": 0.7593,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 44,
+      "latency": 1.0152,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 45,
+      "latency": 0.8254,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 46,
+      "latency": 1.0334,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 47,
+      "latency": 0.9182,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 48,
+      "latency": 1.0336,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 49,
+      "latency": 0.8887,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 50,
+      "latency": 0.8703,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 51,
+      "latency": 0.5572,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 52,
+      "latency": 0.3591,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 53,
+      "latency": 0.7609,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 54,
+      "latency": 0.6168,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 55,
+      "latency": 0.8163,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 56,
+      "latency": 0.9412,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 57,
+      "latency": 0.6444,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 58,
+      "latency": 0.9815,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 59,
+      "latency": 0.8116,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 60,
+      "latency": 1.0512,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 61,
+      "latency": 0.7469,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 62,
+      "latency": 0.5815,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 63,
+      "latency": 0.9101,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 64,
+      "latency": 0.9497,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 65,
+      "latency": 0.8074,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 66,
+      "latency": 1.0609,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 67,
+      "latency": 0.7256,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 68,
+      "latency": 0.9055,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 69,
+      "latency": 0.7589,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 70,
+      "latency": 0.3796,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 71,
+      "latency": 0.7435,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 72,
+      "latency": 0.752,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 73,
+      "latency": 0.9616,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 74,
+      "latency": 0.612,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 75,
+      "latency": 0.5569,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 76,
+      "latency": 0.7216,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 77,
+      "latency": 0.6835,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 78,
+      "latency": 0.7215,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 79,
+      "latency": 0.7597,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 80,
+      "latency": 0.9419,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 81,
+      "latency": 0.8826,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 82,
+      "latency": 0.4223,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 83,
+      "latency": 0.7681,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 84,
+      "latency": 0.9892,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 85,
+      "latency": 0.5793,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 86,
+      "latency": 0.3414,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 87,
+      "latency": 0.314,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 88,
+      "latency": 0.422,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 89,
+      "latency": 0.6743,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 90,
+      "latency": 0.7361,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 91,
+      "latency": 0.3735,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 92,
+      "latency": 0.2971,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 93,
+      "latency": 0.8857,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 94,
+      "latency": 0.6688,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 95,
+      "latency": 0.657,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 96,
+      "latency": 0.615,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 97,
+      "latency": 1.0972,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 98,
+      "latency": 0.9998,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 99,
+      "latency": 0.797,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 100,
+      "latency": 1.0327,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 101,
+      "latency": 0.4975,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 102,
+      "latency": 0.9314,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 103,
+      "latency": 1.0502,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 104,
+      "latency": 0.984,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 105,
+      "latency": 1.1138,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 106,
+      "latency": 0.5197,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 107,
+      "latency": 0.9466,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 108,
+      "latency": 1.1228,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 109,
+      "latency": 0.8407,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 110,
+      "latency": 1.0082,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 111,
+      "latency": 0.5844,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 112,
+      "latency": 0.4577,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 113,
+      "latency": 0.6756,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 114,
+      "latency": 0.9318,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 115,
+      "latency": 0.8439,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 116,
+      "latency": 0.9898,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 117,
+      "latency": 0.8828,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 118,
+      "latency": 1.0284,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 119,
+      "latency": 2.4733,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 120,
+      "latency": 0.9375,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 121,
+      "latency": 1.0096,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 122,
+      "latency": 0.8333,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 123,
+      "latency": 0.9112,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 124,
+      "latency": 0.9524,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 125,
+      "latency": 1.0087,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 126,
+      "latency": 0.9855,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 127,
+      "latency": 0.88,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 128,
+      "latency": 0.9636,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 129,
+      "latency": 0.8768,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 130,
+      "latency": 1.0446,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 131,
+      "latency": 1.1286,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 132,
+      "latency": 0.8119,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 133,
+      "latency": 0.7827,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 134,
+      "latency": 0.8383,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 135,
+      "latency": 0.8847,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 136,
+      "latency": 0.9462,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 137,
+      "latency": 0.8619,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 138,
+      "latency": 0.8742,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 139,
+      "latency": 0.7029,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 140,
+      "latency": 0.9528,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 141,
+      "latency": 0.8566,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 142,
+      "latency": 0.7655,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 143,
+      "latency": 0.9803,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 144,
+      "latency": 0.9038,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 145,
+      "latency": 0.9584,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 146,
+      "latency": 1.0287,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 147,
+      "latency": 1.2488,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 148,
+      "latency": 0.906,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 149,
+      "latency": 0.9311,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 150,
+      "latency": 0.9296,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 151,
+      "latency": 0.5742,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 152,
+      "latency": 0.6103,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 153,
+      "latency": 0.9691,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 154,
+      "latency": 1.0395,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 155,
+      "latency": 0.8094,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 156,
+      "latency": 0.8961,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 157,
+      "latency": 0.9268,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 158,
+      "latency": 0.9838,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 159,
+      "latency": 0.8676,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 160,
+      "latency": 0.9567,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 161,
+      "latency": 0.7303,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 162,
+      "latency": 0.9845,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 163,
+      "latency": 0.8682,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 164,
+      "latency": 0.8129,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 165,
+      "latency": 0.8254,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 166,
+      "latency": 0.9759,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 167,
+      "latency": 1.0469,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 168,
+      "latency": 1.0943,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 169,
+      "latency": 0.7938,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 170,
+      "latency": 0.7425,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 171,
+      "latency": 0.7021,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 172,
+      "latency": 0.7215,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 173,
+      "latency": 0.7401,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 174,
+      "latency": 0.739,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 175,
+      "latency": 1.0595,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 176,
+      "latency": 1.0308,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 177,
+      "latency": 0.5595,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 178,
+      "latency": 0.7537,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 179,
+      "latency": 1.0002,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 180,
+      "latency": 0.6664,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 181,
+      "latency": 1.1016,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 182,
+      "latency": 1.0069,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 183,
+      "latency": 0.8799,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 184,
+      "latency": 0.5362,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 185,
+      "latency": 0.9758,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 186,
+      "latency": 0.9338,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 187,
+      "latency": 0.8669,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 188,
+      "latency": 1.1695,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 189,
+      "latency": 0.9666,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 190,
+      "latency": 0.9891,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 191,
+      "latency": 0.9522,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 192,
+      "latency": 0.895,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 193,
+      "latency": 0.7251,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 194,
+      "latency": 0.9782,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 195,
+      "latency": 1.0583,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 196,
+      "latency": 0.9768,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 197,
+      "latency": 0.9781,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 198,
+      "latency": 0.9661,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    },
+    {
+      "sequence": 199,
+      "latency": 5.2058,
+      "publisher_id": 0,
+      "subscriber_id": 0
+    }
+  ],
+  "measurement_window": {
+    "warmup_start": "2026-09-15T07:36:02.412Z",
+    "measurement_start": null,
+    "send_end": null,
+    "drain_end": "2026-09-15T07:36:17.447Z",
+    "scope": "test harness window; engine does not expose per-phase UTC timestamps"
+  },
+  "errors": [],
+  "test_start_time": "2026-09-15T07:36:02.412Z",
+  "test_end_time": "2026-09-15T07:36:17.447Z",
+  "_matrix": {
+    "middleware": "zenoh",
+    "scenario": "S03",
+    "group": "64KiB@20Hz",
+    "factor": "payload_size_bytes",
+    "template_index": 10,
+    "parameters": {
+      "payload_size_bytes": 65536,
+      "publish_rate_hz": 20,
+      "publisher_count": 1,
+      "subscriber_count": 1,
+      "message_count": 0,
+      "duration_seconds": 10.0,
+      "repeats": 1,
+      "warmup_seconds": 1.0,
+      "drain_seconds": 1.0,
+      "timeout_seconds": 120,
+      "transport_mode": "tcp",
+      "qos_profile": "reliable-block"
+    },
+    "wall_seconds": 15.04,
+    "fingerprint": "83ef5b1ecca0"
+  }
+}

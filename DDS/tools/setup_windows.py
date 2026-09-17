@@ -56,9 +56,23 @@ def find_executable(name: str, env_name: str | None = None) -> Path:
         if path.exists():
             return path
         raise SetupError(f"{env_name} points to a missing file: {path}")
+    # 先查项目私有 venv：requirements-dev.txt 里的 swig 包会把 swig.exe 放在 Scripts 下，
+    # wheel 里还带一份 data/bin/swig.exe，这两处都不在 PATH 上。
+    # 早先只查 PATH，导致"已装好 swig 却报 not on PATH"。
+    for candidate in (
+        PROJECT_ROOT / ".venv" / "Scripts" / name,
+        PROJECT_ROOT / ".venv" / "bin" / name,
+        PROJECT_ROOT / ".venv" / "Lib" / "site-packages" / "swig" / "data" / "bin" / name,
+        Path(sys.executable).parent / name,
+    ):
+        if candidate.exists():
+            return candidate.resolve()
     found = shutil.which(name)
     if not found:
-        raise SetupError(f"Required tool is not on PATH: {name}")
+        raise SetupError(
+            f"Required tool is not on PATH: {name}"
+            f"（已检查项目 .venv；也可用 {env_name or 'PATH'} 指定绝对路径）"
+        )
     return Path(found).resolve()
 
 
@@ -117,14 +131,95 @@ def check_swig(swig: Path) -> str:
     version = tuple(int(value or 0) for value in match.groups())
     if version >= (4, 2, 0):
         raise SetupError(
-            f"Fast-DDS-python 2.6.1 requires SWIG < 4.2; found {version}. "
+            f"{BINDING_TAG} requires SWIG < 4.2; found {version}. "
             "Install SWIG 4.1.x and put it first on PATH."
         )
     return ".".join(str(value) for value in version)
 
 
+def ensure_java_environment(environment: dict[str, str]) -> str | None:
+    """fastddsgen 需要 java 在 PATH 或 JAVA_HOME 上。
+
+    JAVA_HOME 未设置且 PATH 上没有 java 时，在常见 JDK 安装位置自动定位，
+    并把 JAVA_HOME 与该 JDK 的 bin 写入给定环境（后续子进程即可直接使用）。
+    返回最终使用的 JDK 路径；无法定位时返回 None。
+    """
+    current = environment.get("JAVA_HOME")
+    if current and (Path(current) / "bin" / "java.exe").exists():
+        return current
+    if shutil.which("java") or shutil.which("java.exe"):
+        return None
+    for base, pattern in (
+        (r"C:\Program Files\Eclipse Adoptium", "jdk*"),
+        (r"C:\Program Files\Java", "jdk*"),
+        (r"C:\Program Files\Microsoft", "jdk*"),
+        (r"C:\Program Files\Zulu", "zulu*"),
+        (r"C:\Program Files (x86)\Eclipse Adoptium", "jdk*"),
+    ):
+        root = Path(base)
+        if not root.is_dir():
+            continue
+        for directory in sorted(root.glob(pattern)):
+            if (directory / "bin" / "java.exe").exists():
+                environment["JAVA_HOME"] = str(directory)
+                environment["PATH"] = (
+                    str(directory / "bin") + os.pathsep + environment.get("PATH", "")
+                )
+                return str(directory)
+    return None
+
+
+def ensure_openssl_environment(environment: dict[str, str]) -> str | None:
+    """fastdds-config.cmake 里 find_dependency(OpenSSL) 需要头文件与导入库。
+
+    Fast DDS 安装包只带 libcrypto/libssl 的 .lib（没有 openssl 头文件），
+    所以 OPENSSL_ROOT_DIR 未设置时要自动定位一个"头文件+库"齐全的根目录
+    （conda 环境下通常是 <prefix>\\Library）。返回使用的根目录；找不到返回 None。
+    """
+    current = environment.get("OPENSSL_ROOT_DIR")
+    if current and (Path(current) / "include" / "openssl" / "ssl.h").exists():
+        return current
+    candidates: list[Path] = []
+    for prefix in (
+        environment.get("CONDA_PREFIX"),
+        getattr(sys, "base_prefix", None),
+        getattr(sys, "prefix", None),
+        str(Path(sys.executable).parent),
+    ):
+        if prefix:
+            candidates.extend([Path(prefix) / "Library", Path(prefix)])
+    candidates.extend(
+        [
+            Path(r"C:\Program Files\OpenSSL-Win64"),
+            Path(r"C:\Program Files\OpenSSL"),
+            Path(r"C:\OpenSSL-Win64"),
+        ]
+    )
+    for candidate in candidates:
+        if not (candidate / "include" / "openssl" / "ssl.h").exists():
+            continue
+        has_lib = any(
+            (candidate / rel).exists()
+            for rel in ("lib/libcrypto.lib", "lib/VC/x64/MD/libcrypto.lib", "lib/VC/x64/MDd/libcrypto.lib")
+        )
+        if has_lib:
+            environment["OPENSSL_ROOT_DIR"] = str(candidate)
+            return str(candidate)
+    return None
+
+
 def clone_binding_source(git: Path) -> None:
+    """
+    Prepare Fast-DDS-python source.
+
+    Supports:
+    1. Git checkout from GitHub
+    2. Manually downloaded ZIP source without .git metadata
+    """
+
     SOURCE_ROOT.mkdir(parents=True, exist_ok=True)
+
+    # No local source: try Git clone
     if not BINDING_SOURCE.exists():
         run(
             [
@@ -138,15 +233,30 @@ def clone_binding_source(git: Path) -> None:
                 str(BINDING_SOURCE),
             ]
         )
-    elif not (BINDING_SOURCE / ".git").is_dir():
-        raise SetupError(f"Existing source directory is not a git checkout: {BINDING_SOURCE}")
+        return
+
+    # ZIP source: no git metadata, skip verification
+    if not (BINDING_SOURCE / ".git").is_dir():
+        print(
+            f"WARNING: ZIP source detected, skipping git verification: {BINDING_SOURCE}"
+        )
+        return
+
+    # Normal git checkout: verify tag
     actual_tag = capture(
-        [str(git), "-C", str(BINDING_SOURCE), "describe", "--tags", "--exact-match"]
+        [
+            str(git),
+            "-C",
+            str(BINDING_SOURCE),
+            "describe",
+            "--tags",
+            "--exact-match",
+        ]
     )
+
     if actual_tag != BINDING_TAG:
         raise SetupError(
-            f"Fast-DDS-python checkout is {actual_tag!r}, expected {BINDING_TAG!r}. "
-            "Remove .build\\src\\Fast-DDS-python and run setup again."
+            f"Fast-DDS-python checkout is {actual_tag!r}, expected {BINDING_TAG!r}."
         )
 
 
@@ -180,10 +290,17 @@ def detect_fastdds_version(prefix: Path) -> str | None:
             text = config.read_text(encoding="utf-8", errors="replace")
         except OSError:
             continue
-        match = re.search(r"PACKAGE_VERSION[\s\"']+(\d+\.\d+(?:\.\d+)?)", text)
+        # eProsima 的 Windows 安装包写的是 set(fastdds_VERSION 3.6.1.0)，
+        # 而不是 PACKAGE_VERSION，所以两个都要认。
+        match = re.search(
+            r"(?:PACKAGE_VERSION|fastdds_VERSION)[\s\"']+(\d+\.\d+(?:\.\d+)?)", text
+        )
         if match:
             return match.group(1)
-    for directory in sorted((prefix / "lib" / "cmake").glob("fastdds*")):
+    directories = sorted((prefix / "lib" / "cmake").glob("fastdds*")) + sorted(
+        (prefix / "share").glob("fastdds*/cmake/fastdds*")
+    )
+    for directory in directories:
         match = pattern.search(directory.name)
         if match:
             return match.group(1)
@@ -215,10 +332,19 @@ def cmake_configure_and_install(
             f"-DPython3_EXECUTABLE={sys.executable}",
             f"-DPython3_ROOT_DIR={Path(sys.executable).parent}",
             f"-DSWIG_EXECUTABLE={swig}",
+            # 生成调试符号（PDB）：崩溃转储才能用 cdb 解析出 _wrap_XXX 这类
+            # SWIG 生成的函数名；否则栈里只有 _fastdds_python+<偏移>，
+            # 定位不到究竟是哪个 API 的字符串转换把 NULL 交给了 std::string。
+            "-DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=ProgramDatabase",
+            "-DCMAKE_CXX_FLAGS_RELEASE=/O2 /Ob2 /DNDEBUG /Zi",
+            "-DCMAKE_SHARED_LINKER_FLAGS_RELEASE=/DEBUG",
+            "-DCMAKE_EXE_LINKER_FLAGS_RELEASE=/DEBUG",
             # Fast DDS 的 Windows 安装包同时提供静态库与导入库，find_package 默认会选静态。
             # 静态链接会让 fastdds_python 与 BenchmarkMessage 各持一份 Fast DDS 全局单例
-            # （DomainParticipantFactory、TypeObject 注册表等），运行期混用会 0xC0000005 崩溃。
-            # 统一走共享库，全进程只加载一份 fastdds-3.6.dll / fastcdr-2.3.dll。
+            # （DomainParticipantFactory、TypeObject 注册表、EDP/SEDP 状态等）；运行期在
+            # 发现阶段跨实例传递对象就会 0xC0000005。已由 cdb 符号栈证实：
+            #   _fastdds_python!...EDP::pairingReader -> ... -> ucrtbase!strlen(NULL)
+            # 因此必须统一走共享库，全进程只加载一份 fastdds-3.6.dll / fastcdr-2.3.dll。
             "-DBUILD_SHARED_LIBS=ON",
             "-DBUILD_TESTING=OFF",
         ],
@@ -408,6 +534,12 @@ def main(argv: list[str] | None = None) -> int:
     git = find_executable("git.exe" if os.name == "nt" else "git")
     swig = find_executable("swig.exe" if os.name == "nt" else "swig", "SWIG_EXECUTABLE")
     swig_version = check_swig(swig)
+    java_home = ensure_java_environment(os.environ)
+    if java_home:
+        print(f"Java: {java_home}（自动定位，已写入 JAVA_HOME 供 fastddsgen 使用）")
+    openssl_root = ensure_openssl_environment(os.environ)
+    if openssl_root:
+        print(f"OpenSSL: {openssl_root}（自动定位，已写入 OPENSSL_ROOT_DIR 供 fastdds CMake 依赖使用）")
     fastddsgen = find_fastddsgen(fastdds_home)
     fastddsgen_version = capture(command_for_script(fastddsgen, ["-version"]))
 

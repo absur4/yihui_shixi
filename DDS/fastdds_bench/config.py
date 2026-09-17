@@ -19,7 +19,7 @@ SUITE_DEFAULTS: dict[str, Any] = {
     "module_name": MIDDLEWARE_ID,
     "vendor": VENDOR,
     "label": "DDS",
-    "module_version": "3.6.2",
+    "module_version": "3.6.1",
     "fastdds_python_version": "2.6.1",
     "domain_id_base": 80,
     "same_host": True,

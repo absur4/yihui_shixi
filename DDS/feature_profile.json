@@ -3,7 +3,7 @@
   "middleware_id": "dds",
   "module_name": "dds",
   "vendor": "eProsima Fast DDS",
-  "module_version": "3.6.2",
+  "module_version": "3.6.1",
   "adapter_version": "2.0.0",
   "implementation_language": "Python",
   "python_binding": "eProsima Fast-DDS-python 2.6.1",

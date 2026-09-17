@@ -30,6 +30,14 @@ except Exception as error:  # 环境异常时不抛异常，改为 available=Fal
 
 _CATALOG = None  # (base_config, templates, cases)
 
+# 界面不展示、也不测量的场景（范围裁剪）。理由：
+#   S09 弱网注入对 TCP/SHM 不等价（VSOA 仅 UDP 支持损伤）；
+#   S10 的"超时/发现失败"子项属健壮性，不是性能；
+#   S11 的 Broker 故障只对 MQTT 存在；
+#   S12 是正确性门禁（基线网络下四家期望值相同），不适合横向排名。
+# 注意：S12 的逐样本长度/校验和/序列号校验必须保留，它是全部场景的取样前提。
+EXCLUDED_SCENARIOS = frozenset({"S09", "S10", "S11", "S12"})
+
 
 def _load_catalog():
     """惰性加载并缓存 (base_config, templates, cases)。"""
@@ -39,6 +47,11 @@ def _load_catalog():
             raise RuntimeError(f"VSOA 引擎不可用：{IMPORT_ERROR}")
         config, _expanded = load_config(BASE_CONFIG)
         cases, _plan = qualification_cases(config, "all")
+        cases = [
+            case
+            for case in cases
+            if str(case.get("scenario_id") or "").upper() not in EXCLUDED_SCENARIOS
+        ]
         templates = [{
             "scenario_name": case["scenario_id"],
             "case": case["scenario_name"],
