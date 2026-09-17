@@ -1,104 +1,159 @@
-# 四种通信中间件统一测试与可视化接入规范
+# 四种通信中间件性能对比试验
 
-本文是本仓库四个中间件（VSOA、DDS、MQTT、Zenoh）接入统一可视化控制台的交付契约。后续负责 DDS、MQTT、Zenoh 的 AI 必须先阅读本文，再在各自的中间件目录内完成实现。目标是让 `songfei/example.html` 这一套界面使用同一组参数、同一组接口名称和同一组指标，切换中间件后仍能测试并对比 S01–S12 全部场景。
+本项目在统一场景、统一参数和统一指标口径下，对 **VSOA、Fast DDS、MQTT、Zenoh** 四种通信中间件进行性能测试与横向对比。项目提供统一适配器、场景定义、测试执行器和浏览器可视化控制台，既可在本机回环环境中运行单项测试，也可保存矩阵测试结果用于绘图、分析和汇报。
 
-## 1. 当前基线：VSOA 已接入
+> 本仓库中的现有对比数据为同一台计算机上的本地回环测试结果，适合比较四种实现的相对性能，不等同于真实物理网络或跨设备性能。
 
-VSOA 是唯一的参考实现，不能另造一套字段名或单位。当前控制台位于 `songfei/`，页面原型是 `songfei/example.html`，运行页面是 `songfei/static/index.html`。
+## 1. 项目框架
 
-- 启动：`python songfei/run.py`
-- 地址：`http://127.0.0.1:8787/`
-- VSOA 引擎：`VSOA/vsoa_py/standalone`
-- 场景目录唯一来源：`interfaces/scenarios.py`
-- VSOA 结果目录：`songfei/results/vsoa/<job_id>/`
-- VSOA 已覆盖：S01–S12，共 12 个场景和配置文件中展开的全部标准条件；指标必须来自真实测量，不得生成模拟数据。
-
-VSOA 的控制台逻辑在 `songfei/app.py` 中已经把引擎结果映射为 UI 字段。新中间件必须输出下面同名字段，控制台才能复用同一套页面和图表。
-
-## 2. 稳定命名：ID、显示名和目录
-
-`middleware_id` 是机器接口中的稳定值，永远使用小写 ASCII，不随厂商库名变化。`label` 只用于页面显示。适配器的 `name` 必须等于 `middleware_id`。
-
-| 中间件 | `middleware_id` / `Adapter.name` | 页面 `label` | 代码目录 |
-|---|---|---|---|
-| VSOA | `vsoa` | `VSOA` | `VSOA/` |
-| DDS | `dds` | `DDS` | `DDS/` |
-| MQTT | `mqtt` | `MQTT` | `mqtt/` |
-| Zenoh | `zenoh` | `Zenoh` | `Zenoh/` |
-
-不要使用 `Vsoa`、`VSOA-PY`、厂商产品名、协议版本号等作为接口 ID。版本号放在 `metadata().version` 和结果的 `environment` 中。
-
-## 3. 仓库目录和所有权
-
-目录必须按下列职责组织。三位后续实现者只修改自己负责的中间件目录；不要直接改 `songfei/`、`interfaces/` 或其他中间件目录来绕过适配器契约。
+### 1.1 运行链路
 
 ```text
-README.md                         # 本规范，所有实现者的入口
-interfaces/
-  __init__.py                     # ScenarioSpec、ScenarioResult、MiddlewareAdapter
-  scenarios.py                    # S01–S12 唯一场景目录，不复制、不改名
-VSOA/                             # 已完成的参考实现，不要求重写
-  vsoa_py/standalone/             # 真实测量引擎
-DDS/                              # DDS AI 的唯一工作目录
-  adapter.py                      # 统一适配器（必须）
-  console_runner.py               # 子进程入口（必须）
-  README.md                       # DDS 接入说明、依赖和能力矩阵（必须）
-  requirements.txt                # 可选：DDS 专用依赖
-  results/<job_id>/                # 运行产物，禁止写到其他中间件目录
-mqtt/                             # MQTT AI 的唯一工作目录，文件结构同 DDS
-  adapter.py
-  console_runner.py
-  README.md
-  requirements.txt                # 可选
-  results/<job_id>/
-Zenoh/                            # Zenoh AI 的唯一工作目录，文件结构同 DDS
-  adapter.py
-  console_runner.py
-  README.md
-  requirements.txt                # 可选
-  results/<job_id>/
-songfei/
-  example.html                    # 目标可视化原型
-  static/index.html               # 服务实际加载的页面
-  app.py                          # 统一 HTTP 控制台
-  vsoa_runner.py                  # VSOA 参考子进程入口
-  results/<middleware_id>/<job_id>/# 控制台归档目录
+浏览器可视化界面
+    │  HTTP API
+    ▼
+songfei/app.py（统一控制台与作业管理）
+    │
+    ├── VSOA/adapter.py  ── VSOA/console_runner.py
+    ├── DDS/adapter.py   ── DDS/console_runner.py
+    ├── mqtt/adapter.py  ── mqtt/console_runner.py
+    └── Zenoh/adapter.py ── Zenoh/console_runner.py
+            │
+            ▼
+      各中间件真实测试引擎
+            │
+            ▼
+统一 JSON 结果、原始样本、日志和可视化报告
 ```
 
-每个中间件的 `results/<job_id>/` 至少包含 `job.json`、`spec.json`、`console.log`、`output/result.json`、`output/runs/<run_id>.json`；原始样本、资源采样和进程日志放在 `output/artifacts/<run_id>/`、`output/logs/<run_id>/`。
+控制台按 `vsoa -> dds -> mqtt -> zenoh` 的顺序扫描各目录中的 `adapter.py`。适配器负责把统一测试参数转换为中间件自身的运行方式，`console_runner.py` 负责启动测试、收集指标并写入统一格式的结果文件。
 
-## 4. 适配器必须暴露的 Python 接口
+### 1.2 目录结构
 
-每个目录的 `adapter.py` 必须实现 `interfaces.MiddlewareAdapter`，并导出 `create_adapter()`。不要求 UI 了解具体厂商库 API。
-
-```python
-from interfaces import MiddlewareAdapter, ScenarioResult, ScenarioSpec
-
-class Adapter(MiddlewareAdapter):
-    name = "dds"  # mqtt / zenoh；必须与目录对应的 middleware_id 一致
-
-    def metadata(self) -> dict:
-        return {"id": self.name, "name": self.name, "label": "DDS",
-                "version": "实际库版本", "available": True,
-                "transport_options": ["tcp", "udp"],
-                "qos_options": [{"value": "default", "label": "原生默认"}],
-                "notes": ["真实测量说明", "不支持的能力及原因"]}
-
-    def catalog(self) -> list[dict]:
-        """返回 S01–S12 展开的标准条件，字段名必须见第 5 节。"""
-
-    def run(self, scenario: ScenarioSpec, parameters: dict) -> ScenarioResult:
-        """执行一轮真实测试；不得返回随机数或示例数据。"""
-
-def create_adapter() -> Adapter:
-    return Adapter()
+```text
+.
+├── README.md                    # 项目总览、启动方式和数据位置
+├── interfaces/
+│   ├── __init__.py              # 统一适配器与结果类型
+│   └── scenarios.py             # S01-S12 场景定义的唯一来源
+├── VSOA/                        # VSOA 适配器、执行器和测试引擎
+├── DDS/                         # Fast DDS 适配器、执行器和测试引擎
+├── mqtt/                        # MQTT 适配器、Mosquitto 与测试引擎
+├── Zenoh/                       # Zenoh 适配器、执行器和测试引擎
+└── songfei/
+    ├── run.py                   # 可视化控制台启动入口
+    ├── app.py                   # HTTP API、作业管理和适配器加载
+    ├── static/index.html        # 浏览器实际加载的前端页面
+    ├── results/                 # 从可视化界面运行后生成的作业数据
+    └── test/                    # 已整理的本地回环对比数据、绘图脚本和汇报材料
 ```
 
-`catalog()` 可以读取 `interfaces.scenarios.SCENARIOS`，但不得另建一份场景 ID。每个场景都必须出现；能力不足时仍返回该场景，并在结果中使用 `unsupported` 或 `not_tested`，同时写明原因，不能静默删除或伪造指标。
+各中间件的依赖、能力和独立运行方式见：
 
-## 5. 与 `example.html` 对齐的输入字段
+- [DDS/README.md](DDS/README.md)
+- [mqtt/README.md](mqtt/README.md)
+- [Zenoh/README.md](Zenoh/README.md)
 
-`/api/start` 的 `configuration` 和 `/api/init` 的 `catalogs[middleware_id]` 使用以下字段名：
+VSOA 当前没有单独的模块 README，其统一入口为 `VSOA/adapter.py` 和 `VSOA/console_runner.py`，核心实现位于 `VSOA/vsoa_py/standalone/`，依赖清单见 `VSOA/vsoa_py/requirements.txt`。
+
+## 2. 开启可视化
+
+### 2.1 启动
+
+在仓库根目录执行：
+
+```powershell
+python songfei/run.py
+```
+
+服务启动后会自动打开浏览器；如未自动打开，请手动访问：
+
+```text
+http://127.0.0.1:8787/
+```
+
+控制台会显示已经加载的四种中间件及其可用状态。选择中间件、测试场景和参数后即可启动测试；执行日志、当前状态、指标和曲线会在页面中更新。按 `Ctrl+C` 可停止控制台。
+
+### 2.2 环境说明
+
+- 控制台 HTTP 服务使用 Python 标准库，无需单独安装 Web 框架。
+- 各测试引擎仍需安装自身依赖；具体要求以对应中间件目录中的 README 和 `requirements.txt` 为准。
+- MQTT 测试使用仓库中的 Mosquitto 组件或 `mqtt/config.yaml` 指定的 Broker。
+- 某个中间件环境未就绪时，控制台仍可启动，但该中间件会显示不可用，或将对应测试记录为 `not_tested`。
+- `8787` 端口被占用时，可换一个端口启动，例如：`python -c "from songfei.app import serve; serve(port=8788)"`。
+
+## 3. 本地回环数据保存位置
+
+项目中有两类结果目录，使用时不要混淆。
+
+### 3.1 可视化控制台新生成的作业
+
+从页面启动的测试统一保存在：
+
+```text
+songfei/results/<middleware_id>/<job_id>/
+```
+
+四种中间件对应目录为：
+
+```text
+songfei/results/vsoa/
+songfei/results/dds/
+songfei/results/mqtt/
+songfei/results/zenoh/
+```
+
+单个作业的典型结构如下：
+
+```text
+<job_id>/
+├── job.json                     # 作业状态和页面配置
+├── spec.json                    # 传给执行器的完整测试计划
+├── console.log                 # 控制台日志
+└── output/
+    ├── result.json              # 整个作业的汇总结果
+    ├── runs/<run_id>.json       # 每一轮的统一指标
+    ├── artifacts/<run_id>/      # 延迟样本等原始测量产物
+    └── logs/<run_id>/           # 发布端、订阅端和服务进程日志
+```
+
+### 3.2 当前四种中间件的本地回环对比数据
+
+当前用于性能对比、绘图和汇报的本地回环数据集中保存在 `songfei/test/`：
+
+| 中间件 | 数据目录 | 主要内容 |
+|---|---|---|
+| VSOA | `songfei/test/vsoa/` | `S01-S08/group*.json`、`runs/`、`artifacts/`、`history/`、`logs/`、`summary.json`、`changes.json` |
+| Fast DDS | `songfei/test/DDS/results/` | 无扩展名的 JSON 汇总文件 `matrix_s01_s08`、`raw/` 原始逐轮结果、控制台日志 |
+| MQTT | `songfei/test/MQTT/` | `S01-S08/group*.json`、`runs/`、`artifacts/`（含进程日志）、`summary.json`、`changes.json` |
+| Zenoh | `songfei/test/zenoh/` | `S01-S08/group*.json`、`artifacts/engine-run/`、`summary.json`、`changes.json` |
+
+其中：
+
+- `group<N>.json` 是某场景第 N 组参数所选定的单轮完整结果，不是多轮统计汇总。
+- 各中间件的原始归档结构不同：存在时，`runs/` 保存单轮统一结果，`artifacts/` 保存原始样本及相关进程文件，`logs/` 保存独立日志。
+- `summary.json` 是中间件级汇总，`changes.json` 记录同一场景中各参数组相对基准组的变化。
+- `songfei/test/*.png` 是基于上述数据生成的对比图，不是原始测量数据。
+- `songfei/test/_backup_drain03/` 是旧收尾窗口参数下的备份数据，不应与当前正式数据混用。
+
+## 4. 统一适配器契约
+
+每个中间件目录均提供 `adapter.py`，控制台主要调用以下接口：
+
+| 接口 | 作用 |
+|---|---|
+| `metadata()` | 返回中间件 ID、版本、可用性、传输方式和 QoS 信息 |
+| `catalog()` | 返回 S01-S12 标准测试条件 |
+| `build_cases()` | 将页面参数或完整矩阵展开为可执行条件 |
+| `base_config()` | 返回执行器的基础配置 |
+| `runner_command()` | 返回该中间件的子进程启动命令 |
+| `run()` | 供脚本直接执行一轮真实测量 |
+
+稳定的中间件 ID 为 `vsoa`、`dds`、`mqtt`、`zenoh`。页面显示名可以变化，但接口 ID、适配器名称和控制台作业目录 `songfei/results/<middleware_id>/` 必须一致；`songfei/test/` 中已有的整理数据保留其原始目录大小写。
+
+## 5. 统一输入字段
+
+四种中间件共用以下主要测试参数：
 
 ```text
 scenario_name, case, condition_id, title
@@ -109,128 +164,60 @@ network_delay_ms, network_jitter_ms, network_loss_rate, network_profile
 transport_mode, qos_profile
 ```
 
-其中 `payload_size_bytes` 是字节，速率是 Hz，时长是秒，网络延迟/抖动是 ms，`network_loss_rate` 是 0–1 比例（不是百分数）。所有配置数值必须是 JSON number；`transport_mode` 使用小写值。`message_count` 与 `duration_seconds` 按引擎规则二选一或同时提供。
+其中 payload 使用字节，速率使用 Hz，时长使用秒，延迟与抖动使用 ms，`network_loss_rate` 使用 0-1 比例。
 
-## 6. 统一单轮结果字段
+## 6. 统一结果与指标
 
-每轮写入 `output/runs/<run_id>.json`，并在 `output/result.json` 的 `runs` 数组中保留同一对象。以下字段名是 UI、报告和对比逻辑的唯一名称；无法测量时填 `null`，不要填 `0` 或 `"N/A"`。
+每轮结果保存在 `output/runs/<run_id>.json`，作业汇总保存在 `output/result.json`。主要对比指标包括：
+
+- 延迟：平均值、P95、P99、标准差和 jitter，单位为 ms。
+- 吞吐：实收吞吐和应发吞吐，单位为 Mbit/s。
+- 可靠性：发送、接收、唯一交付、丢失、重复、乱序和损坏数量。
+- 时序：启动时间、发现时间和故障恢复时间，单位为 ms。
+- 资源：CPU 使用率和 RSS 内存，内存单位为 MB。
+- 控制台统一状态：`completed`、`error`、`cancelled`、`timeout`、`unsupported` 或 `not_tested`。
+
+无法真实测量的指标必须写为 JSON `null`，不能使用 `0` 或固定常数代替。四种中间件的相同字段必须保持相同含义和单位。`songfei/test/DDS/results/matrix_s01_s08` 是导入的 DDS 历史矩阵文件，内部保留原执行器的 `passed` 状态；进入控制台作业目录后的状态按上述统一枚举转换。
+
+## 7. 测试场景
+
+统一框架定义了 S01-S12。当前 `songfei/test/` 中集中整理的本地回环对比数据主要覆盖 S01-S08。
+
+| 场景 | 内容 | 主要观察指标 |
+|---|---|---|
+| S01 | 点对点延迟 | 平均延迟、P95、P99 |
+| S02 | 消息尺寸扫描 | 延迟、吞吐、丢失率 |
+| S03 | 大消息吞吐 | 吞吐、尾延迟、CPU、内存 |
+| S04 | 发送速率扫描 | 吞吐、P99、丢失率 |
+| S05 | 一对多广播 | 各订阅者交付、延迟和资源 |
+| S06 | 多对一汇聚 | 各发布者交付、延迟和资源 |
+| S07 | 多对多并发 | 链路指标、吞吐、延迟和丢失 |
+| S08 | 长时间稳定性 | 延迟漂移、jitter、CPU 和内存 |
+| S09 | 弱网恢复 | 窗口内/最终丢失、延迟和 jitter |
+| S10 | 启动与发现 | 启动、发现和首包延迟 |
+| S11 | 断连与故障恢复 | 恢复时间和最终丢失 |
+| S12 | 数据正确性 | 缺失、重复、乱序和损坏 |
+
+## 8. 子进程执行协议
+
+控制台为每个作业生成 `spec.json`，然后执行：
 
 ```text
-run_id, middleware_id, middleware_version, scenario_name, scenario_title, repeat, status
-payload_size_bytes, publish_rate_hz, publisher_count, subscriber_count
-messages_sent, messages_received, unique_deliveries, expected_deliveries
-achieved_publish_rate_hz
-latency_ms, latency_p95_ms, latency_p99_ms, latency_std_ms, throughput_mbps, jitter_ms
-packet_loss, final_packet_loss
-duplicate_count, out_of_order_count, corrupted_count
-startup_time_ms, discovery_time_ms, recovery_time_ms
-cpu_percent, memory_mb, latency_sample_count
-configuration, statistics, link_metrics, environment, limitations
+python <middleware>/console_runner.py <job_dir>/spec.json
 ```
 
-状态统一为 `completed`、`error`、`cancelled`、`timeout`、`unsupported`、`not_tested`。丢失率是 0–1 比例（5% 返回 `0.05`），吞吐是 Mbit/s，延迟/抖动/启动/发现/恢复是 ms，CPU 是百分比，内存是 RSS MB。多拓扑的 `link_metrics` 中 publisher/subscriber 从 0 开始。
+执行器逐轮写入 `output/runs/`，结束后生成 `output/result.json`。标准输出使用带时间戳的日志，并以 `RESULT <path> status=<status>` 报告最终状态。成功退出码为 `0`，取消通常为 `130`，其他退出码表示失败。
 
-图表样本必须来自真实接收样本，并转换为 `[{'sequence': 0, 'latency': 1.23}]` 结构（latency 单位 ms）；不得插值或随机生成。
+## 9. HTTP 接口
 
-### 6.1 指标口径统一规范（四家必须一致）
+前端通过以下接口管理测试：
 
-同一字段名在四个中间件只允许有一种含义。以下是唯一定义，`VSOA/`、`DDS/`、`mqtt/`、`Zenoh/` 均按此对齐（各家的实现差异写在 `limitations`，不得改变字段含义）：
+- `GET /api/init`：中间件元数据、场景目录和历史作业。
+- `GET /api/state`：当前作业状态和实时日志。
+- `GET /api/history?middleware=<id>`：指定中间件的历史作业。
+- `GET /api/results?middleware=<id>&job=<job_id>`：结果、样本、链路数据和日志。
+- `POST /api/start`：启动当前条件或完整矩阵。
+- `POST /api/stop`：停止当前测试并清理子进程。
+- `GET /files/<middleware>/<job>/report.html`：查看单个作业报告。
 
-| 字段 | 唯一定义 | 单位/取值 |
-|---|---|---|
-| `latency_ms` / `latency_p95_ms` / `latency_p99_ms` / `latency_std_ms` | 同一逻辑消息「订阅端收到时刻 − 发布端发送时刻」，对该轮**全部有效样本**统计；P95/P99 是同样本集的分位数 | ms，float |
-| `latency_sample_count` | 计入上述统计的**有效延迟样本数**（等于该轮延迟样本集大小） | int |
-| `jitter_ms` | **同一链路相邻两个成功交付样本**的 `abs(Δlatency)` 均值 | ms，float |
-| `throughput_mbps` | **实收**吞吐 = 该轮唯一交付字节数 × 8 ÷ **测量窗口秒数**（= 配置的 `duration_seconds`；**不得**换成"实际接收窗口"或其它会因尾部缺失而变短的窗口，否则吞吐虚高） | Mbit/s |
-| `offered_throughput_mbps` | **应发**吞吐 = 发送侧实际发出字节数 × 8 ÷ 发送窗口秒数 | Mbit/s |
-| `achieved_publish_rate_hz` | 本轮实际达成的发布速率，口径与 `publish_rate_hz` 相同（`per_publisher`）；不另设 `*_per_publisher` 之类长名别名 | Hz，float |
-| `packet_loss` | **测量（发送）窗口内**未交付比例 | 0–1 |
-| `final_packet_loss` | **轮次结束时**仍未交付比例（含窗口后到达与应用层恢复） | 0–1 |
-| `startup_time_ms` | 从端点进程启动到该端点**就绪可收发** | ms |
-| `discovery_time_ms` | **每个端点**从启动到该端点完成对端匹配（匹配数达到对端总数）的耗时；多端点取**均值** | ms |
-| `recovery_time_ms` | **仅当本轮注入了故障并完成恢复**时填值；其余场景一律 `null`（不填 `0`） | ms 或 null |
-| `cpu_percent` | 本轮该中间件**全部自有服务进程**（端点 + 中间服务进程，如 MQTT broker；无中间服务的则等于端点） | % |
-| `memory_mb` | 与 `cpu_percent` **同范围**的 RSS（峰值） | MB |
-| `cpu_percent_endpoints` / `memory_mb_endpoints` | **仅端点进程**的资源占用 —— 跨四家唯一可直接对比的资源口径 | %/MB |
-| `messages_sent` / `messages_received` / `unique_deliveries` / `expected_deliveries` | 发送条数 / 接收条数（含重复）/ 唯一有效交付数 / 期望交付数；速率与条数一律 `per_publisher` | int |
-| `duplicate_count` / `out_of_order_count` / `corrupted_count` | 重复 / 乱序 / 内容或元数据校验失败 | int |
-| `link_metrics` | 多端点时逐链路指标，publisher/subscriber 从 0 开始 | 数组 |
-
-取值规则：无法测量一律 `null`（不写 `0`、不写 `"N/A"`）；比例用 0–1 小数；适配器私有字段（`_matrix*`、`samples*`、各家 `statistics`/`*_resources` 等）不进跨中间件对比表。
-
-**收尾窗口规则**：发送窗口结束后仍允许 `drain_seconds` 的收尾期，收尾期内到达的交付计入本轮；收尾期之后到达的不计入，并只能通过 `final_packet_loss` 体现。因此"窗口内交付率 = 1 − `packet_loss`"，"本轮交付率 = 1 − `final_packet_loss`"。若某家的尾部交付耗时超过 `drain_seconds`，它报出的缺失属于**收尾窗口不足**，必须在 `limitations` 中写明，不得描述为随机丢包。
-
-## 7. 统一 HTTP API（页面已经使用的名称）
-
-新中间件适配后，页面只改变 `middleware` 查询参数，不改变路径、请求字段或返回字段。
-
-- `GET /api/init` → `middleware` 后端元数据数组、`catalogs` 条件目录、`names` 场景标题、`history` 历史作业。
-- `GET /api/state` → `{"job": {"id", "middleware_id", "status", "total"}, "logs": [{"time", "text"}]}`。
-- `GET /api/history?middleware=dds` → 仅该中间件的 `{id,status}` 作业数组。
-- `GET /api/results?middleware=dds&job=<job_id>[&run=<run_id>]` → `{runs,result,samples,link,report,logs}`，其中 `result` 使用第 6 节字段。
-- `POST /api/start` 请求体：`{"middleware":"dds","template_index":0,"configuration":{...},"matrix":false}`；`matrix=true` 执行所选场景全部标准条件和重复轮次。
-- `POST /api/stop`、`POST /api/shutdown` 沿用 VSOA 语义；请求头使用现有页面要求的 `X-MQTT-Token`。停止必须清理全部子进程。
-
-## 8. 子进程运行协议
-
-每个中间件的 `console_runner.py` 必须支持 `python <middleware>/console_runner.py <job_dir>/spec.json`。从 spec 读取 `config`、`cases`、`plan`、`output`、`logs`；标准输出建议使用 `[HH:MM:SS] message`；成功结束输出 `RESULT <output/result.json> status=completed`，失败/停止分别使用 `status=error`/`status=cancelled`；成功退出码为 0。所有产物只能写入所属中间件的作业目录。
-
-## 9. S01–S12 验收要求
-
-场景 ID 和顺序以 `interfaces/scenarios.py` 为准：
-
-| ID | 场景 | 至少验证的重点指标 |
-|---|---|---|
-| S01 | `point_to_point_latency` | latency、P95、P99、标准差 |
-| S02 | `message_size_scan` | latency、throughput、packet_loss |
-| S03 | `large_message_throughput` | throughput、P95、CPU、内存 |
-| S04 | `send_rate_scan` | throughput、P99、packet_loss |
-| S05 | `one_to_many_broadcast` | 各订阅者交付、P95、丢失、内存 |
-| S06 | `many_to_one_fanin` | 各发布者交付、P95、丢失、CPU |
-| S07 | `many_to_many_mesh` | 16 条链路、吞吐、P95、丢失、资源 |
-| S08 | `long_duration_stability` | 延迟漂移、jitter、内存增长、CPU |
-| S09 | `weak_network_recovery` | 原始/最终丢失、P95、jitter |
-| S10 | `startup_discovery` | startup、discovery、延迟 |
-| S11 | `reconnect_fault_recovery` | recovery、startup/discovery、最终丢失 |
-| S12 | `data_correctness` | 缺失、重复、乱序、损坏、最终丢失 |
-
-每个中间件的 `README.md` 必须附能力矩阵，列出 S01–S12、支持的传输/QoS、已知限制、真实测量方式和运行命令。任何不支持项必须明确标注，不能用固定常数冒充测量。
-
-## 10. 三位后续实现者的明确任务
-
-### DDS（只改 `DDS/`）
-
-- 创建 `DDS/adapter.py`、`DDS/console_runner.py`、`DDS/README.md`。
-- `Adapter.name` 固定为 `dds`，实现 `metadata()`、`catalog()`、`run()`。
-- 将 DDS 原生结果映射为第 6 节字段，并保存 `DDS/results/<job_id>/`。
-- 完成 S01–S12 能力矩阵和至少一轮真实冒烟测试。
-
-### MQTT（只改 `mqtt/`）
-
-- 创建 `mqtt/adapter.py`、`mqtt/console_runner.py`、`mqtt/README.md`。
-- `Adapter.name` 固定为 `mqtt`；broker、topic、QoS 等差异只能体现在 `configuration`、`qos_profile` 和 `notes`，不能改变公共字段名。
-- 将 MQTT 原生结果映射为第 6 节字段，并保存 `mqtt/results/<job_id>/`。
-- 完成 S01–S12 能力矩阵和至少一轮真实冒烟测试。
-
-### Zenoh（只改 `Zenoh/`）
-
-- 创建 `Zenoh/adapter.py`、`Zenoh/console_runner.py`、`Zenoh/README.md`。
-- `Adapter.name` 固定为 `zenoh`；session、router、transport 等差异放入适配器内部或 `configuration`，不能泄漏到 UI 专用字段。
-- 将 Zenoh 原生结果映射为第 6 节字段，并保存 `Zenoh/results/<job_id>/`。
-- 完成 S01–S12 能力矩阵和至少一轮真实冒烟测试。
-
-完成上述目录内工作后，再由控制台维护者在 `songfei/app.py` 中注册适配器并接入统一页面。中间件 AI 不应为了“让下拉框出现”而修改控制台；先把目录内契约实现完整。
-
-## 11. 提交前检查清单
-
-- [ ] `middleware_id`、`Adapter.name`、目录归档名三者一致（`vsoa`/`dds`/`mqtt`/`zenoh`）。
-- [ ] `catalog()` 包含 S01–S12，字段名与第 5 节完全一致。
-- [ ] `console_runner.py <spec.json>` 可独立运行并生成 `output/result.json`。
-- [ ] 每轮结果包含第 6 节公共字段；未测量值为 `null`，限制写入 `limitations`。
-- [ ] 比例、单位和 CPU/RSS 统计口径符合第 6 节。
-- [ ] 日志包含 `[HH:MM:SS]` 前缀，结束时输出 `RESULT ... status=...`。
-- [ ] stop 可以清理全部子进程；重复运行不会覆盖旧 job。
-- [ ] 产物只写入所属目录，没有修改 `songfei/`、`interfaces/` 或其他中间件目录。
-- [ ] `README.md` 写明依赖、启动命令、支持矩阵、限制和一次真实测试结果。
-
-核心原则：**中间件可以不同，适配器内部可以不同，但交给 `songfei/example.html` 的参数、接口、字段、单位和状态必须相同。**
+核心原则：四种中间件可以采用不同内部实现，但进入可视化与对比流程的场景、字段、单位和状态必须一致。
